@@ -256,7 +256,7 @@ public class Generator {
 				
 				//Create empty image if user hasn't selected one
 				if(imageName == null || imageName.equals("") || imageName.equalsIgnoreCase("None")) {
-					source_path = Generator.class.getResource("/slidebuilder/images/empty.png").getPath();
+					source_path = Generator.class.getResource("/images/empty.png").getPath();
 				}
 				else source_path = DataManager.getDataCampaign().getCustomImageData().getCustomImage(CreatorEnum.SLIDE_IMAGE, imageName).getPath();
 
