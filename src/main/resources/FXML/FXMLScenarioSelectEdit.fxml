@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerScenarioSelectEdit">
+   <left>
+      <VBox alignment="CENTER" prefHeight="388.0" prefWidth="331.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" prefHeight="92.0" prefWidth="331.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="27.0" prefWidth="247.0" text="Button Label Text">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <HBox fx:id="textfield_title" alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                     <children>
+                        <TextField fx:id="textfield_text" alignment="TOP_LEFT" prefHeight="26.0" prefWidth="233.0">
+                           <font>
+                              <Font name="Liberation Sans" size="14.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="175.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="20.0" prefWidth="162.0" text="Button Coordinates">
+                           <font>
+                              <Font name="Liberation Serif" size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="30.0" text="X" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="textfield_button_x" prefHeight="26.0" prefWidth="76.0" text="200">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="30.0" text="Y" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="textfield_button_y" prefHeight="26.0" prefWidth="76.0" text="200">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="187.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="20.0" prefWidth="190.0" text="Label Coordinates">
+                           <font>
+                              <Font name="Liberation Serif" size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="30.0" text="X" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="textfield_text_x" prefHeight="26.0" prefWidth="76.0" text="0">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="30.0" text="Y" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="textfield_text_y" prefHeight="26.0" prefWidth="76.0" text="0">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <VBox alignment="CENTER" prefHeight="81.0" prefWidth="510.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="20.0" prefWidth="214.0" text="Scenario Difficulty">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="button_difficulty" onAction="#setDifficulty" prefHeight="26.0" prefWidth="233.0" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+   <right>
+      <VBox alignment="CENTER" prefHeight="396.0" prefWidth="315.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" prefHeight="251.0" prefWidth="315.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="20.0" prefWidth="195.0" text="Button Hover Help Text">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <TextArea fx:id="textfield_help" prefHeight="217.0" prefWidth="275.0" wrapText="true">
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Liberation Sans" size="14.0" />
+                     </font>
+                  </TextArea>
+                  <HBox alignment="CENTER" prefHeight="21.0" prefWidth="351.0">
+                     <children>
+                        <ImageView fx:id="button_color_white" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/colorpicker_white.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="button_color_blue" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/colorpicker_blue.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="button_color_red" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/colorpicker_red.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="button_color_yellow" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/colorpicker_yellow.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="button_color_cyan" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/colorpicker_cyan.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="button_color_purple" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/colorpicker_purple.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="button_color_gray" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/colorpicker_gray.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="button_color_orange" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/colorpicker_orange.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="button_color_italic" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/colorpicker_italic.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
+                        </ImageView>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="81.0" prefWidth="510.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="20.0" prefWidth="140.0" text="Help Text Style">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="button_help" prefHeight="26.0" prefWidth="251.0" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </right>
+   <top>
+      <Label fx:id="slide_title" alignment="CENTER" prefHeight="61.0" prefWidth="826.0" text="Scenario 1 Button" textAlignment="CENTER" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Liberation Serif Bold" size="27.0" />
+         </font>
+      </Label>
+   </top>
+   <bottom>
+      <VBox alignment="CENTER" prefHeight="91.0" prefWidth="960.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" prefHeight="72.0" prefWidth="960.0">
+               <children>
+                  <Button fx:id="button_back" alignment="CENTER" mnemonicParsing="false" onAction="#goBack" prefHeight="32.0" prefWidth="77.0" text="Back">
+                     <font>
+                        <Font name="Liberation Sans" size="16.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Region prefHeight="37.0" prefWidth="163.0" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <TabPane fx:id="tab_pane" prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" />
+         </children>
+      </VBox>
+   </bottom>
+   <center>
+      <VBox alignment="CENTER" prefHeight="340.0" prefWidth="330.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" prefHeight="92.0" prefWidth="330.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="27.0" prefWidth="247.0" text="Button Image">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <HBox fx:id="textfield_title1" alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                     <children>
+                        <ComboBox fx:id="button_image" prefWidth="233.0" onAction="#setIcon" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="175.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="20.0" prefWidth="162.0" text="Image Size">
+                           <font>
+                              <Font name="Liberation Serif" size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="58.0" text="Width" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="textfield_image_width" prefHeight="26.0" prefWidth="76.0" text="280">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="58.0" text="Height" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="textfield_image_height" prefHeight="26.0" prefWidth="76.0" text="280">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <VBox alignment="CENTER" prefHeight="81.0" prefWidth="510.0">
+               <children>
+                  <Region prefHeight="20.0" prefWidth="330.0" />
+                  <CheckBox fx:id="checkbox_image" mnemonicParsing="false" text="Keep Original Size" onAction="#setDisabled">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </CheckBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

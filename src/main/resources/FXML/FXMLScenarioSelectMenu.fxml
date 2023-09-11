@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerScenarioSelectMenu">
+   <top>
+      <Label fx:id="slide_title" alignment="CENTER" prefHeight="61.0" prefWidth="826.0" text="Edit Campaign Menu Screen" textAlignment="CENTER" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Liberation Serif Bold" size="27.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <VBox alignment="CENTER" prefHeight="408.0" prefWidth="786.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" minHeight="100.0" prefHeight="100.0" prefWidth="740.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="20.0" prefWidth="173.0" text="Title Text">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                     <children>
+                        <TextField fx:id="textfield_title" alignment="TOP_LEFT" prefHeight="26.0" prefWidth="251.0">
+                           <font>
+                              <Font name="Liberation Sans" size="14.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="82.0" prefWidth="300.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="20.0" prefWidth="199.0" text="Background Image">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                     <children>
+                        <ComboBox fx:id="button_bg" onAction="#changeBackground" prefHeight="26.0" prefWidth="251.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </center>
+   <bottom>
+      <VBox alignment="CENTER" prefHeight="91.0" prefWidth="960.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" prefHeight="72.0" prefWidth="960.0">
+               <children>
+                  <Button fx:id="button_back" alignment="CENTER" mnemonicParsing="false" onAction="#goBack" prefHeight="32.0" prefWidth="77.0" text="Back">
+                     <font>
+                        <Font name="Liberation Sans" size="16.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Region prefHeight="37.0" prefWidth="163.0" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="button_edit" mnemonicParsing="false" onAction="#goNext" prefHeight="37.0" prefWidth="251.0" text="Edit Scenario Buttons">
+                     <font>
+                        <Font name="Liberation Sans" size="16.0" />
+                     </font>
+                  </Button>
+                  <Region prefHeight="37.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+                  <CheckBox fx:id="checkbox_disable" contentDisplay="CENTER" mnemonicParsing="false" onAction="#setDisabled" prefHeight="27.0" prefWidth="237.0" text="Disable Custom Menu">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </CheckBox>
+               </children>
+            </HBox>
+            <TabPane fx:id="tab_pane" prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+               <tabs>
+                  <Tab disable="true">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
+         </children>
+      </VBox>
+   </bottom>
+</BorderPane>

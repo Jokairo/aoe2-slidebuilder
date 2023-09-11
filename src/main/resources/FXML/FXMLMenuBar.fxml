@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane fx:id="pane" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerMenuBar">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="New" />
+                  <MenuItem mnemonicParsing="false" text="Open..." onAction="#openProject" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Save" onAction="#save" />
+                  <MenuItem mnemonicParsing="false" text="Save As..." onAction="#saveAs" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Export" onAction="#export" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" text="Exit" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+                  <Menu mnemonicParsing="false" text="Create Slideshow...">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Image" onAction="#openEditorSlideImage"/>
+                        <MenuItem mnemonicParsing="false" text="Background" onAction="#openEditorSlideBackground"/>
+                    </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Create Campaign Menu...">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Button Image" onAction="#openEditorCampaignImage"/>
+                        <MenuItem mnemonicParsing="false" text="Background" onAction="#openEditorCampaignBackground"/>
+                     </items>
+                  </Menu>
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="View">
+               <items>
+                  <MenuItem fx:id="preview_slide" mnemonicParsing="false" text="Slideshow Preview" onAction="#showPreviewSlideshow" />
+                  <MenuItem fx:id="preview_campaign" mnemonicParsing="false" text="Campaign Menu Preview" onAction="#showPreviewCampaignMenu" />
+               </items>
+            </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="About" onAction="#openAbout" />
+               </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>

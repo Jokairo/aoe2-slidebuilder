@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerAudioEdit">
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
+         <children>
+            <Button fx:id="slide_button_back" alignment="CENTER" mnemonicParsing="false" prefHeight="32.0" prefWidth="77.0" text="Back" onAction="#goBack">
+               <font>
+                  <Font name="Liberation Sans" size="16.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="30.0" />
+               </HBox.margin>
+            </Button>
+            <Region prefHeight="50.0" prefWidth="105.0" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+   </bottom>
+   <top>
+      <Label fx:id="slide_title" alignment="CENTER" prefHeight="61.0" prefWidth="826.0" text="Audio Editor" textAlignment="CENTER" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Liberation Serif Bold" size="27.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" prefHeight="115.0" prefWidth="960.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="20.0" prefWidth="128.0" text="Audio File Path">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                     <children>
+                        <TextField fx:id="audio_bar_link" prefHeight="26.0" prefWidth="500.0">
+                           <font>
+                              <Font name="Liberation Sans" size="14.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox alignment="BOTTOM_CENTER" prefHeight="138.0" prefWidth="960.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <AnchorPane fx:id="slide_pane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="84.0" prefWidth="751.0">
+                        </AnchorPane>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="27.0" prefWidth="861.0" spacing="10.0">
+                     <children>
+                        <Slider fx:id="audio_slider" prefHeight="38.0" prefWidth="751.0" showTickLabels="true" showTickMarks="true" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="27.0" prefWidth="861.0">
+                     <children>
+                        <Label fx:id="audio_text_min" alignment="CENTER" contentDisplay="CENTER" prefHeight="16.0" prefWidth="46.0" text="00:00" textAlignment="CENTER" />
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="16.0" prefWidth="11.0" text="/" textAlignment="CENTER" />
+                        <Label fx:id="audio_text_max" alignment="CENTER" contentDisplay="CENTER" prefHeight="16.0" prefWidth="46.0" text="00:00" textAlignment="CENTER" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" prefHeight="108.0" prefWidth="960.0" spacing="10.0">
+               <children>
+                  <Button fx:id="audio_button_play" alignment="CENTER" mnemonicParsing="false" prefHeight="32.0" prefWidth="77.0" text="Pause" onAction="#playAudio">
+                     <font>
+                        <Font name="Liberation Sans" size="16.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="audio_button_add" alignment="CENTER" mnemonicParsing="false" prefHeight="32.0" prefWidth="118.0" text="Add Marker" onAction="#addMarker">
+                     <font>
+                        <Font name="Liberation Sans" size="16.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="audio_button_remove" alignment="CENTER" mnemonicParsing="false" prefHeight="32.0" prefWidth="155.0" text="Apply Changes" onAction="#markerValues">
+                     <font>
+                        <Font name="Liberation Sans" size="16.0" />
+                     </font>
+                  </Button>
+                  <Region maxHeight="-Infinity" prefHeight="29.0" prefWidth="67.0" />
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@slidebuilder/images/vol.png" />
+                     </image></ImageView>
+                  <Slider fx:id="audio_volume" max="1.0" prefHeight="16.0" prefWidth="133.0" value="0.5" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="24.0" prefWidth="960.0" spacing="20.0">
+               <children>
+                  <Label fx:id="audio_marker_text" text="Markers 0/6" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

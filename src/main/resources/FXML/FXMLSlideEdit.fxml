@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerSlideEdit">
+   <left>
+      <VBox alignment="CENTER" prefHeight="396.0" prefWidth="373.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="20.0" prefWidth="128.0" text="Slide Text">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <TextArea fx:id="text_bar" prefHeight="200.0" prefWidth="200.0" wrapText="true">
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font name="Liberation Sans" size="14.0" />
+                     </font>
+                  </TextArea>
+               </children>
+            </VBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="198.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="27.0" prefWidth="156.0" text="Text Coordinates">
+                           <font>
+                              <Font name="Liberation Serif" size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="57.0" text="X" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="text_bar_x" prefHeight="26.0" prefWidth="76.0" text="100">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="57.0" text="Y" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="text_bar_y" prefHeight="26.0" prefWidth="76.0" text="200">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="198.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="27.0" prefWidth="156.0" text="Text Dimensions">
+                           <font>
+                              <Font name="Liberation Serif" size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="57.0" text="Width" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="text_bar_width" prefHeight="26.0" prefWidth="76.0" text="500">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="57.0" text="Height" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="text_bar_height" prefHeight="26.0" prefWidth="76.0" text="1500">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </left>
+   <right>
+      <VBox alignment="CENTER" prefHeight="396.0" prefWidth="490.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" prefHeight="81.0" prefWidth="510.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="20.0" prefWidth="128.0" text="Image">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER" prefHeight="30.0" prefWidth="305.0" spacing="10.0">
+                     <children>
+                        <ComboBox fx:id="image_button" onAction="#changeImage" prefHeight="26.0" prefWidth="233.0">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin></ComboBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="271.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="27.0" prefWidth="296.0" text="Image Coordinates">
+                           <font>
+                              <Font name="Liberation Serif" size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="57.0" text="X" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="image_bar_x" prefHeight="26.0" prefWidth="76.0" text="0">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="57.0" text="Y" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="image_bar_y" prefHeight="26.0" prefWidth="76.0" text="0">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="274.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="27.0" prefWidth="292.0" text="Image Size">
+                           <font>
+                              <Font name="Liberation Serif" size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="57.0" text="Width" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="image_bar_width" prefHeight="26.0" prefWidth="76.0" text="1920">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="57.0" text="Height" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Liberation Serif" size="18.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="image_bar_height" prefHeight="26.0" prefWidth="76.0" text="1080">
+                                 <font>
+                                    <Font name="Liberation Sans" size="14.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <VBox alignment="CENTER" prefHeight="59.0" prefWidth="490.0">
+               <children>
+                  <CheckBox fx:id="image_box" contentDisplay="CENTER" mnemonicParsing="false" onAction="#setImageDefaultSize" prefHeight="27.0" prefWidth="272.0" text="Keep Original Size">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="60.0" />
+                     </VBox.margin>
+                  </CheckBox>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="93.0" prefWidth="490.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="20.0" prefWidth="161.0" text="Slide Duration">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                     <children>
+                        <TextField fx:id="slide_bar_duration" prefHeight="26.0" prefWidth="76.0" text="10.00">
+                           <font>
+                              <Font name="Liberation Sans" size="14.0" />
+                           </font>
+                        </TextField>
+                        <Label alignment="CENTER" prefHeight="20.0" prefWidth="70.0" text="seconds" textAlignment="CENTER">
+                           <font>
+                              <Font name="Liberation Serif" size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </right>
+   <top>
+      <Label fx:id="slide_title" alignment="CENTER" prefHeight="61.0" prefWidth="826.0" text="Intro 1 Slide 1" textAlignment="CENTER" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Liberation Serif Bold" size="27.0" />
+         </font>
+      </Label>
+   </top>
+   <bottom>
+      <VBox alignment="CENTER" prefHeight="91.0" prefWidth="960.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" prefHeight="72.0" prefWidth="960.0">
+               <children>
+                  <Button fx:id="slide_button_back" alignment="CENTER" mnemonicParsing="false" onAction="#goBack" prefHeight="32.0" prefWidth="77.0" text="Back">
+                     <font>
+                        <Font name="Liberation Sans" size="16.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Region prefHeight="37.0" prefWidth="163.0" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <TabPane fx:id="tab_pane" prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" />
+         </children>
+      </VBox>
+   </bottom>
+</BorderPane>

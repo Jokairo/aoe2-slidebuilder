@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import slidebuilder.components.TextFieldFile?>
+
+<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerSlideMenu">
+   <top>
+      <Label fx:id="slide_title" alignment="CENTER" prefHeight="61.0" prefWidth="826.0" text="Intro 1" textAlignment="CENTER" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Liberation Serif Bold" size="27.0" />
+         </font>
+      </Label>
+   </top>
+   <bottom>
+      <VBox prefHeight="91.0" prefWidth="960.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" prefHeight="72.0" prefWidth="960.0">
+               <children>
+                  <Button fx:id="slide_button_back" alignment="CENTER" mnemonicParsing="false" onAction="#goBack" prefHeight="32.0" prefWidth="77.0" text="Back">
+                     <font>
+                        <Font name="Liberation Sans" size="16.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Region prefHeight="37.0" prefWidth="163.0" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="slide_button_edit" mnemonicParsing="false" onAction="#goNext" prefHeight="83.0" prefWidth="183.0" text="Edit Slides">
+                     <font>
+                        <Font name="Liberation Sans" size="16.0" />
+                     </font>
+                  </Button>
+                  <Region prefHeight="37.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+                  <CheckBox fx:id="slide_disable" contentDisplay="CENTER" mnemonicParsing="false" onAction="#setDisabled" prefHeight="27.0" prefWidth="237.0" text="Don't show Slideshow">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </CheckBox>
+               </children>
+            </HBox>
+            <TabPane fx:id="tab_pane" prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+            </TabPane>
+         </children>
+      </VBox>
+   </bottom>
+   <left>
+      <VBox alignment="CENTER" prefHeight="388.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" minHeight="22.0" prefHeight="86.0" prefWidth="243.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="27.0" prefWidth="154.0" text="Number of Slides">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <Spinner fx:id="slide_slides" prefHeight="26.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="103.0" prefWidth="243.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="27.0" prefWidth="214.0" text="Slide Background">
+                     <font>
+                        <Font name="Liberation Serif" size="18.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER" prefHeight="30.0" prefWidth="375.0" spacing="10.0">
+                     <children>
+                        <ComboBox fx:id="slide_background" onAction="#changeBackground" prefHeight="26.0" prefWidth="200.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+   <right>
+      <VBox alignment="CENTER" prefHeight="388.0" prefWidth="449.0" BorderPane.alignment="CENTER">
+         <children>
+            <VBox fx:id="vbox" alignment="CENTER">
+            </VBox>
+            <VBox alignment="CENTER">
+               <children>
+                  <Button fx:id="slide_button_sync" mnemonicParsing="false" onAction="#openAudioEditor" prefHeight="29.0" prefWidth="184.0" text="Sync Audio with Slides">
+                     <font>
+                        <Font name="Liberation Sans" size="13.0" />
+                     </font>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </right>
+</BorderPane>

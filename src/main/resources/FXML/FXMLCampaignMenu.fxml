@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import slidebuilder.components.TextFieldFile?>
+
+<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerCampaignMenu">
+   <top>
+      <Label fx:id="slide_title" alignment="CENTER" prefHeight="61.0" prefWidth="826.0" text="AoE2 SlideBuilder" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+   </top>
+   <center>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" prefHeight="180.0" prefWidth="960.0">
+               <children>
+                  <VBox alignment="CENTER" minHeight="100.0" prefHeight="180.0" prefWidth="390.0">
+                     <children>
+                        <VBox alignment="CENTER" prefHeight="81.0" prefWidth="510.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="230.0" text="Campaign Name" />
+                              <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                                 <children>
+                                    <TextField fx:id="slide_bar" prefHeight="26.0" prefWidth="230.0" promptText="My New Campaign" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" prefHeight="66.0" prefWidth="473.0">
+                           <children>
+                              <Label alignment="CENTER" prefHeight="20.0" prefWidth="173.0" text="Number of Scenarios">
+                        </Label>
+                              <Spinner fx:id="slide_scenarios" prefWidth="230.0" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="vbox" alignment="CENTER">
+                  </VBox>
+               </children>
+            </HBox>
+            <Region prefHeight="50.0" prefWidth="105.0" />
+            <HBox alignment="CENTER" prefHeight="140.0" prefWidth="960.0" spacing="50.0">
+               <children>
+                  <Button fx:id="slide_button_layout" mnemonicParsing="false" onAction="#openScenarioEditor" prefHeight="138.0" prefWidth="204.0" text="Edit Campaign Menu">
+                  </Button>
+                  <Button fx:id="slide_button_slide" mnemonicParsing="false" onAction="#openSlideEditor" prefHeight="138.0" prefWidth="204.0" text="Edit Slideshows">
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+   <bottom>
+      <VBox alignment="CENTER" prefHeight="91.0" prefWidth="960.0" BorderPane.alignment="CENTER">
+         <children>
+            <TabPane fx:id="tab_pane" prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+               <tabs>
+                  <Tab closable="false" disable="true">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
+         </children>
+      </VBox>
+   </bottom>
+</BorderPane>
