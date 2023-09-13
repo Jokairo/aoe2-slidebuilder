@@ -36,8 +36,8 @@ public class ControllerCreateCustomImage {
 		tableColumnName.setSortable(false);
 		tableColumnPath.setSortable(false);
 		
-		tableColumnName.setReorderable(false);
-		tableColumnPath.setReorderable(false);
+		tableColumnName.impl_setReorderable(false);
+		tableColumnPath.impl_setReorderable(false);
 
 	}
 	
