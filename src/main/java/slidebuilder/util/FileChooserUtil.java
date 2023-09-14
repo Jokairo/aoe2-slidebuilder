@@ -19,6 +19,30 @@ public class FileChooserUtil {
 		
 		return f;
 	}
+
+	public File openCampaignFile() {
+		FileChooser fc = new FileChooser();
+		fc.getExtensionFilters().add(new ExtensionFilter(FileFormats.FILE_FORMAT_CAMPAIGN, new String[] {FileFormats.FILE_EXTENSION_CAMPAIGN}));
+
+		//Get campaign directory
+		String campaignDir = UserDirectoryUtil.getAoe2UserCampaignsPath();
+
+		//Set default directory as the campaign directory if its found, otherwise select the last folder that the user used
+		if(campaignDir != null)
+			fc.setInitialDirectory(new File(campaignDir));
+		else
+			fc.setInitialDirectory(DataManager.getDataFolderLocation().getLastInput());
+
+		//Choosing 1 file
+		File f = fc.showOpenDialog(Main.getStage());
+
+		if(f == null) return null;
+
+		//Set input location the same location as the selected file if campaign directory cant be found
+		if(campaignDir != null)
+			DataManager.getDataFolderLocation().setLastInput(f.getParentFile());
+		return f;
+	}
 	
 	public File openFileSingle(String fileFormat, String[] fileExtensions) {
 		FileChooser fc = new FileChooser();

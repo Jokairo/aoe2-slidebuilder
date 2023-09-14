@@ -20,7 +20,7 @@ public class FileSaverUtil {
 		fc.setInitialFileName(fileName);
 		
 		//Find automatically user's AoE2:DE local mods folder and set it as the export output folder
-		String localModsPath = UserDirectoryUtil.getAoE2UserDirectory();
+		String localModsPath = UserDirectoryUtil.getAoe2LocalModsPath();
 		
 		//Path found
 		if(localModsPath != null) {

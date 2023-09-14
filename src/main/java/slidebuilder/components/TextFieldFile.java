@@ -29,6 +29,7 @@ public class TextFieldFile {
 	private String[] fileExtensions = {FileFormats.FILE_EXTENSION_MP3};
 	
 	private ImageView warningImage;
+	private boolean campaignSelect = false;
 	
 	public TextFieldFile() {
 		textField = new TextField();
@@ -90,7 +91,11 @@ public class TextFieldFile {
 		//Error not visible by default
 		errorContainer.setVisible(false);
 	}
-	
+
+	public void setFileTypeIsCampaign(boolean b) {
+		campaignSelect = b;
+	}
+
 	public void setTitle(String title) {
 		textFieldTitle.setText(title);
 	}
@@ -105,7 +110,13 @@ public class TextFieldFile {
 	
 	private void chooseFile(ActionEvent event) {
 		FileChooserUtil fcu = new FileChooserUtil();
-		File f = fcu.openFileSingle(fileFormat, fileExtensions);
+		File f;
+
+		//Different method when selecting a campaign file
+		if(campaignSelect)
+			f = fcu.openCampaignFile();
+		else
+			f = fcu.openFileSingle(fileFormat, fileExtensions);
 		
 		if (f == null) return;
 		

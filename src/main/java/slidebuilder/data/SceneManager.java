@@ -225,7 +225,7 @@ public class SceneManager {
 		
 		//Project must have a name
 		if(DataManager.getDataCampaign().getCampaignName() == null || DataManager.getDataCampaign().getCampaignName().isEmpty()) {
-			Popup.showError("Campaign must have a name.");
+			Popup.showError("You must add a campaign file.");
 			return;
 		}
 		
