@@ -54,6 +54,24 @@ public class FileUtil {
 	        os.close();
 	    }
 	}
+
+	public static void copyFile(InputStream is, File dest) throws IOException {
+		OutputStream os = null;
+		try {
+			//Create required folders if necessary
+			dest.getParentFile().mkdirs();
+
+			os = new FileOutputStream(dest);
+			byte[] buffer = new byte[1024];
+			int length;
+			while ((length = is.read(buffer)) > 0) {
+				os.write(buffer, 0, length);
+			}
+		} finally {
+			is.close();
+			os.close();
+		}
+	}
 	
 	/**
 	 * Gets image dimensions for given file 

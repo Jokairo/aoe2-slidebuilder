@@ -3,6 +3,7 @@ package slidebuilder.generator;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -251,19 +252,19 @@ public class Generator {
 			
 			for(DataSlideshowSlide dss : ds.getListSlides()) {
 				String imageName = dss.getImagePath();
-				String source_path;
-				
-				
+
+				File target = new File(dest_folder+num+"/"+s+"/"+slideNum+".png");
+
 				//Create empty image if user hasn't selected one
 				if(imageName == null || imageName.equals("") || imageName.equalsIgnoreCase("None")) {
-					source_path = Generator.class.getResource("/images/empty.png").getPath();
+					InputStream source = Generator.class.getResourceAsStream("/images/empty.png");
+					FileUtil.copyFile(source, target);
 				}
-				else source_path = DataManager.getDataCampaign().getCustomImageData().getCustomImage(CreatorEnum.SLIDE_IMAGE, imageName).getPath();
-
-				File source = new File(source_path);
-				File target = new File(dest_folder+num+"/"+s+"/"+slideNum+".png");
-				
-				FileUtil.copyFile(source, target);
+				else {
+					String source_path = DataManager.getDataCampaign().getCustomImageData().getCustomImage(CreatorEnum.SLIDE_IMAGE, imageName).getPath();
+					File source = new File(source_path);
+					FileUtil.copyFile(source, target);
+				}
 				
 				slideNum++;
 			}
