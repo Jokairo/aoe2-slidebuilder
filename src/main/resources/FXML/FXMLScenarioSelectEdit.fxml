@@ -151,7 +151,7 @@
                      <children>
                         <ImageView fx:id="button_color_white" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@images/colorpicker_white.png" />
+                              <Image url="@../images/colorpicker_white.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="2.0" />
@@ -159,7 +159,7 @@
                         </ImageView>
                         <ImageView fx:id="button_color_blue" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@images/colorpicker_blue.png" />
+                              <Image url="@../images/colorpicker_blue.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="2.0" />
@@ -167,7 +167,7 @@
                         </ImageView>
                         <ImageView fx:id="button_color_red" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@images/colorpicker_red.png" />
+                              <Image url="@../images/colorpicker_red.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="2.0" />
@@ -175,7 +175,7 @@
                         </ImageView>
                         <ImageView fx:id="button_color_yellow" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@images/colorpicker_yellow.png" />
+                              <Image url="@../images/colorpicker_yellow.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="2.0" />
@@ -183,7 +183,7 @@
                         </ImageView>
                         <ImageView fx:id="button_color_cyan" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@images/colorpicker_cyan.png" />
+                              <Image url="@../images/colorpicker_cyan.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="2.0" />
@@ -191,7 +191,7 @@
                         </ImageView>
                         <ImageView fx:id="button_color_purple" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@images/colorpicker_purple.png" />
+                              <Image url="@../images/colorpicker_purple.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="2.0" />
@@ -199,7 +199,7 @@
                         </ImageView>
                         <ImageView fx:id="button_color_gray" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@images/colorpicker_gray.png" />
+                              <Image url="@../images/colorpicker_gray.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="2.0" />
@@ -207,7 +207,7 @@
                         </ImageView>
                         <ImageView fx:id="button_color_orange" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@images/colorpicker_orange.png" />
+                              <Image url="@../images/colorpicker_orange.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="2.0" />
@@ -215,7 +215,7 @@
                         </ImageView>
                         <ImageView fx:id="button_color_italic" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@images/colorpicker_italic.png" />
+                              <Image url="@../images/colorpicker_italic.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="2.0" />

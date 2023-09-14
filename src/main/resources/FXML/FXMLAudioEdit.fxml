@@ -110,7 +110,7 @@
                   <Region maxHeight="-Infinity" prefHeight="29.0" prefWidth="67.0" />
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@slidebuilder/images/vol.png" />
+                        <Image url="@../images/vol.png" />
                      </image></ImageView>
                   <Slider fx:id="audio_volume" max="1.0" prefHeight="16.0" prefWidth="133.0" value="0.5" />
                </children>
