@@ -11,6 +11,7 @@ import slidebuilder.resource.ResourceManager;
 public class Main extends Application {
 
 	public static String APP_VERSION = "0.9.0";
+	public static String APP_LINK = "https://github.com/Jokairo/aoe2-slidebuilder";
 
 	private static Stage primaryStage;
 

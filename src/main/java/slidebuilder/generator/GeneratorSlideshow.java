@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import slidebuilder.Main;
 import slidebuilder.data.DataManager;
 import slidebuilder.data.DataSlideshow;
 import slidebuilder.data.DataSlideshowSlide;
@@ -21,8 +24,22 @@ public class GeneratorSlideshow {
 		JsonFactory factory = new JsonFactory();
 		StringWriter jsonObjectWriter = new StringWriter();
 		JsonGenerator generator = factory.createGenerator(jsonObjectWriter);
-		generator.useDefaultPrettyPrinter(); // pretty print JSON
+
+		DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+		prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+		generator.setPrettyPrinter(prettyPrinter); // pretty print JSON
+
 		generator.writeStartObject();
+
+		// Write credits
+		generator.writeFieldName("_credits");
+		generator.writeStartArray();
+		String border = "---------------------------------------------------------------";
+		generator.writeString(border);
+		generator.writeString("Auto-generated using AoE2:DE Campaign Slide Builder by Jokairo");
+		generator.writeString(Main.APP_LINK);
+		generator.writeString(border);
+		generator.writeEndArray();
 		
 		generator.writeFieldName("Scenarios");
 		generator.writeStartArray();

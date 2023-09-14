@@ -57,7 +57,7 @@ public class Popup {
 		Label author = new Label("Made by Jokairo");
 
 		Hyperlink link = new Hyperlink();
-		String projectUrl = "https://github.com/Jokairo/aoe2-slidebuilder";
+		String projectUrl = Main.APP_LINK;
 		link.setText(projectUrl);
 		link.setOnAction(e -> {
 			try {
