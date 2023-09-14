@@ -1,10 +1,18 @@
 package slidebuilder.util;
 
 import java.awt.Toolkit;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import slidebuilder.Main;
 
 public class Popup {
 	public static void showError(String text) {
@@ -34,6 +42,35 @@ public class Popup {
 		alert.setHeaderText(null);
 		alert.setContentText(text);
 		alert.getDialogPane().setPrefSize(width, height);
+		alert.showAndWait();
+	}
+
+	public static void showAbout() {
+		Alert alert = new Alert(AlertType.NONE, "OK", ButtonType.OK);
+		alert.setTitle("About");
+		alert.setHeaderText(null);
+
+		VBox pane = new VBox();
+		Label name = new Label("AoE2:DE Campaign Slide Builder");
+		Label version = new Label("Version "+ Main.APP_VERSION);
+		Label emptySpace = new Label("");
+		Label author = new Label("Made by Jokairo");
+
+		Hyperlink link = new Hyperlink();
+		String projectUrl = "https://github.com/Jokairo/aoe2-slidebuilder";
+		link.setText(projectUrl);
+		link.setOnAction(e -> {
+			try {
+				Desktop.getDesktop().browse(new URI(projectUrl));
+			} catch (IOException | URISyntaxException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
+
+		pane.getChildren().addAll(name, version, emptySpace, author, link);
+
+		alert.getDialogPane().setContent(pane);
+		alert.getDialogPane().setPrefSize(400, 250);
 		alert.showAndWait();
 	}
 }

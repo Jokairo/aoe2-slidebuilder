@@ -9,7 +9,9 @@ import slidebuilder.enums.SceneEnum;
 import slidebuilder.resource.ResourceManager;
 
 public class Main extends Application {
-	
+
+	public static String APP_VERSION = "0.9.0";
+
 	private static Stage primaryStage;
 
 	

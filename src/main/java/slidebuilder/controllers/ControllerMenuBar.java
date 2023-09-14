@@ -12,10 +12,6 @@ import slidebuilder.util.Popup;
 
 public class ControllerMenuBar {
 	
-	private String name = "AoE2:DE Slide Builder";
-	private String version = "Version 1.0.0";
-	private String credits = "Created by Jokairo";
-	
 	@FXML private BorderPane pane;
 	@FXML private MenuItem preview_slide;
 	@FXML private MenuItem preview_campaign;
@@ -57,7 +53,7 @@ public class ControllerMenuBar {
 	
 	@FXML
 	private void openAbout() {
-		Popup.showInformation(name+"\n"+version+"\n\n"+credits, 250, 150);
+		Popup.showAbout();
 	}
 	
 	@FXML
