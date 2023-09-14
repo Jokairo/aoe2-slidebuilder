@@ -7,7 +7,7 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="pane" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerMenuBar">
+<BorderPane fx:id="pane" prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="slidebuilder.controllers.ControllerMenuBar">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>

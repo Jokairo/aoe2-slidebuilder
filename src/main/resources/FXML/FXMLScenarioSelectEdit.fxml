@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerScenarioSelectEdit">
+<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="slidebuilder.controllers.ControllerScenarioSelectEdit">
    <left>
       <VBox alignment="CENTER" prefHeight="388.0" prefWidth="331.0" BorderPane.alignment="CENTER">
          <children>

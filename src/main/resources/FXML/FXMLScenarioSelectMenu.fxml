@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerScenarioSelectMenu">
+<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="slidebuilder.controllers.ControllerScenarioSelectMenu">
    <top>
       <Label fx:id="slide_title" alignment="CENTER" prefHeight="61.0" prefWidth="826.0" text="Edit Campaign Menu Screen" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <font>

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="420.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerCreateCustomImage">
+<BorderPane prefHeight="420.0" prefWidth="520.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="slidebuilder.controllers.ControllerCreateCustomImage">
    <top>
       <Label fx:id="slide_title_s" alignment="CENTER" prefHeight="61.0" prefWidth="826.0" text="Create New Background" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <font>

@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="slidebuilder.controllers.ControllerSlideEdit">
+<BorderPane prefHeight="540.0" prefWidth="960.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="slidebuilder.controllers.ControllerSlideEdit">
    <left>
       <VBox alignment="CENTER" prefHeight="396.0" prefWidth="373.0" BorderPane.alignment="CENTER">
          <children>
