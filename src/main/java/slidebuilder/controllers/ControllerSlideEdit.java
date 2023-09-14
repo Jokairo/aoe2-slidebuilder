@@ -331,7 +331,12 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	@Override
 	public void sceneOut() {
 		DataManager.globalTabIndex = getOwnerId();
+
+		//Save current slide data before loading to first slide
 		saveCurrentData(getCurrentTabIndex());
+
+		//Reset view back to first slide so that preview always shows first slide in menu view
+		loadData(0);
 	}
 
 	@Override

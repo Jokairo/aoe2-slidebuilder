@@ -28,9 +28,6 @@ public class PreviewSlideshow extends PreviewInterface {
 	}
 	
 	public void setImage(String name) {
-		
-		if(!isOpen()) return;
-		
 		if(name == null || name.equalsIgnoreCase("None")) {
 			picture_image = null;
 			picture.setImage(null);

@@ -59,33 +59,27 @@ public class DataManager {
 	public static void openPreviewSlideshow() {
 		//Open slideshow preview
 		getPreviewSlideshow().openWindow();
-		
-		//Get saved current slideshow background 
+
+		//Update background if it doesn't exist (when preview is first opened and background hasn't been changed)
+		if(getPreviewSlideshow().getBackgroundName() != null) return;
+
+		//Get which slideshow currently editing
 		int currentSlideTabIndex = globalTabIndex;
+		
+		//Get saved current slideshow background and set it as preview background
 		String selectedBg = getDataCampaign().getListSlideshow().get(currentSlideTabIndex).getBackground();
-		
-		//Get the first slide's saved image
-		String selectedImage = getDataCampaign().getListSlideshow().get(currentSlideTabIndex).getListSlides().get(0).getImagePath();
-		
-		//Set the background as the preview background
-		if(selectedBg != null) {
-			getPreviewSlideshow().setBackground(selectedBg);
-		}
-		
-		//Set the image as the preview image, no need to check null since null = no image
-		getPreviewSlideshow().setImage(selectedImage);
+		getPreviewSlideshow().setBackground(selectedBg);
 	}
 	
 	public static void openPreviewCampaignMenu() {
 		//Open campaign map preview
 		getPreviewScenarios().openWindow();
-		
-		//Get saved current map background
+
+		//Update background if it doesn't exist (when preview is first opened and background hasn't been changed)
+		if(getPreviewScenarios().getBackgroundName() != null) return;
+
+		//Get saved current map background and set it as preview background
 		String selectedBg = getDataCampaign().getCampaignMenuBackground();
-		
-		//Set it as the preview background
-		if(selectedBg != null) {
-			getPreviewScenarios().setBackground(selectedBg);
-		}
+		getPreviewScenarios().setBackground(selectedBg);
 	}
 }
