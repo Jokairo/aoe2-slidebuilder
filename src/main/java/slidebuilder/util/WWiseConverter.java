@@ -1,5 +1,7 @@
 package slidebuilder.util;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -47,8 +49,10 @@ public class WWiseConverter {
 					FileUtil.copyFile(f, new File(temp_path+f.getName()));
 					temp_list.add(f.getName());
 				}
-				
+
+				//Write XML file that is needed for file conversions. Files in temp_list will be written to the XML.
 				writeXML(temp_path);
+				//Temp list not needed anymore, clear it
 				temp_list.clear();
 				
 				//Add paths inside quotation marks, otherwise if the path contains spaces ' ' the command will not work
@@ -63,10 +67,46 @@ public class WWiseConverter {
 				String s3 = "wwisecli.exe "+cmdProjectPath+" -ConvertExternalSources "+cmdTemp_path+"/aoe2slidebuilder.wsources -ExternalSourcesOutput "+cmdTemp_path+"/";
 				
 				Process p1 = Runtime.getRuntime().exec("cmd /c cmd.exe /K \""+s1+" && "+s2+" && exit\"");
-				p1.waitFor();
-				
-				Process p2 = Runtime.getRuntime().exec("cmd /c cmd.exe /K \""+s1+" && "+s3+" && exit\"");
-				p2.waitFor();
+
+				BufferedReader reader = new BufferedReader(new InputStreamReader(p1.getInputStream()));
+
+				boolean isError = false;
+
+				while (p1.isAlive()) {
+					String line;
+					while ((line = reader.readLine()) != null) {
+						System.out.println(line);
+
+						//Find specific WWise error, if the error happens then stop the process, otherwise the process will run forever
+						if(line.contains("The provided project is not located in a folder of the same name")) {
+							System.out.println("Process1 terminated");
+							p1.destroy();
+							isError = true;
+							break;
+						}
+					}
+				}
+
+				//If process1 error, don't do process2
+				if(!isError) {
+					Process p2 = Runtime.getRuntime().exec("cmd /c cmd.exe /K \""+s1+" && "+s3+" && exit\"");
+
+					while (p2.isAlive()) {
+
+						String line;
+						while ((line = reader.readLine()) != null) {
+							System.out.println(line);
+
+							//Find specific WWise error, if the error happens then stop the process, otherwise the process will run forever
+							if(line.contains("The provided project is not located in a folder of the same name")) {
+								System.out.println("Process2 terminated");
+								p2.destroy();
+								isError = true;
+								break;
+							}
+						}
+					}
+				}
 				
 				System.out.println("conversion finished");
 				
@@ -83,7 +123,10 @@ public class WWiseConverter {
 			    //Delete the WWise project folder
 			    File project_folder = new File(new_project_path);
 			    deleteFolder(project_folder.getParentFile());
-				
+
+				if(isError)
+					popupFail();
+
 				return temp_path;
 			}
 			catch (IOException e) {
@@ -95,6 +138,10 @@ public class WWiseConverter {
 	}
 	
 	private static void deleteFolder(File dir) {
+
+		//Cant delete if it doesn't exist
+		if(!dir.exists()) return;
+
 	    for (File file: dir.listFiles()) {
 	        if (file.isDirectory())
 	        	deleteFolder(file);
