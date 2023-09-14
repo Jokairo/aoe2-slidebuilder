@@ -14,12 +14,12 @@
           <Menu mnemonicParsing="false" text="File">
             <items>
               <MenuItem mnemonicParsing="false" text="New" />
-                  <MenuItem mnemonicParsing="false" text="Open..." onAction="#openProject" />
+                  <MenuItem fx:id="menu_button_open" mnemonicParsing="false" text="Open..." onAction="#openProject" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Save" onAction="#save" />
-                  <MenuItem mnemonicParsing="false" text="Save As..." onAction="#saveAs" />
+                  <MenuItem fx:id="menu_button_save" mnemonicParsing="false" text="Save" onAction="#save" />
+                  <MenuItem fx:id="menu_button_save_as" mnemonicParsing="false" text="Save As..." onAction="#saveAs" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Export" onAction="#export" />
+                  <MenuItem fx:id="menu_button_export" mnemonicParsing="false" text="Export" onAction="#export" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" text="Exit" />
             </items>
@@ -48,7 +48,7 @@
             </Menu>
           <Menu mnemonicParsing="false" text="Help">
                <items>
-                  <MenuItem mnemonicParsing="false" text="About" onAction="#openAbout" />
+                  <MenuItem fx:id="menu_button_about" mnemonicParsing="false" text="About" onAction="#openAbout" />
                </items>
           </Menu>
         </menus>
