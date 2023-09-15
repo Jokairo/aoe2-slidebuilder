@@ -11,6 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import slidebuilder.data.CustomImage;
 import slidebuilder.data.DataManager;
 import slidebuilder.enums.CreatorEnum;
@@ -20,6 +24,7 @@ import slidebuilder.util.FileUtil;
 
 public class ControllerCreateCustomImage {
 
+	@FXML private HBox tableHbox;
 	@FXML private TableView<CustomImage> tableView;
 	@FXML private TableColumn<CustomImage, String> tableColumnName;
 	@FXML private TableColumn<CustomImage, String> tableColumnPath;
@@ -30,7 +35,11 @@ public class ControllerCreateCustomImage {
 	//INIT
 	@FXML
 	public void initialize() {
-		
+
+		//Auto resize table horizontally and vertically when you resize window
+		HBox.setHgrow(tableView, Priority.ALWAYS);
+		VBox.setVgrow(tableHbox, Priority.ALWAYS);
+
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
 		tableColumnPath.setCellValueFactory(new PropertyValueFactory<>("path"));
 		tableColumnName.setSortable(false);
@@ -152,5 +161,11 @@ public class ControllerCreateCustomImage {
 			
 			DataManager.getDataCampaign().getCustomImageData().removeCustomImage(creatorEnum, ci);
 		}
+	}
+
+	@FXML
+	private void closeWindow(ActionEvent event) {
+		Stage stage = (Stage) tableView.getScene().getWindow();
+		stage.close();
 	}
 }

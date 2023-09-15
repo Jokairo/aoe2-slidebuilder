@@ -23,14 +23,14 @@
    <center>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox alignment="CENTER" prefHeight="216.0" prefWidth="960.0">
+            <VBox alignment="CENTER" prefHeight="216.0" prefWidth="960.0" VBox.vgrow="ALWAYS">
                <children>
                   <Label alignment="CENTER" prefHeight="20.0" prefWidth="163.0" text="Your Images">
                      <font>
                         <Font name="Liberation Serif" size="18.0" />
                      </font>
                   </Label>
-                  <HBox alignment="CENTER" prefHeight="198.0" prefWidth="960.0" spacing="10.0">
+                  <HBox fx:id="tableHbox" alignment="CENTER" prefHeight="198.0" prefWidth="960.0" spacing="10.0">
                      <children>
                         <TableView fx:id="tableView" prefHeight="134.0" prefWidth="360.0">
                     		<placeholder>
@@ -46,22 +46,33 @@
                         </TableView>
                      </children>
                   </HBox>
-                  <Button fx:id="image_button_delete" mnemonicParsing="false" prefHeight="27.0" prefWidth="132.0" text="Delete Selected" onAction="#deleteSelected">
-                     <font>
-                        <Font name="Liberation Sans" size="15.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="228.0" />
-                     </VBox.margin>
-                  </Button>
+                  <HBox HBox.hgrow="ALWAYS">
+                     <children>
+                        <Button fx:id="image_button_browse" mnemonicParsing="false" prefHeight="27.0" prefWidth="125.0" text="Add Images..." onAction="#chooseFile">
+                           <font>
+                              <Font name="Liberation Sans" size="15.0" />
+                           </font>
+                        </Button>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="image_button_delete" mnemonicParsing="false" prefHeight="27.0" prefWidth="132.0" text="Delete Selected" onAction="#deleteSelected">
+                           <font>
+                              <Font name="Liberation Sans" size="15.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
+               <VBox.margin>
+                  <Insets left="50" right="50" />
+               </VBox.margin>
             </VBox>
             <Region prefHeight="50.0" prefWidth="105.0" />
-            <Button fx:id="image_button_browse" mnemonicParsing="false" prefHeight="32.0" prefWidth="183.0" text="Add Images" onAction="#chooseFile">
+            <Button fx:id="image_button_exit" mnemonicParsing="false" prefHeight="32.0" prefWidth="183.0" text="Save and Close" onAction="#closeWindow">
                <font>
                   <Font name="Liberation Sans" size="16.0" />
                </font>
             </Button>
+            <Region prefHeight="50.0" prefWidth="105.0" />
          </children>
       </VBox>
    </center>

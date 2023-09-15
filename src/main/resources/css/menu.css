@@ -278,3 +278,10 @@
 #slide_button_layout:hover {
     -fx-background-image: url('../images/button_bg_layout_hover.jpg');
 }
+
+/* Disable horizontal scrollbar for tables */
+.table-view .scroll-bar * {
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}

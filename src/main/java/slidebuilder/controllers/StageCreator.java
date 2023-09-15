@@ -22,7 +22,6 @@ public class StageCreator {
 		String css = this.getClass().getResource("/css/menu.css").toExternalForm();
 		
 		//Creator init
-		stageCreator.setResizable(false);
 		sceneCreator = new Scene(root, 520, 420);
 		sceneCreator.getStylesheets().add(css);
 		
