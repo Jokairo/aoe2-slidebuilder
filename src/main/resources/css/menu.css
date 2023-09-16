@@ -285,3 +285,14 @@
     -fx-pref-height: 0;
     -fx-max-height: 0;
 }
+
+.progress-bar > .bar {
+    -fx-background-color: linear-gradient(
+        from 0px .75em to .75em 0px,
+        repeat,
+        #6A5648 0%,
+        #6A5648 49%,
+        derive(#6A5648, 30%) 50%,
+        derive(#6A5648, 30%) 99%
+    );
+}

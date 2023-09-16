@@ -1,11 +1,14 @@
 package slidebuilder.util;
 
+import javafx.application.Platform;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 public class WWiseConverter {
 	
@@ -15,8 +18,7 @@ public class WWiseConverter {
 			
 			//Check that WWise is installed
 			if(System.getenv("WWISEROOT") == null) {
-				Popup.showError("Cannot locate WWise, is it installed in your computer?");
-				popupFail();
+				popupFail("Cannot locate WWise, is it installed on your computer?");
 				return null;
 			}
 		
@@ -26,8 +28,7 @@ public class WWiseConverter {
 			//Check that all the files exists, if not abort
 			for(String s : file_list) {
 				if(!FileUtil.fileExists(s)) {
-					Popup.showError("File in location '"+s+"' doesn't exists.");
-					popupFail();
+					popupFail("File in location '" + s + "' doesn't exists.");
 					return null;
 				}
 			}
@@ -65,7 +66,7 @@ public class WWiseConverter {
 				String s2 = "wwisecli.exe "+cmdProjectPath+" -CreateNewProject -Platform Windows";
 				//Convert the source files
 				String s3 = "wwisecli.exe "+cmdProjectPath+" -ConvertExternalSources "+cmdTemp_path+"/aoe2slidebuilder.wsources -ExternalSourcesOutput "+cmdTemp_path+"/";
-				
+
 				Process p1 = Runtime.getRuntime().exec("cmd /c cmd.exe /K \""+s1+" && "+s2+" && exit\"");
 
 				BufferedReader reader = new BufferedReader(new InputStreamReader(p1.getInputStream()));
@@ -125,13 +126,13 @@ public class WWiseConverter {
 			    deleteFolder(project_folder.getParentFile());
 
 				if(isError)
-					popupFail();
+					popupFail(null);
 
 				return temp_path;
 			}
 			catch (IOException e) {
 				e.printStackTrace();
-				Popup.showError("File conversion failed.");
+				popupFail("File conversion failed.");
 				return null;
 			}
 		
@@ -150,8 +151,12 @@ public class WWiseConverter {
 	    dir.delete();
 	}
 	
-	private static void popupFail() {
-		Popup.showError("Audio conversion failed, the exported project will not include any audio files.");
+	private static void popupFail(String error) {
+		UpdateUIFromOtherThread.call(() -> {
+			if(error != null)
+				Popup.showError(error);
+			Popup.showError("Audio conversion failed, the exported project will not include any audio files.");
+		});
 	}
 	
 	private static void writeXML(String output_path) {

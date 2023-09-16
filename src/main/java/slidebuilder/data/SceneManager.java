@@ -2,25 +2,20 @@ package slidebuilder.data;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.EnumMap;
 import java.util.Map;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-import slidebuilder.Main;
 import slidebuilder.controllers.ControllerMenuBar;
 import slidebuilder.controllers.StageCreator;
+import slidebuilder.controllers.StageExport;
 import slidebuilder.controllers.interfaces.Controller;
 import slidebuilder.controllers.interfaces.ControllerDataInterface;
 import slidebuilder.controllers.interfaces.TabControllerInterface;
 import slidebuilder.enums.SceneEnum;
-import slidebuilder.generator.Generator;
 import slidebuilder.util.FileChooserUtil;
-import slidebuilder.util.FileFormats;
 import slidebuilder.util.FileSaverUtil;
 import slidebuilder.util.FileUtil;
 import slidebuilder.util.Popup;
@@ -33,6 +28,8 @@ public class SceneManager {
 	private Scene menuBar;
 	private ControllerMenuBar controllerMenuBar;
 	private StageCreator stageCreator;
+
+	private StageExport projectExport;
 	
 	public SceneManager() {
 		
@@ -71,7 +68,11 @@ public class SceneManager {
 		
 		//Creator
 		loader = new FXMLLoader(getClass().getResource("/FXML/FXMLCreateCustomImage.fxml"));
-		stageCreator = new StageCreator(loader.load(), loader.getController());
+		stageCreator = new StageCreator(loader.load(), loader.getController(), "Add Images");
+
+		//Project export window
+		loader = new FXMLLoader(getClass().getResource("/FXML/FXMLExportProject.fxml"));
+		projectExport = new StageExport(loader.load(), loader.getController(), "Export Project");
 		
 		loadFXMLFile(SceneEnum.CAMPAIGN_SLIDE, "/FXML/FXMLSlideMenu.fxml");
 		loadFXMLFile(SceneEnum.CAMPAIGN_SLIDE_EDIT, "/FXML/FXMLSlideEdit.fxml");
@@ -235,8 +236,8 @@ public class SceneManager {
 		if(file != null) {
 			try {
 				saveAll();
-				Generator.generateFolder(file.getAbsolutePath());
-			} catch (IOException | InterruptedException | URISyntaxException e) {
+				projectExport.openWindow(file.getAbsolutePath());
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

@@ -7,14 +7,13 @@ import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import slidebuilder.controllers.interfaces.ControllerStageInterface;
 import slidebuilder.data.CustomImage;
 import slidebuilder.data.DataManager;
 import slidebuilder.enums.CreatorEnum;
@@ -22,13 +21,12 @@ import slidebuilder.util.FileChooserUtil;
 import slidebuilder.util.FileFormats;
 import slidebuilder.util.FileUtil;
 
-public class ControllerCreateCustomImage {
+public class ControllerCreateCustomImage extends ControllerStageInterface {
 
 	@FXML private HBox tableHbox;
 	@FXML private TableView<CustomImage> tableView;
 	@FXML private TableColumn<CustomImage, String> tableColumnName;
 	@FXML private TableColumn<CustomImage, String> tableColumnPath;
-	@FXML private Label slide_title_s;
 	
 	private CreatorEnum creatorEnum;
 	
@@ -161,11 +159,5 @@ public class ControllerCreateCustomImage {
 			
 			DataManager.getDataCampaign().getCustomImageData().removeCustomImage(creatorEnum, ci);
 		}
-	}
-
-	@FXML
-	private void closeWindow(ActionEvent event) {
-		Stage stage = (Stage) tableView.getScene().getWindow();
-		stage.close();
 	}
 }

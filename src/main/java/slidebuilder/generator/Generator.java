@@ -11,6 +11,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import ddsutil.DDSUtil;
+import javafx.beans.property.ReadOnlyDoubleWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
@@ -24,89 +27,141 @@ import slidebuilder.data.DataSlideshow;
 import slidebuilder.data.DataSlideshowSlide;
 import slidebuilder.enums.CreatorEnum;
 import slidebuilder.resource.ResourceManager;
-import slidebuilder.util.BackgroundUtil;
-import slidebuilder.util.FileUtil;
-import slidebuilder.util.ImageTypeUtil;
-import slidebuilder.util.Popup;
-import slidebuilder.util.WWiseConverter;
+import slidebuilder.util.*;
 import util.ImageUtils;
-
 
 public class Generator {
 	
 	//Path where the json files and aoe2campaign file will be stored
 	public final static String CAM_PATH = "resources/_common/campaign/";
 	public final static String AUDIO_PATH = "resources/_common/drs/sounds/";
-	
-	public static void generateFolder(String dest_path) throws IOException, InterruptedException, URISyntaxException {
+
+	private final static ReadOnlyDoubleWrapper progress = new ReadOnlyDoubleWrapper();
+	private final static ReadOnlyStringWrapper progressMessage = new ReadOnlyStringWrapper();
+
+	private static int currentProgress = 0;
+	private static int maxProgress = 0;
+
+	private static void incrementProgress() {
+		currentProgress += 1;
+		progress.set((double)currentProgress/maxProgress);
+	}
+
+	public static Task<Void> getTask(String dest_path) {
+
+		return new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+
+				progress.getReadOnlyProperty().addListener((obs, oldProgress, newProgress) ->  {
+					updateProgress(newProgress.doubleValue(), 1);
+				});
+				progressMessage.getReadOnlyProperty().addListener((obs, oldMessage, newMessage) ->  {
+					updateMessage(newMessage);
+				});
+
+				progress.set(0.01);
+				progressMessage.set("Export started");
+
+				//Max value for progress bar is 2 json files + slide bgs + slide images + menu bg + menu buttons + audio files
+				maxProgress = 2 + getUsedCustomSlideBackgrounds().size() + DataManager.getDataCampaign().getListSlideshow().size();
+				boolean menuDisabled = DataManager.getDataCampaign().getCampaignMenuDisabled();
+				if(!menuDisabled) {
+					maxProgress += 1 + getUsedCustomButtons().size();
+				}
+				for(DataSlideshow ds : DataManager.getDataCampaign().getListSlideshow()) {
+					String slide_audio_path = ds.getAudioPath();
+					if (slide_audio_path != null && !slide_audio_path.isEmpty()) {
+						maxProgress += 1;
+					}
+				}
+
+				currentProgress = 0;
+
+				//Wait 1 second before executing so that the Export window will properly open
+				Thread.sleep(1 * 1000);
+
+				generateFolder(dest_path);
+				progress.set(1);
+				progressMessage.set("Finished exporting!");
+				return null;
+			}
+		};
+	}
+
+	private static void generateFolder(String dest_path) throws IOException, InterruptedException, URISyntaxException {
 		//User defined name for the campaign
 		String camName = DataManager.getDataCampaign().getCampaignName();
-		
+
 		//Path where the images will be stored
 		String widget_path = "widgetui/textures/campaign/"+camName+"/";
-		
+
+		progressMessage.set("Generating Json files...");
+
 		//Create json files first
 		String json = GeneratorSlideshow.generateSlideshowJson();
 		String json_layout = null;
-		
+
+		incrementProgress();
+
 		boolean menuDisabled = DataManager.getDataCampaign().getCampaignMenuDisabled();
-		
+
 		//Don't create layout json if it's disabled
 		if(!menuDisabled)
 			json_layout = GeneratorLayout.generateLayoutJson();
-		
+
+		incrementProgress();
+
 		//Error, stop method.
 		if(json == null || json.equals("")) {
 			return;
 		}
-		
+
 		//Create the folders
 		File directory = new File(dest_path+"/"+CAM_PATH);
 		File directory_widget = new File(dest_path+"/"+widget_path);
 		directory.mkdirs();
 		directory_widget.mkdirs();
-		
+
 		//Write slideshow json to a file
 		PrintWriter writer = new PrintWriter(dest_path+"/"+CAM_PATH+camName+".json", "UTF-8");
 		writer.println(json);
 		writer.close();
-		
+
 		//Write layout json to a file if it's not disabled
 		if (!menuDisabled) {
 			writer = new PrintWriter(dest_path+"/"+CAM_PATH+camName+"_layout.json", "UTF-8");
 			writer.println(json_layout);
 			writer.close();
 		}
-		
+
 		//Copy campaign file if user has selected it
 		if(DataManager.getDataCampaign().getCampaignFilePath() != null && !DataManager.getDataCampaign().getCampaignFilePath().isEmpty()) {
 			File campaignFile = new File(DataManager.getDataCampaign().getCampaignFilePath());
 			File outputFile = new File(directory.getAbsolutePath()+"/"+camName+".aoe2campaign");
 			FileUtil.copyFile(campaignFile, outputFile);
 		}
-		
+
 		//Create user content if needed
-		
+
 		//Create slideshow backgrounds if needed
 		writeCustomSlideBackgrounds(dest_path+"/"+widget_path);
-		
+
 		//Create images
 		writeCustomSlideImages(dest_path+"/"+widget_path);
-		
+
 		//Layout content does not need to be created if layout is disabled
 		if (!menuDisabled) {
-		
+
 			//Create campaign background if needed (there can only be 1)
 			writeCustomLayoutBackground(dest_path+"/"+CAM_PATH);
-			
+
 			//Create campaign menu buttons if needed
 			writeCustomLayoutButtons(dest_path+"/"+CAM_PATH);
 		}
-		
+
 		//Create and Convert audio files if needed
 		writeCustomAudio(dest_path+"/"+AUDIO_PATH);
-		
-		Popup.showSuccess("Folder successfully created!");
 	}
 	
 	private static void writeBackground(String bg_name, String dest_path, CreatorEnum ce) {
@@ -186,14 +241,21 @@ public class Generator {
 	
 	private static void writeCustomSlideBackgrounds(String dest_folder) {
 		ArrayList<String> customSlideBgList = getUsedCustomSlideBackgrounds();
-		
-		for(int i=0; i < customSlideBgList.size(); i++) {
+
+		String message = "Creating slide backgrounds ";
+		int max = customSlideBgList.size();
+
+		for(int i=0; i < max; i++) {
 			String bgName = customSlideBgList.get(i);
 			String fileName = "CustomSlideBackground"+i;
+
+			progressMessage.set(message + i+"/"+max);
 
 			//Write new DDS to widget folder
 			String dds_path = dest_folder+fileName+".dds";
 			writeBackground(bgName, dds_path, CreatorEnum.SLIDE_BG);
+
+			incrementProgress();
 		}
 	}
 	
@@ -202,35 +264,54 @@ public class Generator {
 		
 		//Is custom background
 		if(!ResourceManager.instance.isValidCampaignBackgroundName(bg_name)) {
-			
+
+			String message = "Creating campaign menu background";
+			progressMessage.set(message);
+
 			//Write new DDS to widget folder
 			String dds_path = dest_folder+"CustomCampaignBackground.dds";
 			writeBackground(bg_name, dds_path, CreatorEnum.CAMPAIGN_BG);
+
+			incrementProgress();
 		}
 	}
 	
 	
 	private static void writeCustomLayoutButtons(String dest_folder) {
 		ArrayList<String> customButtonList = getUsedCustomButtons();
-		for(int i=0; i < customButtonList.size(); i++) {
+
+		String message = "Creating campaign map button images ";
+		int max = customButtonList.size();
+
+		for(int i=0; i < max; i++) {
 			String button_name = customButtonList.get(i);
-				
+
+			progressMessage.set(message + i+"/"+max);
+
 			//Write new images to campaign folder
 			CustomImage customButton = DataManager.getDataCampaign().getCustomImageData().getCustomImage(CreatorEnum.ICON, button_name);
-			
+
 			//Get the original size image from path
 			Image image = new Image("file:///"+customButton.getPath());
-			
-			//Get the index of the button from the saved custom button list
-			//This index will be used for naming the button
-			int buttonIndex = customButtonList.indexOf(button_name);
-			
-			String file_path1 = dest_folder+"Button"+buttonIndex+"Normal.png";
-			String file_path2 = dest_folder+"Button"+buttonIndex+"Pressed.png";
-			String file_path3 = dest_folder+"Button"+buttonIndex+"Hover.png";
-			ImageTypeUtil.createImageFile(image, 0, file_path1);
-			ImageTypeUtil.createImageFile(image, 1, file_path2);
-			ImageTypeUtil.createImageFile(image, 2, file_path3);
+
+			/*
+				We are currently in another thread and need to switch back to GUI thread
+				because createImageFile() method uses GUI components to create the image files
+			 */
+
+			UpdateUIFromOtherThread.call(() -> {
+				//Get the index of the button from the saved custom button list
+				//This index will be used for naming the button
+				int buttonIndex = customButtonList.indexOf(button_name);
+
+				String file_path1 = dest_folder + "Button" + buttonIndex + "Normal.png";
+				String file_path2 = dest_folder + "Button" + buttonIndex + "Pressed.png";
+				String file_path3 = dest_folder + "Button" + buttonIndex + "Hover.png";
+				ImageTypeUtil.createImageFile(image, 0, file_path1);
+				ImageTypeUtil.createImageFile(image, 1, file_path2);
+				ImageTypeUtil.createImageFile(image, 2, file_path3);
+			});
+			incrementProgress();
 		}
 	}
 	
@@ -240,12 +321,17 @@ public class Generator {
 		
 		//Determines if it's intro or outro (Slideshow 1 intro, Slideshow 1 outro)
 		int i = 0;
+
+		String message = "Creating slide images ";
+		int max = DataManager.getDataCampaign().getListSlideshow().size();
 		
 		for(DataSlideshow ds : DataManager.getDataCampaign().getListSlideshow()) {
 			String s = "intro";
 			if(i%2!=0) {
 				s = "outro";
 			}
+
+			progressMessage.set(message + i+"/"+max);
 
 			//The name of the image file and also the order number
 			int slideNum = 1;
@@ -268,6 +354,8 @@ public class Generator {
 				
 				slideNum++;
 			}
+			incrementProgress();
+
 			if(i%2!=0) num++;
 			
 			i++;
@@ -289,41 +377,83 @@ public class Generator {
 		String convert_path = null;
 		
 		if(!path_list.isEmpty()) {
+			progressMessage.set("Converting audio files");
 			convert_path = WWiseConverter.convert(path_list, dest_folder);
 		}
-		
+
 		if (convert_path != null) {
 			File output = new File(convert_path + "/Windows");
 			System.out.println(output);//
 			File[] contents = output.listFiles();
 			System.out.println(contents);//
+
+			String message = "Converting audio files ";
+			int max = contents.length;
+
 			if (contents != null) {
 				for(int i=0; i < contents.length; i++) {
+
+					progressMessage.set(message + i+"/"+max);
+
 					//Copy from temp location to zip
 					String wem_path = contents[i].getAbsolutePath();
 					String wem_file = contents[i].getName();
-					
+
 					//If not WEM file continue
 					int length = wem_path.length();
 					if(!wem_path.substring(length-3, length).equals("wem")) {
 						Files.deleteIfExists(Paths.get(wem_path));
+						incrementProgress();
 						continue;
 					}
-					
+
 					File source = new File(wem_path);
 					File target = new File(dest_folder+"/"+wem_file);
-					
+
 					System.out.println("Source path: "+source.getAbsolutePath());
 					System.out.println("Target path: "+target.getAbsolutePath());
-					
+
 					FileUtil.copyFile(source, target);
-					
+
 					//Delete temp WEM file from desktop
 					Files.deleteIfExists(Paths.get(wem_path));
+
+					incrementProgress();
 				}
 			}
 			//Delete temp folder from desktop
 			Files.deleteIfExists(Paths.get(convert_path+"/Windows"));
 		}
+	}
+
+	public static void cancelExport(String path) {
+
+		progress.set(0.0);
+		progressMessage.set("Cancelling...");
+
+		//Delete all files and folders that were created before user pressed cancel
+		try {
+			//Wait 1 second so user will see that the task got cancelled
+			Thread.sleep(1 * 1000);
+
+			File dir = new File(path);
+			deleteFolder(dir);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void deleteFolder(File dir) {
+
+		//Cant delete if it doesn't exist
+		if(!dir.exists()) return;
+
+		for (File file: dir.listFiles()) {
+			if (file.isDirectory())
+				deleteFolder(file);
+			file.delete();
+		}
+		dir.delete();
 	}
 }

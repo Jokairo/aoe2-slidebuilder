@@ -72,22 +72,22 @@ public class ControllerMenuBar {
 	
 	@FXML
 	private void openEditorSlideImage() {
-		SceneManager.getInstance().getStageCreator().openCreator(CreatorEnum.SLIDE_IMAGE);
+		SceneManager.getInstance().getStageCreator().openWindow(CreatorEnum.SLIDE_IMAGE);
 	}
 	
 	@FXML
 	private void openEditorSlideBackground() {
-		SceneManager.getInstance().getStageCreator().openCreator(CreatorEnum.SLIDE_BG);
+		SceneManager.getInstance().getStageCreator().openWindow(CreatorEnum.SLIDE_BG);
 	}
 	
 	@FXML
 	private void openEditorCampaignBackground() {
-		SceneManager.getInstance().getStageCreator().openCreator(CreatorEnum.CAMPAIGN_BG);
+		SceneManager.getInstance().getStageCreator().openWindow(CreatorEnum.CAMPAIGN_BG);
 	}
 	
 	@FXML
 	private void openEditorCampaignImage() {
-		SceneManager.getInstance().getStageCreator().openCreator(CreatorEnum.ICON);
+		SceneManager.getInstance().getStageCreator().openWindow(CreatorEnum.ICON);
 	}
 	
 	@FXML

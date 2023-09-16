@@ -1,46 +1,24 @@
 package slidebuilder.controllers;
 
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import slidebuilder.controllers.interfaces.StageInterface;
 import slidebuilder.enums.CreatorEnum;
 
-public class StageCreator {
+public class StageCreator extends StageInterface<CreatorEnum> {
 	
-	private Stage stageCreator = new Stage();
-	private Scene sceneCreator;
-	
-	private Parent root;
-	private ControllerCreateCustomImage controller;
-	
-	public StageCreator(Parent root, ControllerCreateCustomImage controller) {
-		
-		this.root = root;
-		this.controller = controller;
-		
-		String css = this.getClass().getResource("/css/menu.css").toExternalForm();
-		
-		//Creator init
-		sceneCreator = new Scene(root, 520, 420);
-		sceneCreator.getStylesheets().add(css);
-		
-		stageCreator.initModality(Modality.APPLICATION_MODAL);
-		stageCreator.setTitle("Add Images");
-		stageCreator.setScene(sceneCreator);
+	public StageCreator(Parent root, ControllerCreateCustomImage controller, String title) {
+		super(root, controller, title);
 	}
-	
-	
-	public void openCreator(CreatorEnum ce) {
-		controller.initData(ce);
+
+	@Override
+	public void openWindow(CreatorEnum ce) {
+		((ControllerCreateCustomImage)controller).initData(ce);
 		
-		if(stageCreator.isShowing()) {
-			stageCreator.requestFocus();
+		if(stage.isShowing()) {
+			stage.requestFocus();
 			return;
 		}
 		
-		stageCreator.showAndWait();
+		stage.showAndWait();
 	}
-	
-	
 }
