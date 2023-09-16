@@ -31,6 +31,23 @@ public class FileUtil {
 	        return false;
 	    }
 	}
+
+	public static boolean fileExistsCaseInsensitive(String path){
+		try {
+			File f = new File(path);
+			if(f.getParentFile() == null || f.getParentFile().list() == null) return false;
+
+			//Loop through all files in the same directory that the file is and check whether the given file name exists
+			for (String file : f.getParentFile().list()) {
+				if(file.equalsIgnoreCase(f.getName()))
+					return true;
+			}
+			return false;
+		}
+		catch(Exception ex) {
+			return false;
+		}
+	}
 	
 	/*
 	 * Copies a file and pastes it to output and creates all the folders if needed

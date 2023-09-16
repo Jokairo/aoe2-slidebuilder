@@ -15,9 +15,11 @@ public class WWiseConverter {
 	private static ArrayList<String> temp_list = new ArrayList<>();
 	
 	public static String convert(ArrayList<String> file_list, String output) throws InterruptedException {
-			
+
+			String wwiseRoot = System.getenv("WWISEROOT");
+
 			//Check that WWise is installed
-			if(System.getenv("WWISEROOT") == null) {
+			if(wwiseRoot == null) {
 				popupFail("Cannot locate WWise, is it installed on your computer?");
 				return null;
 			}
@@ -59,13 +61,34 @@ public class WWiseConverter {
 				//Add paths inside quotation marks, otherwise if the path contains spaces ' ' the command will not work
 				String cmdProjectPath = "\""+new_project_path+"\"";
 				String cmdTemp_path = "\""+temp_path+"\"";
+
+				//Check which version of WWise the user has
+				String path = wwiseRoot + "/Authoring/x64/Release/bin/WwiseConsole.exe";
+				boolean newVersion  = FileUtil.fileExistsCaseInsensitive(path);
+
+				//If user doens't have new CLI, check that they have the old version
+				if(!newVersion) {
+					path = wwiseRoot + "/Authoring/x64/Release/bin/wwisecli.exe";
+					boolean hasWwise  = FileUtil.fileExistsCaseInsensitive(path);
+					//Can't find old Wwise CLI, abort
+					if(!hasWwise) {
+						popupFail("Cannot locate WWise CLI. Make sure you have installed WWise with Authoring package and set the correct WWise environment variable.");
+						return null;
+					}
+				}
 				
 				//Open WWISE cmd
 				String s1 = "cd %WWISEROOT%/Authoring/x64/Release/bin";
+
 				//Create a new temp project
 				String s2 = "wwisecli.exe "+cmdProjectPath+" -CreateNewProject -Platform Windows";
+				if(newVersion)
+					s2 = "WwiseConsole create-new-project "+cmdProjectPath;
+
 				//Convert the source files
 				String s3 = "wwisecli.exe "+cmdProjectPath+" -ConvertExternalSources "+cmdTemp_path+"/aoe2slidebuilder.wsources -ExternalSourcesOutput "+cmdTemp_path+"/";
+				if(newVersion)
+					s3 = "WwiseConsole convert-external-source "+cmdProjectPath+" --source-file "+cmdTemp_path+"/aoe2slidebuilder.wsources --output "+cmdTemp_path+"/";
 
 				Process p1 = Runtime.getRuntime().exec("cmd /c cmd.exe /K \""+s1+" && "+s2+" && exit\"");
 
