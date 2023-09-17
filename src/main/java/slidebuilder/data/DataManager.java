@@ -65,6 +65,9 @@ public class DataManager {
 
 		//Get which slideshow currently editing
 		int currentSlideTabIndex = globalTabIndex;
+
+		if(currentSlideTabIndex >= getDataCampaign().getListSlideshow().size())
+			currentSlideTabIndex = getDataCampaign().getListSlideshow().size() - 1;
 		
 		//Get saved current slideshow background and set it as preview background
 		String selectedBg = getDataCampaign().getListSlideshow().get(currentSlideTabIndex).getBackground();
