@@ -34,7 +34,7 @@ public class ControllerScenarioSelectMenu extends ControllerDataInterface {
 		//Campaign backgrounds combobox
 		//Automatically add user added images
 		button_bg.setItems(CustomImageComboBox.getCustomImageNameList(CreatorEnum.CAMPAIGN_BG));
-		button_bg.getSelectionModel().selectFirst();
+		button_bg.getSelectionModel().select("Default");
 		
 		//Automatically update preview
 		textfield_title.textProperty().addListener(new ChangeListener<String>() {
@@ -98,7 +98,9 @@ public class ControllerScenarioSelectMenu extends ControllerDataInterface {
 	public void sceneIn() {
 		//Create as many buttons as num of scenarios
 		DataManager.getPreviewScenarios().createButtons();
-		//loadData();
+
+		//Initialise the default button placements
+		getSubController().sceneIn();
 	}
 
 	@Override

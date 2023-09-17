@@ -188,10 +188,41 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 	
 	@Override
 	protected void setTabDefaultValues(int i) {
+		//Init button data if it doesnt exist yet
 		if(DataManager.getDataCampaign().getListScenarios().size()-1 < i) {
+
+			//Button default properties
+			int bXdefault = 1300;
+			int bYdefault = 150;
+			int labelY = 250;
+			int row = i/3; //Buttons are created in rows of 3
+
+			if (i < 9) {
+				bXdefault -= row * 200;
+				bYdefault += row * 400;
+			}
+
+			int bX = 100;
+			int bY = 100;
+			int column = i%3;
+			int scenarioNum = i + 1;
+			String buttonText = scenarioNum+". Scenario";
+
+			if (i < 9) {
+				bX = bXdefault + column * 700;
+				bY = bYdefault + column * 250;
+			}
+
+			//Save the button
 			DataScenarios ds = new DataScenarios();
-			ds.save("", 0, 0, 0, 0, button_image.getItems().get(0), 280, 280, "", button_help.getItems().get(0), button_difficulty.getItems().get(0), true);
+			ds.save(buttonText, bX, bY, 0, labelY, button_image.getItems().get(0), 280, 280, "", button_help.getItems().get(0), button_difficulty.getItems().get(0), true);
 			DataManager.getDataCampaign().getListScenarios().add(ds);
+
+			//Update preview button
+			getPreview().getButton(i).getButtonLabel().setText(buttonText);
+			getPreview().getButton(i).setButtonX(bX);
+			getPreview().getButton(i).setButtonY(bY);
+			getPreview().getButton(i).setTextY(labelY);
 		}
 	}
 	

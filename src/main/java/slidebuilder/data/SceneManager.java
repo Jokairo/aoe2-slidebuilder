@@ -82,6 +82,7 @@ public class SceneManager {
 		loadFXMLFile(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT, "/FXML/FXMLScenarioSelectEdit.fxml");
 		
 		getSceneController(SceneEnum.CAMPAIGN_SLIDE).setSubController(getSceneController(SceneEnum.CAMPAIGN_SLIDE_EDIT));
+		getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT).setSubController(getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT));
 	}
 	
 	// Store all FXML files controller and root so they can be later referenced
