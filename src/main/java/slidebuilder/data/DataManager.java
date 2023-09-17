@@ -50,6 +50,7 @@ public class DataManager {
 		DataManager.dataCampaign = dataCampaign;
 		CustomImageComboBox.initCustomImageNameLists();
 		dataCampaign.getCustomImageData().createImages();
+		dataCampaign.setUnsavedChanges(false);
 	}
 	
 	/*

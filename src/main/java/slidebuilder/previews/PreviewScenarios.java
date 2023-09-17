@@ -8,6 +8,7 @@ import slidebuilder.components.ButtonPreviewHelpText;
 import slidebuilder.components.ScenarioButton;
 import slidebuilder.components.ScenarioHeader;
 import slidebuilder.data.DataManager;
+import slidebuilder.data.DataScenarios;
 
 public class PreviewScenarios extends PreviewInterface {
 	
@@ -44,10 +45,21 @@ public class PreviewScenarios extends PreviewInterface {
 				ScenarioButton sb = new ScenarioButton(helptext);
 				buttons.add(sb);
 				
-				//Update button image if data exists for it (loaded a project file)
+				//Update button if data exists for it (loaded a project file)
 				if(DataManager.getDataCampaign().getListScenarios().size() > i) {
-					if(DataManager.getDataCampaign().getListScenarios().get(i).getImage() != null) {
-						sb.getButtonImage().setButtonImage(DataManager.getDataCampaign().getListScenarios().get(i).getImage());
+					DataScenarios ds = DataManager.getDataCampaign().getListScenarios().get(i);
+					if (ds != null) {
+						sb.setButtonX(ds.getButtonX());
+						sb.setButtonY(ds.getButtonY());
+						sb.setTextX(ds.getButtonTextX());
+						sb.setTextY(ds.getButtonTextY());
+						sb.setHelpText(ds.getHelpText());
+						sb.setHelpStyle(ds.getHelpStyle());
+						sb.setImageWidth(ds.getImageWidth());
+						sb.setImageHeight(ds.getImageHeight());
+						sb.getButtonLabel().setText(ds.getButtonText());
+						sb.getButtonLabel().setDifficulty(ds.getDifficulty());
+						sb.getButtonImage().setButtonImage(ds.getImage());
 					}
 				}
 			}
