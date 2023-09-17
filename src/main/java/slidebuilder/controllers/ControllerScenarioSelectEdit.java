@@ -350,8 +350,7 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 
 	@Override
 	public void sceneOut() {
-		// Not used
-		
+		saveCurrentData();
 	}
 
 	@Override
