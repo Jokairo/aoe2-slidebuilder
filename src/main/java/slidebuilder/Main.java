@@ -1,6 +1,7 @@
 package slidebuilder;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import slidebuilder.data.CustomImageComboBox;
@@ -40,13 +41,8 @@ public class Main extends Application {
 		stage.setScene(mainScene);
 
 		stage.show();
-		
-	}
 
-	/*
-	public static void main(String[] args) {
-		launch(args);
+		//Stop app when main stage is closed
+		stage.setOnHiding(event -> Platform.exit());
 	}
-	 */
-	
 }

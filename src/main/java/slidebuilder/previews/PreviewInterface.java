@@ -156,20 +156,8 @@ public abstract class PreviewInterface {
 	    scale.yProperty().bind(scene.heightProperty().divide(540));
 	    
 	    scene.getRoot().getTransforms().add(scale);
-		
-		stage.setOnHiding(new EventHandler<WindowEvent>() {
 
-	         @Override
-	         public void handle(WindowEvent event) {
-	             Platform.runLater(new Runnable() {
-
-	                 @Override
-	                 public void run() {
-	                     System.out.println("Preview closed.");
-	                 }
-	             });
-	         }
-	     });
+		stage.setOnHiding(event -> System.out.println("Preview closed."));
 	}
 
 }
