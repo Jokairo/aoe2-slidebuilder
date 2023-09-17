@@ -19,6 +19,9 @@ public class DataSlideshowSlide implements Serializable {
 	
 	public void save(String text, int text_x, int text_y, int text_width, int text_height, String image_path, int image_x, int image_y, int image_width, int image_height,
 			boolean enabled, double duration) {
+
+		checkForChanges(text, text_x, text_y, text_width, text_height, image_path, image_x, image_y, image_width, image_height, enabled, duration);
+
 		this.text = text;
 		this.text_x = text_x;
 		this.text_y = text_y;
@@ -83,5 +86,13 @@ public class DataSlideshowSlide implements Serializable {
 	
 	public void setDuration(double duration) {
 		this.duration = duration;
+	}
+
+	private void checkForChanges(String text, int text_x, int text_y, int text_width, int text_height, String image_path, int image_x, int image_y, int image_width, int image_height, boolean enabled, double duration) {
+
+		if(this.text == null) return;
+
+		if(!this.text.equals(text) || this.text_x != text_x || this.text_y != text_y || this.text_width != text_width || this.text_height != text_height || !this.image_path.equals(image_path) || this.image_x != image_x || this.image_y != image_y || this.image_width != image_width || this.image_height != image_height || this.enabled != enabled || this.duration != duration)
+			DataManager.getDataCampaign().setUnsavedChanges(true);
 	}
 }

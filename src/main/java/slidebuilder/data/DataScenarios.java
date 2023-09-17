@@ -20,6 +20,8 @@ public class DataScenarios implements Serializable {
 	public void save(String button_text, int button_x, int button_y, int button_text_x, int button_text_y, 
 			String image, int image_width, int image_height, String help_text, String help_style,
 			String difficulty, boolean default_size) {
+		checkForChanges(button_text, button_x, button_y, button_text_x, button_text_y, image, image_width, image_height, help_text, help_style, difficulty, default_size);
+
 		this.button_text = button_text;
 		this.button_x = button_x;
 		this.button_y = button_y;
@@ -80,5 +82,12 @@ public class DataScenarios implements Serializable {
 	
 	public boolean getIsDefaultSize() {
 		return default_size;
+	}
+
+	private void checkForChanges(String button_text, int button_x, int button_y, int button_text_x, int button_text_y, String image, int image_width, int image_height, String help_text, String help_style, String difficulty, boolean default_size) {
+		if(this.button_text == null) return;
+
+		if(!this.button_text.equals(button_text) || this.button_x != button_x || this.button_y != button_y || this.button_text_x != button_text_x || this.button_text_y != button_text_y || !this.image.equals(image) || this.image_width != image_width || this.image_height != image_height || !this.help_text.equals(help_text) || !this.help_style.equals(help_style) || !this.difficulty.equals(difficulty) || this.default_size != default_size)
+			DataManager.getDataCampaign().setUnsavedChanges(true);
 	}
 }

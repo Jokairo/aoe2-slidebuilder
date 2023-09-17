@@ -112,7 +112,14 @@ public class ControllerMenuBar {
 	
 	@FXML
 	private void openProject() {
-		SceneManager.getInstance().loadProject();
+		boolean pressedOk = true;
+
+		//Show confirmation popup if there's unsaved changes
+		if(DataManager.getDataCampaign().getUnsavedChanges())
+			pressedOk = Popup.showConfirm("Are you sure you want to load another project? Any unsaved changes to the current project will be lost.");
+
+		if(pressedOk)
+			SceneManager.getInstance().loadProject();
 	}
 	
 	public void switchScene(Parent root) {

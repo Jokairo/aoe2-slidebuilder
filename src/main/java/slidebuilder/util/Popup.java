@@ -73,4 +73,14 @@ public class Popup {
 		alert.getDialogPane().setPrefSize(400, 250);
 		alert.showAndWait();
 	}
+
+	public static boolean showConfirm(String text) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Confirm");
+		alert.setHeaderText(null);
+		alert.setContentText(text);
+		
+		//Returns whether user pressed OK or not
+		return !alert.showAndWait().filter(r -> r != ButtonType.OK).isPresent();
+	}
 }

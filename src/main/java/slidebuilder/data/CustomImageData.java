@@ -82,6 +82,8 @@ public class CustomImageData implements Serializable {
 		} else {
 			listCustomCampaignButton.add(ci);
 		}
+
+		DataManager.getDataCampaign().setUnsavedChanges(true);
 	}
 	
 	/*
@@ -101,6 +103,8 @@ public class CustomImageData implements Serializable {
 		} else {
 			listCustomCampaignButton.remove(ci);
 		}
+
+		DataManager.getDataCampaign().setUnsavedChanges(true);
 	}
 	
 	/*

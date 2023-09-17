@@ -277,7 +277,7 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	
 	private void setImageDefaultSize() {
 		int index = image_button.getSelectionModel().getSelectedIndex();
-		if(index != 0) {	
+		if(index > 0) {
 			String name = image_button.getValue();
 			CustomImage ci = DataManager.getDataCampaign().getCustomImageData().getCustomImage(CreatorEnum.SLIDE_IMAGE, name);
 			int width = ci.getWidth();
