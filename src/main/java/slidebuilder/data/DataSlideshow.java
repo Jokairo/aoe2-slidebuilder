@@ -20,6 +20,10 @@ public class DataSlideshow implements Serializable {
 		this.disable = disable;
 		this.audio_path = audio_path;
 	}
+
+	public void setDefaultBackground(String bg) {
+		background = bg;
+	}
 	
 	public int getSlides() {
 		return slides;

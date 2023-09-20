@@ -129,7 +129,7 @@ public class SceneManager {
 		//Keep track which scene the user is currently using
 		DataManager.currentController = getSceneController(se);
 	}
-	
+
 	/*
 	 * Save, Load, Export
 	 */
@@ -220,12 +220,6 @@ public class SceneManager {
 			((TabControllerInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).initData();
 			((TabControllerInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).loadData(0);
 			getSceneController(SceneEnum.CAMPAIGN_SLIDE).sceneIn();
-
-			//Update previews backgrounds and images
-			DataManager.getPreviewScenarios().setBackground(DataManager.getDataCampaign().getCampaignMenuBackground());
-			DataManager.getPreviewSlideshow().setBackground(DataManager.getDataCampaign().getListSlideshow().get(0).getBackground());
-			DataManager.getPreviewSlideshow().setImage(DataManager.getDataCampaign().getListSlideshow().get(0).getListSlides().get(0).getImagePath());
-			DataManager.getPreviewScenarios().createButtons();
 		}
 	}
 	

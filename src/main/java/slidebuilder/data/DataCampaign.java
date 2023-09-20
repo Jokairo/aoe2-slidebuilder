@@ -72,6 +72,10 @@ public class DataCampaign implements Serializable {
 		campaign_menu_background = background;
 		campaign_menu_disabled = disabled;
 	}
+
+	public void setDefaultCampaignMenuBackground(String bg) {
+		campaign_menu_background = bg;
+	}
 	
 	public ArrayList<DataSlideshow> getListSlideshow() {
 		return listSlideshow;

@@ -1,6 +1,5 @@
 package slidebuilder.controllers;
 
-import java.io.IOException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -20,6 +19,7 @@ import slidebuilder.data.DataManager;
 import slidebuilder.data.DataSlideshow;
 import slidebuilder.enums.CreatorEnum;
 import slidebuilder.enums.SceneEnum;
+import slidebuilder.resource.ResourceManager;
 import slidebuilder.util.FileFormats;
 import slidebuilder.util.Popup;
 
@@ -52,24 +52,40 @@ public class ControllerSlideMenu extends TabControllerInterface {
 		
 		//Setting Min and Max slide amount
 		slide_slides.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20));
-		
-		//Slide bg Combobox
+
 		//Automatically add user added images
 		slide_background.setItems(CustomImageComboBox.getCustomImageNameList(CreatorEnum.SLIDE_BG));
-		slide_background.getSelectionModel().selectFirst();
+
+		//Change to list's default value if currently selected custom resource is deleted
+		String defaultBg = ResourceManager.instance.getDefaultResource(CreatorEnum.SLIDE_BG);
+		slide_background.valueProperty().addListener((options, oldValue, newValue) -> {
+			boolean currentResourceExists = CustomImageComboBox.getCustomImageNameList(CreatorEnum.SLIDE_BG).contains(oldValue);
+			//Change to default value
+			if(oldValue != null && !currentResourceExists) {
+				slide_background.getSelectionModel().select(defaultBg);
+			}
+		});
+		slide_background.getSelectionModel().select(defaultBg);
+
+		/*
+			Listeners
+		 */
+
+		slide_background.valueProperty().addListener((observable, oldValue, newValue) -> {
+			changeBackground();
+		});
 		
 		//Save default data so preview can be instantly used when project launched
 		initData();
 	}
-	
-	@FXML
-	private void changeBackground(ActionEvent event) {
+
+	private void changeBackground() {
 		DataManager.getPreviewSlideshow().setBackground(slide_background.getValue());
 	}
 
 	
 	@FXML
-	private void openAudioEditor(ActionEvent event) throws IOException {
+	private void openAudioEditor(ActionEvent event) {
 		saveCurrentData();
 		if(!textFieldFile.filePathInvalid()) {
 			goToScene(SceneEnum.CAMPAIGN_AUDIO_EDIT, true);

@@ -35,6 +35,10 @@ public class DataScenarios implements Serializable {
 		this.difficulty = difficulty;
 		this.default_size = default_size;
 	}
+
+	public void setDefaultImage(String img) {
+		image = img;
+	}
 	
 	public String getButtonText() {
 		return button_text;

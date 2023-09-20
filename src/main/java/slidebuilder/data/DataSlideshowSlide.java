@@ -35,6 +35,10 @@ public class DataSlideshowSlide implements Serializable {
 		this.enabled = enabled;
 		this.duration = duration;
 	}
+
+	public void setDefaultImage(String image) {
+		image_path = image;
+	}
 	
 	public String getText() {
 		return text;

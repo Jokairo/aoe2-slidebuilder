@@ -18,6 +18,7 @@ import slidebuilder.data.DataSlideshowSlide;
 import slidebuilder.enums.CreatorEnum;
 import slidebuilder.enums.SceneEnum;
 import slidebuilder.previews.PreviewSlideshow;
+import slidebuilder.resource.ResourceManager;
 import slidebuilder.util.ParseUtil;
 import slidebuilder.util.TextFieldFormatter;
 
@@ -37,7 +38,6 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	@FXML private CheckBox image_box;
 	@FXML private TextField slide_bar_duration;
 	
-	
 	//INIT
 	@FXML
 	public void initialize() {
@@ -46,11 +46,27 @@ public class ControllerSlideEdit extends TabControllerInterface {
 		
 		//Automatically add user added images
 		image_button.setItems(CustomImageComboBox.getCustomImageNameList(CreatorEnum.SLIDE_IMAGE));
-		
-		//Set first as default value
-		image_button.getSelectionModel().selectFirst();
+
+		//Change to list's default value if currently selected custom resource is deleted
+		String defaultImage = ResourceManager.instance.getDefaultResource(CreatorEnum.SLIDE_IMAGE);
+		image_button.valueProperty().addListener((options, oldValue, newValue) -> {
+			boolean currentResourceExists = CustomImageComboBox.getCustomImageNameList(CreatorEnum.SLIDE_IMAGE).contains(oldValue);
+			//Change to default value
+			if(oldValue != null && !currentResourceExists) {
+				image_button.getSelectionModel().select(defaultImage);
+			}
+		});
+		image_button.getSelectionModel().select(defaultImage);
 		
 		setTextFormatters();
+
+		/*
+			Listeners
+		 */
+
+		image_button.valueProperty().addListener((observable, oldValue, newValue) -> {
+			changeImage();
+		});
 
 		text_bar.textProperty().addListener((observable, oldValue, newValue) -> {
 			setText();
@@ -92,9 +108,8 @@ public class ControllerSlideEdit extends TabControllerInterface {
 		setOwnerId(0);
 		initData();
 	}
-	
-	@FXML
-	private void changeImage(ActionEvent event) {
+
+	private void changeImage() {
 		setPreviewImage();
 		setImageSizeOnSelection();
 	}

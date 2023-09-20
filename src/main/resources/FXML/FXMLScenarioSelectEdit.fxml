@@ -123,7 +123,7 @@
                         <Font name="Liberation Serif" size="18.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="button_difficulty" onAction="#setDifficulty" prefHeight="26.0" prefWidth="233.0" />
+                  <ComboBox fx:id="button_difficulty" prefHeight="26.0" prefWidth="233.0" />
                </children>
             </VBox>
          </children>
@@ -277,7 +277,7 @@
                   </Label>
                   <HBox fx:id="textfield_title1" alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
                      <children>
-                        <ComboBox fx:id="button_image" prefWidth="233.0" onAction="#setIcon" />
+                        <ComboBox fx:id="button_image" prefWidth="233.0" />
                      </children>
                   </HBox>
                </children>

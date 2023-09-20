@@ -1,6 +1,5 @@
 package slidebuilder.controllers;
 
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -60,7 +59,17 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		//Button combobox
 		//Automatically add user added images
 		button_image.setItems(CustomImageComboBox.getCustomImageNameList(CreatorEnum.ICON));
-		button_image.getSelectionModel().selectFirst();
+
+		//Change to list's default value if currently selected custom resource is deleted
+		String defaultIcon = ResourceManager.instance.getDefaultResource(CreatorEnum.ICON);
+		button_image.valueProperty().addListener((options, oldValue, newValue) -> {
+			boolean currentResourceExists = CustomImageComboBox.getCustomImageNameList(CreatorEnum.ICON).contains(oldValue);
+			//Change to default value
+			if(oldValue != null && !currentResourceExists) {
+				button_image.getSelectionModel().select(defaultIcon);
+			}
+		});
+		button_image.getSelectionModel().select(defaultIcon);
 		
 		//Difficulty combobox
 		int size = ResourceManager.instance.getDifficultyResourceList().size();
@@ -82,6 +91,10 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		textfield_text.textProperty().addListener((observable, oldValue, newValue) -> {
 		    		getPreview().getButton(getCurrentTabIndex()).getButtonLabel().setText(textfield_text.getText());
 		});
+
+		/*
+			Listeners
+		 */
 		
 		textfield_text_x.textProperty().addListener((observable, oldValue, newValue) -> {
 			setTextX();
@@ -114,6 +127,14 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		button_help.valueProperty().addListener((observable, oldValue, newValue) -> {
 			setHelpStyle();
 		});
+
+		button_image.valueProperty().addListener((observable, oldValue, newValue) -> {
+			setIcon();
+		});
+
+		button_difficulty.valueProperty().addListener((observable, oldValue, newValue) -> {
+			setDifficulty();
+		});
 		
 		//Color Button handlers
 		addHelpButtonEventHandler(button_color_white, "<default>");
@@ -144,15 +165,16 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 			setImageHeight();
 		}
 	}
-	
-	@FXML
-	private void setDifficulty(ActionEvent event) {
+
+	private void setDifficulty() {
 		getPreview().getButton(getCurrentTabIndex()).getButtonLabel().setDifficulty(button_difficulty.getValue());
 	}
-	
-	@FXML
-	private void setIcon(ActionEvent event) {
-		getPreview().getButton(getCurrentTabIndex()).getButtonImage().setButtonImage((button_image.getValue()));
+
+	private void setIcon() {
+		ScenarioButton sb = getPreview().getButton(getCurrentTabIndex());
+		if(sb == null) return;
+
+		sb.getButtonImage().setButtonImage((button_image.getValue()));
 		if(getKeepOriginalSize()) {
 			setImageDefaultSize();
 		}
@@ -176,6 +198,7 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		String name = button_image.getValue();
 		int index = getTabPane().getSelectionModel().getSelectedIndex();
 		ScenarioButton sb = getPreview().getButton(index);
+		if(sb == null || name == null) return;
 		
 		int width = (int)sb.getImageOriginalWidth(name);
 		int height = (int)sb.getImageOriginalHeight(name);

@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import slidebuilder.enums.CreatorEnum;
 
 public class ResourceManager {
 	
@@ -184,4 +185,21 @@ public class ResourceManager {
 		}
 		return true;
 	}
+
+	// Default values for images, this value is used to set a combobox's default value
+	// 1. when project is launched
+	// 2. when user deletes user created image and a controller is using that image
+	public String getDefaultResource(CreatorEnum ce) {
+		switch (ce) {
+			case SLIDE_BG:
+				return resourceCampaignList.get(0).getName();
+			case SLIDE_IMAGE:
+				return "None";
+			case CAMPAIGN_BG:
+				return resourceCampaignMap.get("Default").getName();
+			case ICON:
+				return resourceCampaignList.get(0).getName();
+		}
+        return null;
+    }
 }

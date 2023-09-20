@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javafx.collections.ObservableList;
 import slidebuilder.enums.CreatorEnum;
+import slidebuilder.resource.ResourceManager;
 
 public class CustomImageData implements Serializable {
 	
@@ -104,6 +105,8 @@ public class CustomImageData implements Serializable {
 			listCustomCampaignButton.remove(ci);
 		}
 
+		setDefaultImageAfterDelete(ce, ci.getName());
+
 		DataManager.getDataCampaign().setUnsavedChanges(true);
 	}
 	
@@ -136,6 +139,49 @@ public class CustomImageData implements Serializable {
 			ci.setImage();
 			//Add names manually as they are not serializable
 			CustomImageComboBox.getCustomImageNameList(CreatorEnum.SLIDE_IMAGE).add(ci.getName());
+		}
+	}
+
+	private void setDefaultImageAfterDelete(CreatorEnum ce, String name) {
+		if (ce == CreatorEnum.SLIDE_BG) {
+			for (DataSlideshow ds : DataManager.getDataCampaign().getListSlideshow()) {
+				if(ds.getBackground().equals(name)) {
+					String defaultBg = ResourceManager.instance.getDefaultResource(CreatorEnum.SLIDE_BG);
+					ds.setDefaultBackground(defaultBg);
+				}
+			}
+		}
+		else if (ce == CreatorEnum.SLIDE_IMAGE) {
+			for (DataSlideshow ds : DataManager.getDataCampaign().getListSlideshow()) {
+				for (DataSlideshowSlide dss : ds.getListSlides()) {
+					if (dss.getImagePath().equals(name)) {
+						String defaultImage = ResourceManager.instance.getDefaultResource(CreatorEnum.SLIDE_IMAGE);
+						dss.setDefaultImage(defaultImage);
+					}
+				}
+			}
+		}
+		else if (ce == CreatorEnum.CAMPAIGN_BG) {
+			String bg = DataManager.getDataCampaign().getCampaignMenuBackground();
+			if(bg.equals(name)) {
+				String defaultBg = ResourceManager.instance.getDefaultResource(CreatorEnum.CAMPAIGN_BG);
+				DataManager.getDataCampaign().setDefaultCampaignMenuBackground(defaultBg);
+			}
+		}
+		else if (ce == CreatorEnum.ICON) {
+			int i = 0;
+			for (DataScenarios ds : DataManager.getDataCampaign().getListScenarios()) {
+				if(ds.getImage().equals(name)) {
+					String defaultImage = ResourceManager.instance.getDefaultResource(CreatorEnum.ICON);
+					ds.setDefaultImage(defaultImage);
+
+					//For scenario buttons, the preview values need to be manually updated.
+					//Reason for this is because preview shows all buttons images instead of current tab image,
+					//and only the current tab image automatically updates.
+					DataManager.getPreviewScenarios().getButton(i).getButtonImage().setButtonImage(defaultImage);
+				}
+				i++;
+			}
 		}
 	}
 }

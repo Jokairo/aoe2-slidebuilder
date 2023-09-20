@@ -85,6 +85,7 @@ public class PreviewScenarios extends PreviewInterface {
 	}
 	
 	public ScenarioButton getButton(int i) {
+		if(i >= buttons.size() || i < 0) return null;
 		return buttons.get(i);
 	}
 	

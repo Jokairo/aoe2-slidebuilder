@@ -53,7 +53,7 @@
                   </Label>
                   <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
                      <children>
-                        <ComboBox fx:id="button_bg" onAction="#changeBackground" prefHeight="26.0" prefWidth="251.0" />
+                        <ComboBox fx:id="button_bg" prefHeight="26.0" prefWidth="251.0" />
                      </children>
                   </HBox>
                </children>
