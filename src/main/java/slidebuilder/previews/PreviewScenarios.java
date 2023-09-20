@@ -26,6 +26,18 @@ public class PreviewScenarios extends PreviewInterface {
 		
 		helptext = new ButtonPreviewHelpText();
 	}
+
+	public void deleteButtons() {
+		for (ScenarioButton sb : buttons) {
+			if(getRoot() == null || sb == null) continue; //Ignore if preview hasn't been initialised yet
+			if(!getRoot().getChildren().contains(sb.getButtonImage())) continue; //Remove button from the root only if it exists
+
+			getRoot().getChildren().remove(sb.getButtonImage());
+			getRoot().getChildren().remove(sb.getButtonLabel().getLabelArea());
+		}
+
+		buttons.clear();
+	}
 	
 	public void createButtons() {
 		
@@ -44,7 +56,7 @@ public class PreviewScenarios extends PreviewInterface {
 			else {
 				ScenarioButton sb = new ScenarioButton(helptext);
 				buttons.add(sb);
-				
+
 				//Update button if data exists for it (loaded a project file)
 				if(DataManager.getDataCampaign().getListScenarios().size() > i) {
 					DataScenarios ds = DataManager.getDataCampaign().getListScenarios().get(i);

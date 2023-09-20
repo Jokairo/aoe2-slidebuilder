@@ -45,7 +45,7 @@ public class DataManager {
 	 * Setters
 	 */
 	
-	//Used when loading project file
+	//Used when loading project file/creating new project
 	public static void setDataCampaign(DataCampaign dataCampaign) {
 		DataManager.dataCampaign = dataCampaign;
 		CustomImageComboBox.initCustomImageNameLists();

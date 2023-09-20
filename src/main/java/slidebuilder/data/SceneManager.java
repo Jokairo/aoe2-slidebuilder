@@ -14,7 +14,9 @@ import slidebuilder.controllers.StageExport;
 import slidebuilder.controllers.interfaces.Controller;
 import slidebuilder.controllers.interfaces.ControllerDataInterface;
 import slidebuilder.controllers.interfaces.TabControllerInterface;
+import slidebuilder.enums.CreatorEnum;
 import slidebuilder.enums.SceneEnum;
+import slidebuilder.resource.ResourceManager;
 import slidebuilder.util.FileChooserUtil;
 import slidebuilder.util.FileSaverUtil;
 import slidebuilder.util.FileUtil;
@@ -200,6 +202,32 @@ public class SceneManager {
 			DataFileManager.saveToFile(file.getAbsolutePath());
 		}
 	}
+
+	// Create new empty project
+	public void newProject() {
+
+		//Go to campaign menu scene
+		switchScene(SceneEnum.CAMPAIGN_MENU, false);
+
+		//Create new project
+		DataCampaign dc = new DataCampaign();
+		DataManager.setDataCampaign(dc);
+
+		//Set campaign map default bg, otherwise it will be null
+		String defaultBg = ResourceManager.instance.getDefaultResource(CreatorEnum.CAMPAIGN_BG);
+		DataManager.getDataCampaign().setDefaultCampaignMenuBackground(defaultBg);
+
+		//Init all the data
+		((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_MENU)).loadData();
+		((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT)).loadData();
+		((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT)).sceneIn();
+		((TabControllerInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).initData();
+		((TabControllerInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).loadData(0);
+		getSceneController(SceneEnum.CAMPAIGN_SLIDE).sceneIn();
+
+		//Delete all preview buttons
+		DataManager.getPreviewScenarios().deleteButtons();
+	}
 	
 	// Load project file from computer
 	public void loadProject() {
@@ -212,8 +240,11 @@ public class SceneManager {
 			
 			//Load the file
 			DataFileManager.loadFromFile(file.getAbsolutePath());
+
+			//Delete previous buttons so new ones can be created
+			DataManager.getPreviewScenarios().deleteButtons();
 			
-			//Init all the data
+			//Init all the data (and create new buttons)
 			((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_MENU)).loadData();
 			((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT)).loadData();
 			((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT)).sceneIn();

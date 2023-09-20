@@ -6,6 +6,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import slidebuilder.Main;
 import slidebuilder.data.DataManager;
 import slidebuilder.data.SceneManager;
@@ -109,7 +111,19 @@ public class ControllerMenuBar {
 	private void saveAs() {
 		SceneManager.getInstance().saveProject();
 	}
-	
+
+	@FXML
+	private void newProject() {
+		boolean pressedOk = true;
+
+		//Show confirmation popup if there's unsaved changes
+		if(DataManager.getDataCampaign().getUnsavedChanges())
+			pressedOk = Popup.showConfirm("Are you sure you want to create a new project? Any unsaved changes to the current project will be lost.");
+
+		if(pressedOk)
+			SceneManager.getInstance().newProject();
+	}
+
 	@FXML
 	private void openProject() {
 		boolean pressedOk = true;
@@ -120,6 +134,12 @@ public class ControllerMenuBar {
 
 		if(pressedOk)
 			SceneManager.getInstance().loadProject();
+	}
+
+	@FXML
+	private void exit() {
+		Window window = Main.getStage().getScene().getWindow();
+		window.fireEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
 	}
 	
 	public void switchScene(Parent root) {
