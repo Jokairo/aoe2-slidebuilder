@@ -36,7 +36,7 @@ public class GeneratorSlideshow {
 		generator.writeStartArray();
 		String border = "---------------------------------------------------------------";
 		generator.writeString(border);
-		generator.writeString("Auto-generated using AoE2:DE Campaign Slide Builder by Jokairo");
+		generator.writeString("Auto-generated using Slide Builder by Jokairo");
 		generator.writeString(Main.APP_LINK);
 		generator.writeString(border);
 		generator.writeEndArray();

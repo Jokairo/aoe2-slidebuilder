@@ -51,7 +51,7 @@ public class Popup {
 		alert.setHeaderText(null);
 
 		VBox pane = new VBox();
-		Label name = new Label("AoE2:DE Campaign Slide Builder");
+		Label name = new Label("Slide Builder");
 		Label version = new Label("Version "+ Main.APP_VERSION);
 		Label emptySpace = new Label("");
 		Label author = new Label("Made by Jokairo");
