@@ -31,7 +31,7 @@ public class FileSaverUtil {
 			fc.setInitialDirectory(DataManager.getDataFolderLocation().getLastOutput());
 		}
 		
-		File file = fc.showSaveDialog(Main.getStage());
+		File file = fc.showSaveDialog(Main.primaryStage);
 		
 		if (file == null)
 			return null;
@@ -60,7 +60,7 @@ public class FileSaverUtil {
 		System.out.println("FILENAME: "+fileName);
 		System.out.println("Output: "+DataManager.getDataFolderLocation().getLastOutput());
 		
-		File file = fc.showSaveDialog(Main.getStage());
+		File file = fc.showSaveDialog(Main.primaryStage);
 		
 		if (file == null) 
 			return null;

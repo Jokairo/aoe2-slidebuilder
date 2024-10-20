@@ -3,11 +3,12 @@ package slidebuilder;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import slidebuilder.data.CustomImageComboBox;
 import slidebuilder.data.DataManager;
 import slidebuilder.data.SceneManager;
-import slidebuilder.enums.SceneEnum;
 import slidebuilder.resource.ResourceManager;
 import slidebuilder.util.Popup;
 
@@ -16,34 +17,20 @@ public class Main extends Application {
 	public static String APP_VERSION = "0.9.0";
 	public static String APP_LINK = "https://github.com/Jokairo/aoe2-slidebuilder";
 
-	private static Stage primaryStage;
+	private static final String title = "Slide Builder";
+	public static Label loadingLabel = new Label("Loading...");
+	public static Stage primaryStage;
 
-	private static String title = "Slide Builder";
-	
-	public static Stage getStage() {
-		return primaryStage;
-	}
+	public static String cssFile;
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		
 		primaryStage = stage;
+		cssFile = getClass().getResource("/css/menu.css").toExternalForm();
 		
 		ResourceManager rm = new ResourceManager();
-		
 		CustomImageComboBox.initCustomImageNameLists();
-		
-		SceneManager ss = new SceneManager();
-		ss.switchScene(SceneEnum.CAMPAIGN_MENU, true);
-		
-		Scene mainScene = ss.getMenuBar();
-		
-		stage.setTitle(title);
-		String css = this.getClass().getResource("/css/menu.css").toExternalForm();
-		mainScene.getStylesheets().add(css);
-		stage.setScene(mainScene);
-
-		stage.show();
 
 		stage.setOnCloseRequest(event -> {
 			if(DataManager.getDataCampaign().getUnsavedChanges()) {
@@ -54,6 +41,18 @@ public class Main extends Application {
 
 		//Stop app when main stage is closed
 		stage.setOnHiding(event -> Platform.exit());
+
+		// Loading screen until FXML files loaded
+		BorderPane pane = new BorderPane();
+		pane.setCenter(loadingLabel);
+		Scene s = new Scene(pane, 960, 540);
+		s.getStylesheets().add(cssFile);
+		stage.setTitle(title);
+		stage.setScene(s);
+		stage.show();
+
+		DataManager.createPreviews();
+		SceneManager sm = new SceneManager(); // Load FXML files
 	}
 
 	public static void showUnsavedChangesInTitle(boolean b) {

@@ -2,15 +2,17 @@ package slidebuilder.data;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Map;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import slidebuilder.controllers.ControllerMenuBar;
-import slidebuilder.controllers.StageCreator;
-import slidebuilder.controllers.StageExport;
+import slidebuilder.Main;
+import slidebuilder.controllers.*;
 import slidebuilder.controllers.interfaces.Controller;
 import slidebuilder.controllers.interfaces.ControllerDataInterface;
 import slidebuilder.controllers.interfaces.TabControllerInterface;
@@ -26,30 +28,42 @@ public class SceneManager {
 	
 	private static SceneManager instance;
 	
-	private Map<SceneEnum, FXMLObject> sceneMap = new EnumMap<SceneEnum, FXMLObject>(SceneEnum.class);
+	private final Map<SceneEnum, FXMLObject> sceneMap = new EnumMap<SceneEnum, FXMLObject>(SceneEnum.class);
+	private final ArrayList<String> fxmlFilePaths = new ArrayList<>();
+	private final ArrayList<SceneEnum> fxmlFileEnums = new ArrayList<>();
+
 	private Scene menuBar;
 	private ControllerMenuBar controllerMenuBar;
 	private StageCreator stageCreator;
-
 	private StageExport projectExport;
+
 	
 	public SceneManager() {
-		
 		instance = this;
-		
+		addToLoadingList("/FXML/FXMLMenuBar.fxml", null);
+		addToLoadingList("/FXML/FXMLCreateCustomImage.fxml", null);
+		addToLoadingList("/FXML/FXMLExportProject.fxml", null);
+		addToLoadingList("/FXML/FXMLSlideMenu.fxml", SceneEnum.CAMPAIGN_SLIDE);
+		addToLoadingList("/FXML/FXMLSlideEdit.fxml", SceneEnum.CAMPAIGN_SLIDE_EDIT);
+		addToLoadingList("/FXML/FXMLAudioEdit.fxml", SceneEnum.CAMPAIGN_AUDIO_EDIT);
+		addToLoadingList("/FXML/FXMLCampaignMenu.fxml", SceneEnum.CAMPAIGN_MENU);
+		addToLoadingList("/FXML/FXMLScenarioSelectMenu.fxml", SceneEnum.CAMPAIGN_SCENARIOSELECT);
+		addToLoadingList("/FXML/FXMLScenarioSelectEdit.fxml", SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT);
+
 		try {
 			createFXMLFiles();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+	private void addToLoadingList(String path, SceneEnum se) {
+		fxmlFilePaths.add(path);
+		fxmlFileEnums.add(se);
+	}
 	
 	public static SceneManager getInstance() {
 		return instance;
-	}
-	
-	public Scene getMenuBar() {
-		return menuBar;
 	}
 	
 	public StageCreator getStageCreator() {
@@ -62,35 +76,77 @@ public class SceneManager {
 	
 	// Create all FXML files once
 	private void createFXMLFiles() throws IOException {
-		
-		//Menu bar
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/FXMLMenuBar.fxml"));
-		menuBar = new Scene(loader.load(), 960, 540);
-		controllerMenuBar = loader.getController();
-		
-		//Creator
-		loader = new FXMLLoader(getClass().getResource("/FXML/FXMLCreateCustomImage.fxml"));
-		stageCreator = new StageCreator(loader.load(), loader.getController(), "Add Images");
+		Task<Void> loadTask = new Task<Void>() {
+			@Override
+			protected Void call() throws IOException {
+				ArrayList<Parent> parents = new ArrayList<>();
+				ArrayList<Object> controllers = new ArrayList<>();
 
-		//Project export window
-		loader = new FXMLLoader(getClass().getResource("/FXML/FXMLExportProject.fxml"));
-		projectExport = new StageExport(loader.load(), loader.getController(), "Export Project");
-		
-		loadFXMLFile(SceneEnum.CAMPAIGN_SLIDE, "/FXML/FXMLSlideMenu.fxml");
-		loadFXMLFile(SceneEnum.CAMPAIGN_SLIDE_EDIT, "/FXML/FXMLSlideEdit.fxml");
-		loadFXMLFile(SceneEnum.CAMPAIGN_AUDIO_EDIT, "/FXML/FXMLAudioEdit.fxml");
-		loadFXMLFile(SceneEnum.CAMPAIGN_MENU, "/FXML/FXMLCampaignMenu.fxml");
-		loadFXMLFile(SceneEnum.CAMPAIGN_SCENARIOSELECT, "/FXML/FXMLScenarioSelectMenu.fxml");
-		loadFXMLFile(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT, "/FXML/FXMLScenarioSelectEdit.fxml");
-		
-		getSceneController(SceneEnum.CAMPAIGN_SLIDE).setSubController(getSceneController(SceneEnum.CAMPAIGN_SLIDE_EDIT));
-		getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT).setSubController(getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT));
+				FXMLLoader loader;
+				int size = fxmlFilePaths.size();
+				// Load FXML files
+				for(int i = 0; i<size; i++) {
+					loader = new FXMLLoader(getClass().getResource(fxmlFilePaths.get(i)));
+					parents.add(loader.load());
+					controllers.add(loader.getController());
+					updateMessage("Loading FXML files "+i+"/"+size);
+				}
+
+				// Load/init FXML controllers
+				for (int i = 0; i < size; i++) {
+					String fileName = fxmlFilePaths.get(i);
+					SceneEnum sceneEnum = fxmlFileEnums.get(i);
+					Parent root = parents.get(i);
+					Object controller = controllers.get(i);
+
+                    switch (fileName) {
+                        case "/FXML/FXMLMenuBar.fxml":
+                            Platform.runLater(() -> {
+                                menuBar = new Scene(root, 960, 540);
+                                controllerMenuBar = (ControllerMenuBar) controller;
+                            });
+                            break;
+                        case "/FXML/FXMLCreateCustomImage.fxml":
+                            Platform.runLater(() -> stageCreator = new StageCreator(root, (ControllerCreateCustomImage) controller, "Add Images"));
+                            break;
+                        case "/FXML/FXMLExportProject.fxml":
+                            Platform.runLater(() -> projectExport = new StageExport(root, (ControllerExportProject) controller, "Export Project"));
+                            break;
+                        default:
+                            Platform.runLater(() -> loadFXMLFile(sceneEnum, root, (Controller) controller));
+                            break;
+                    }
+					updateMessage("Loading FXML controllers "+i+"/"+size);				}
+				return null;
+			}
+
+			@Override
+			protected void succeeded() {
+				getSceneController(SceneEnum.CAMPAIGN_SLIDE).setSubController(getSceneController(SceneEnum.CAMPAIGN_SLIDE_EDIT));
+				getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT).setSubController(getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT));
+
+				menuBar.getStylesheets().add(Main.cssFile);
+				Main.primaryStage.setScene(menuBar);
+				switchScene(SceneEnum.CAMPAIGN_MENU, true);
+				fxmlFilePaths.clear();
+				fxmlFileEnums.clear();
+			}
+
+			@Override
+			protected void failed() {
+				updateMessage("Failed loading FXML files.");
+			}
+		};
+
+		Main.loadingLabel.textProperty().bind(loadTask.messageProperty());
+		Thread loadThread = new Thread(loadTask);
+		loadThread.setDaemon(true);
+		loadThread.start();
 	}
 	
 	// Store all FXML files controller and root so they can be later referenced
-	private void loadFXMLFile(SceneEnum se, String path) throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-		FXMLObject obj = new FXMLObject(loader.load(), loader.getController());
+	private void loadFXMLFile(SceneEnum se, Parent root, Controller controller)  {
+		FXMLObject obj = new FXMLObject(root, controller);
 		sceneMap.put(se, obj);
 	}
 	

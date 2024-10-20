@@ -34,7 +34,7 @@ public class FileChooserUtil {
 			fc.setInitialDirectory(DataManager.getDataFolderLocation().getLastInput());
 
 		//Choosing 1 file
-		File f = fc.showOpenDialog(Main.getStage());
+		File f = fc.showOpenDialog(Main.primaryStage);
 
 		if(f == null) return null;
 
@@ -50,7 +50,7 @@ public class FileChooserUtil {
 		fc.setInitialDirectory(DataManager.getDataFolderLocation().getLastInput());
 		
 		//Choosing 1 file
-		File f = fc.showOpenDialog(Main.getStage());
+		File f = fc.showOpenDialog(Main.primaryStage);
 		
 		if (f == null) 
 			return null;
@@ -67,7 +67,7 @@ public class FileChooserUtil {
 		
 
 		//Choosing multiple files
-		List<File> list = fc.showOpenMultipleDialog(Main.getStage());
+		List<File> list = fc.showOpenMultipleDialog(Main.primaryStage);
 		
 		if (list == null) 
 			return null;

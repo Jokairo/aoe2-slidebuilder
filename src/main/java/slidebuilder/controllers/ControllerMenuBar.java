@@ -138,7 +138,7 @@ public class ControllerMenuBar {
 
 	@FXML
 	private void exit() {
-		Window window = Main.getStage().getScene().getWindow();
+		Window window = Main.primaryStage.getScene().getWindow();
 		window.fireEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
 	}
 	

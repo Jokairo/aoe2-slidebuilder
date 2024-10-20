@@ -9,8 +9,8 @@ import slidebuilder.previews.PreviewSlideshow;
 public class DataManager {
 	
 	//Previews
-	private static PreviewSlideshow previewSlideshow = new PreviewSlideshow();
-	private static PreviewScenarios previewScenarios = new PreviewScenarios();
+	private static PreviewSlideshow previewSlideshow;
+	private static PreviewScenarios previewScenarios;
 	
 	//All user placed data
 	private static DataCampaign dataCampaign = new DataCampaign();
@@ -39,6 +39,11 @@ public class DataManager {
 	
 	public static DataFolderLocation getDataFolderLocation() {
 		return dataFolderLocation;
+	}
+
+	public static void createPreviews() {
+		previewSlideshow = new PreviewSlideshow();
+		previewScenarios = new PreviewScenarios();
 	}
 	
 	/*
