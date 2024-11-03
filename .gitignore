@@ -13,6 +13,7 @@ target/
 *.ipr
 /out/
 **/META-INF/
+.idea/
 
 ### Eclipse ###
 .apt_generated
@@ -38,3 +39,4 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/bin/

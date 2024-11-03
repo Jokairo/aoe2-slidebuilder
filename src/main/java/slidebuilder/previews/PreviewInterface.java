@@ -1,26 +1,43 @@
 package slidebuilder.previews;
 
-import javafx.application.Platform;
-import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import slidebuilder.components.ButtonPreviewLabel;
+import slidebuilder.components.PreviewElement;
+import slidebuilder.components.ScenarioButton;
 import slidebuilder.data.DataManager;
 import slidebuilder.enums.CreatorEnum;
+import slidebuilder.enums.PreviewEnums;
+import slidebuilder.enums.SceneEnum;
 import slidebuilder.resource.ResourceManager;
 import slidebuilder.util.BackgroundUtil;
+import java.util.ArrayList;
 
 public abstract class PreviewInterface {
 
-	private ImageView background = new ImageView();
-	private Stage stage = new Stage();
+	private final ImageView background = new ImageView();
+	private final Stage stage = new Stage();
 	private Pane root;
 	private String backgroundName;
 	private boolean is_slide;
+
+	protected PreviewElement selectedElement = null;
+	protected PreviewEnums.Actions action = PreviewEnums.Actions.NONE;
+	protected PreviewEnums.DragDirection dragDirection = null;
+	protected double clickedX = 0.0;
+	protected double clickedY = 0.0;
+	private boolean isClick = false;
+	private int slideshowIndex = -1;
+
+	PreviewElementProperties buttonProperties = new PreviewElementProperties();
+	PreviewElementProperties buttonLabelProperties = new PreviewElementProperties();
+	PreviewElementProperties imageProperties = new PreviewElementProperties();
+	PreviewElementProperties textProperties = new PreviewElementProperties();
 	
 	protected abstract void addStuffToRoot();
 	
@@ -157,7 +174,269 @@ public abstract class PreviewInterface {
 	    
 	    scene.getRoot().getTransforms().add(scale);
 
+		scene.getRoot().setOnMouseMoved(e -> {
+			onMouseMoved(e.getSceneX(), e.getSceneY());
+		});
+
+		scene.getRoot().setOnMouseClicked(e -> {
+			onMouseClicked(e.getSceneX(), e.getSceneY());
+		});
+
+		scene.getRoot().setOnMousePressed(e -> {
+			onMousePressed(e.getSceneX(), e.getSceneY());
+		});
+
+		scene.getRoot().setOnMouseReleased(e -> {
+			onMouseReleased();
+		});
+
+		scene.getRoot().setOnMouseDragged(e -> {
+			onMouseDragged(e.getSceneX(), e.getSceneY());
+		});
+
 		stage.setOnHiding(event -> System.out.println("Preview closed."));
 	}
+
+	public int getSceneWidth() {
+		return (int)stage.getScene().getWidth();
+	}
+
+	public int getSceneHeight() {
+		return (int)stage.getScene().getHeight();
+	}
+
+	public double getClickedX() {
+		return clickedX;
+	}
+
+	public double getClickedY() {
+		return clickedY;
+	}
+	public PreviewEnums.DragDirection getDragDirection() {
+		return dragDirection;
+	}
+
+	public PreviewElementProperties getButtonProperties() {
+		return buttonProperties;
+	}
+
+	public PreviewElementProperties getButtonLabelProperties() {
+		return buttonLabelProperties;
+	}
+
+	public PreviewElementProperties getImageProperties() {
+		return imageProperties;
+	}
+
+	public PreviewElementProperties getTextProperties() {
+		return textProperties;
+	}
+
+	private void setCursor(Cursor c) {
+		stage.getScene().setCursor(c);
+	}
+
+	private Cursor getDragDirectionCursor(PreviewEnums.DragDirection dragDirection) {
+		if (dragDirection == PreviewEnums.DragDirection.LEFT) return Cursor.W_RESIZE;
+		else if (dragDirection == PreviewEnums.DragDirection.RIGHT) return Cursor.E_RESIZE;
+		else if (dragDirection == PreviewEnums.DragDirection.TOP) return Cursor.N_RESIZE;
+		else if (dragDirection == PreviewEnums.DragDirection.BOTTOM) return Cursor.S_RESIZE;
+		else if (dragDirection == PreviewEnums.DragDirection.TOP_LEFT) return Cursor.NW_RESIZE;
+		else if (dragDirection == PreviewEnums.DragDirection.TOP_RIGHT) return Cursor.NE_RESIZE;
+		else if (dragDirection == PreviewEnums.DragDirection.BOTTOM_LEFT) return Cursor.SW_RESIZE;
+		return Cursor.SE_RESIZE;
+	}
+
+	public void onMouseMoved(double mouseX, double mouseY) {
+		boolean elementHovered = false;
+
+		// Priority on selected element
+		if (selectedElement != null) {
+			boolean insideElement = selectedElement.isMouseInside(mouseX, mouseY);
+			if (insideElement) {
+				PreviewEnums.DragDirection tempDragDir = selectedElement.isMouseInEdge(mouseX, mouseY);
+				if (tempDragDir != null) setCursor(getDragDirectionCursor(tempDragDir));
+				else setCursor(Cursor.OPEN_HAND);
+
+				selectedElement.getChild().onHover(true);
+				elementHovered = true;
+			}
+		}
+
+		// Reverse so we check top most element first
+		int lastElement = getElements().size() - 1;
+		for (int i = lastElement; i >= 0; i--) {
+			PreviewElement b = getElements().get(i);
+
+			if (elementHovered || b.getHidden()) {
+				if (b != selectedElement)
+					b.getChild().onHover(false);
+				continue;
+			}
+
+			boolean insideLabel = false;
+			ButtonPreviewLabel label = null;
+			if (b.getChild().getElementType() == PreviewEnums.Elements.BUTTON) {
+				label = ((ScenarioButton)b.getChild()).getButtonLabel();
+			}
+
+			if (label != null && label.isMouseInside(mouseX, mouseY)) {
+				insideLabel = true;
+			}
+			boolean insideElement = b.isMouseInside(mouseX, mouseY);
+			if (insideElement || insideLabel) {
+				if (insideLabel) {
+					elementHovered = true;
+					if (!label.getSelected()) setCursor(Cursor.HAND);
+					else setCursor(Cursor.OPEN_HAND);
+				}
+				else if (insideElement) {
+					setCursor(Cursor.HAND);
+
+					b.getChild().onHover(true);
+					elementHovered = true;
+				}
+			}
+			else
+				b.getChild().onHover(false);
+		}
+		if (!elementHovered) setCursor(Cursor.DEFAULT);
+	}
+
+	public void onMouseClicked(double mouseX, double mouseY) {
+		if (!isClick) return;
+		boolean elementSelected = false;
+
+		// Reverse so we check top most element first
+		int lastElement = getElements().size() - 1;
+		for (int i = lastElement; i >= 0; i--) {
+			PreviewElement b = getElements().get(i);
+
+			if (b.getHidden()) continue;
+
+			ButtonPreviewLabel label = null;
+			if (b.getChild().getElementType() == PreviewEnums.Elements.BUTTON) {
+				label = ((ScenarioButton)b.getChild()).getButtonLabel();
+			}
+
+			if (!elementSelected && label != null && label.isMouseInside(mouseX, mouseY)) {
+				elementSelected = true;
+				label.setSelected(true);
+				b.setSelected(false);
+				selectedElement = null;
+			}
+
+			else if (!elementSelected && b.isMouseInside(mouseX, mouseY)) {
+				b.setSelected(true);
+				elementSelected = true;
+				selectedElement = b;
+				if (label != null) label.setSelected(false);
+			}
+			else {
+				b.setSelected(false);
+				if (label != null) label.setSelected(false);
+			}
+		}
+		if (!elementSelected) selectedElement = null;
+	}
+
+	public void onMousePressed(double mouseX, double mouseY) {
+		isClick = true;
+		if (selectedElement == null) return;
+
+		if (selectedElement.isMouseInside(mouseX, mouseY)) {
+			dragDirection = selectedElement.isMouseInEdge(mouseX, mouseY);
+			if (dragDirection != null) {
+				action = PreviewEnums.Actions.SCALING;
+			}
+			else action = PreviewEnums.Actions.MOVING;
+			clickedX = mouseX;
+			clickedY = mouseY;
+			selectedElement.setOriginalCoordinates();
+			selectedElement.getChild().onPress(true);
+		}
+		else {
+			action = PreviewEnums.Actions.NONE;
+			dragDirection = null;
+		}
+	}
+
+	public void onMouseReleased() {
+		for (PreviewElement b : getElements()) {
+			b.getChild().onPress(false);
+		}
+	}
+
+	public void onMouseDragged(double mouseX, double mouseY) {
+		isClick = false;
+		if (selectedElement == null) return;
+
+		if (action == PreviewEnums.Actions.MOVING) {
+			selectedElement.getChild().onMove(mouseX, mouseY);
+			setCursor(Cursor.OPEN_HAND);
+		}
+		else if (action == PreviewEnums.Actions.SCALING) {
+			selectedElement.getChild().onScale(mouseX, mouseY);
+			setCursor(getDragDirectionCursor(dragDirection));
+		}
+	}
+
+	public void setSlideshowIndex(int i) {
+		slideshowIndex = i;
+	}
+
+	private int getCurrentSlideshowIndex() {
+		if (DataManager.currentScene == SceneEnum.CAMPAIGN_SLIDE) {
+			return DataManager.globalTabIndex;
+		}
+		else if (DataManager.currentScene == SceneEnum.CAMPAIGN_SLIDE_EDIT) {
+			return slideshowIndex;
+		}
+		return 0;
+	}
+
+	public void saveElementData(PreviewEnums.Elements elementType, PreviewEnums.DataType dataType, int elementIndex, int value) {
+		int slide = getCurrentSlideshowIndex();
+		switch (elementType) {
+			case BUTTON:
+				if (dataType == PreviewEnums.DataType.X)
+					DataManager.getDataCampaign().getListScenarios().get(elementIndex).saveButtonX(value);
+				else if (dataType == PreviewEnums.DataType.Y)
+					DataManager.getDataCampaign().getListScenarios().get(elementIndex).saveButtonY(value);
+				else if (dataType == PreviewEnums.DataType.WIDTH)
+					DataManager.getDataCampaign().getListScenarios().get(elementIndex).saveButtonWidth(value);
+				else if (dataType == PreviewEnums.DataType.HEIGHT)
+					DataManager.getDataCampaign().getListScenarios().get(elementIndex).saveButtonHeight(value);
+				break;
+			case BUTTON_LABEL:
+				if (dataType == PreviewEnums.DataType.X)
+					DataManager.getDataCampaign().getListScenarios().get(elementIndex).saveLabelX(value);
+				else if (dataType == PreviewEnums.DataType.Y)
+					DataManager.getDataCampaign().getListScenarios().get(elementIndex).saveLabelY(value);
+				break;
+			case TEXT:
+				if (dataType == PreviewEnums.DataType.X)
+					DataManager.getDataCampaign().getListSlideshow().get(slide).getListSlides().get(elementIndex).saveTextX(value);
+				else if (dataType == PreviewEnums.DataType.Y)
+					DataManager.getDataCampaign().getListSlideshow().get(slide).getListSlides().get(elementIndex).saveTextY(value);
+				else if (dataType == PreviewEnums.DataType.WIDTH)
+					DataManager.getDataCampaign().getListSlideshow().get(slide).getListSlides().get(elementIndex).saveTextWidth(value);
+				else if (dataType == PreviewEnums.DataType.HEIGHT)
+					DataManager.getDataCampaign().getListSlideshow().get(slide).getListSlides().get(elementIndex).saveTextHeight(value);
+				break;
+			default:
+				if (dataType == PreviewEnums.DataType.X)
+					DataManager.getDataCampaign().getListSlideshow().get(slide).getListSlides().get(elementIndex).saveImageX(value);
+				else if (dataType == PreviewEnums.DataType.Y)
+					DataManager.getDataCampaign().getListSlideshow().get(slide).getListSlides().get(elementIndex).saveImageY(value);
+				else if (dataType == PreviewEnums.DataType.WIDTH)
+					DataManager.getDataCampaign().getListSlideshow().get(slide).getListSlides().get(elementIndex).saveImageWidth(value);
+				else if (dataType == PreviewEnums.DataType.HEIGHT)
+					DataManager.getDataCampaign().getListSlideshow().get(slide).getListSlides().get(elementIndex).saveImageHeight(value);
+				break;
+		}
+	}
+
+	public abstract ArrayList<PreviewElement> getElements();
 
 }

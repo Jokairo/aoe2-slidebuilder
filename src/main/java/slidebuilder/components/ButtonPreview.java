@@ -2,6 +2,7 @@ package slidebuilder.components;
 
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import slidebuilder.data.CustomImage;
 import slidebuilder.data.DataManager;
 import slidebuilder.enums.CreatorEnum;
@@ -9,24 +10,25 @@ import slidebuilder.resource.ResourceManager;
 import slidebuilder.util.ButtonColors;
 import slidebuilder.util.ImageTypeUtil;
 
-public class ButtonPreview extends ClickableButton {
+public class ButtonPreview extends ImageView {
 
 	private final double size_percentage;
 	
 	private Image image_normal;
 	private Image image_hover;
 	
-	private ColorAdjust colorNormal = new ColorAdjust();
-	private ColorAdjust colorHover = new ColorAdjust();
-	private ColorAdjust colorPress = new ColorAdjust();
+	private final ColorAdjust colorNormal = new ColorAdjust();
+	private final ColorAdjust colorHover = new ColorAdjust();
+	private final ColorAdjust colorPress = new ColorAdjust();
 	
-	private ButtonPreviewHelpText helptextObject;
+	private final ButtonPreviewHelpText helptextObject;
 	
 	private String help_text = "";
 	private String help_style = "";
+	private boolean isPressed = false;
+	private boolean isHovered = false;
 	
 	public ButtonPreview(ButtonPreviewHelpText helptextObject, double size_percentage) {
-
 		//Default image is the Alaric campaign icon
 		String defaultIcon = ResourceManager.instance.getCampaignResourceList().get(0).getName();
 		setButtonImage(defaultIcon);
@@ -46,48 +48,8 @@ public class ButtonPreview extends ClickableButton {
 		
 		this.helptextObject = helptextObject;
 		this.size_percentage = size_percentage;
-	}
-	
-	@Override
-	public void onButtonEnter() {
-		changeImageType(1);
-		helptextObject.showHelpText(help_text, help_style);
-	}
-	
-	@Override
-	public void onButtonLeftPress() {
-		onPress(true);
-		changeImageType(2);
-	}
 
-	@Override
-	public void onButtonExit() {
-		helptextObject.disableHelpText();
-		onPress(false);
-		changeImageType(0);
-	}
-	
-	@Override
-	public void onButtonRelease() {
-		onPress(false);
-		if (getHover()) {
-			changeImageType(1);
-		}
-		else {
-			changeImageType(0);
-		}
-	}
-	
-	@Override
-	public void onButtonDrag(double mouse_x, double mouse_y) {
-		// Not used
-		//this.setButtonX(mouse_x - this.getButtonWidth() / 2);
-		//this.setButtonX(mouse_y - this.getButtonHeight() / 2);
-	}
-	
-	@Override
-	public void onButtonRightPress() {
-		// Not used
+		setMouseTransparent(true); // Allow clicking on wrapper
 	}
 	
 	public void setHelpText(String text) {
@@ -118,15 +80,36 @@ public class ButtonPreview extends ClickableButton {
 		//Create hover image that will be used when cursor enters the image
 		createImageHover(image_normal);
 	}
+
+	public void onHover(boolean b) {
+		if (isHovered == b) return;
+		isHovered = b;
+
+		if (b) {
+			changeImageType(1);
+			helptextObject.showHelpText(help_text, help_style);
+		}
+		else {
+			helptextObject.disableHelpText();
+			onPress(false);
+			changeImageType(0);
+		}
+	}
 	
-	private void onPress(boolean b) {
-		if(getPressed() == b) return;
-		
-		//Move button downwards 3 pixels when it's pressed, when released move it back to original location
-		if(b)
-			setButtonY(getButtonY() + 3 * size_percentage);
-		else
-			setButtonY(getButtonY() - 3 * size_percentage);
+	public void onPress(boolean b) {
+		if (isPressed == b) return;
+
+		isPressed = b;
+
+		// Move button downwards 3 pixels when it's pressed, when released move it back to original location
+		if (b) {
+			setTranslateY(getTranslateY() + 3 * size_percentage);
+			changeImageType(2);
+		}
+		else {
+			setTranslateY(getTranslateY() - 3 * size_percentage);
+			changeImageType(isHovered ? 1 : 0);
+		}
 	}
 	
 	private void createImageHover(Image i) {

@@ -36,6 +36,42 @@ public class DataScenarios implements Serializable {
 		this.default_size = default_size;
 	}
 
+	public void saveButtonX(int button_x) {
+		if (this.button_x != button_x)
+			DataManager.getDataCampaign().setUnsavedChanges(true);
+		this.button_x = button_x;
+	}
+
+	public void saveButtonY(int button_y) {
+		if (this.button_y != button_y)
+			DataManager.getDataCampaign().setUnsavedChanges(true);
+		this.button_y = button_y;
+	}
+
+	public void saveButtonWidth(int image_width) {
+		if (this.image_width != image_width)
+			DataManager.getDataCampaign().setUnsavedChanges(true);
+		this.image_width = image_width;
+	}
+
+	public void saveButtonHeight(int image_height) {
+		if (this.image_height != image_height)
+			DataManager.getDataCampaign().setUnsavedChanges(true);
+		this.image_height = image_height;
+	}
+
+	public void saveLabelX(int button_text_x) {
+		if (this.button_text_x != button_text_x)
+			DataManager.getDataCampaign().setUnsavedChanges(true);
+		this.button_text_x = button_text_x;
+	}
+
+	public void saveLabelY(int button_text_y) {
+		if (this.button_text_y != button_text_y)
+			DataManager.getDataCampaign().setUnsavedChanges(true);
+		this.button_text_y = button_text_y;
+	}
+
 	public void setDefaultImage(String img) {
 		image = img;
 	}

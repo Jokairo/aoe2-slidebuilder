@@ -185,7 +185,7 @@ public class SceneManager {
 		controllerMenuBar.switchScene(getSceneRoot(se));
 		
 		//Keep track which scene the user is currently using
-		DataManager.currentController = getSceneController(se);
+		DataManager.currentScene = se;
 	}
 
 	/*
@@ -202,9 +202,10 @@ public class SceneManager {
 		//saveCampaignMenu();
 		
 		//Save the data for the controller where user is currently
-		if(DataManager.currentController != null) {
-			if(DataManager.currentController instanceof ControllerDataInterface) {
-				ControllerDataInterface cdi = (ControllerDataInterface) DataManager.currentController;
+		if(DataManager.currentScene != null) {
+			Controller currentController = getSceneController(DataManager.currentScene);
+			if(currentController instanceof ControllerDataInterface) {
+				ControllerDataInterface cdi = (ControllerDataInterface) currentController;
 				cdi.saveCurrentData();
 			}
 		}

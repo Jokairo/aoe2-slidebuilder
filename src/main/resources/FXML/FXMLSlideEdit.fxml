@@ -213,9 +213,9 @@
                   </VBox>
                </children>
             </HBox>
-            <VBox alignment="CENTER" prefHeight="59.0" prefWidth="490.0">
+            <HBox alignment="CENTER" prefHeight="59.0" prefWidth="490.0" spacing="5">
                <children>
-                  <CheckBox fx:id="image_box" contentDisplay="CENTER" mnemonicParsing="false" onAction="#setImageDefaultSize" prefHeight="27.0" prefWidth="272.0" text="Keep Original Size">
+                  <CheckBox fx:id="image_box" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="272.0" text="Keep aspect ratio">
                      <font>
                         <Font name="Liberation Serif" size="18.0" />
                      </font>
@@ -223,8 +223,13 @@
                         <Insets left="60.0" />
                      </VBox.margin>
                   </CheckBox>
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#setImageDefaultSize" prefHeight="32.0" text="Reset size">
+                     <font>
+                        <Font name="Liberation Sans" size="16.0" />
+                     </font>
+                  </Button>
                </children>
-            </VBox>
+            </HBox>
             <VBox alignment="CENTER" prefHeight="93.0" prefWidth="490.0">
                <children>
                   <Label alignment="CENTER" prefHeight="20.0" prefWidth="161.0" text="Slide Duration">

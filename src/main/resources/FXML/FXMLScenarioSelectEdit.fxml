@@ -326,11 +326,23 @@
             <VBox alignment="CENTER" prefHeight="81.0" prefWidth="510.0">
                <children>
                   <Region prefHeight="20.0" prefWidth="330.0" />
-                  <CheckBox fx:id="checkbox_image" mnemonicParsing="false" text="Keep Original Size" onAction="#setDisabled">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </CheckBox>
+                  <HBox alignment="CENTER" prefHeight="59.0" prefWidth="490.0">
+                     <children>
+                        <CheckBox fx:id="checkbox_image" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="200.0" text="Keep aspect ratio">
+                           <font>
+                              <Font name="Liberation Serif" size="18.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets left="60.0" />
+                           </VBox.margin>
+                        </CheckBox>
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#setResize" prefHeight="32.0" text="Reset size">
+                           <font>
+                              <Font name="Liberation Sans" size="16.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </children>

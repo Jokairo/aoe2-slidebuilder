@@ -103,6 +103,38 @@ public class ControllerSlideEdit extends TabControllerInterface {
 		text_bar_height.textProperty().addListener((observable, oldValue, newValue) -> {
 			setTextHeight();
 		});
+
+		getPreview().getTextProperties().getX().addListener((observable, oldValue, newValue) -> {
+			text_bar_x.textProperty().set(newValue);
+		});
+
+		getPreview().getTextProperties().getY().addListener((observable, oldValue, newValue) -> {
+			text_bar_y.textProperty().set(newValue);
+		});
+
+		getPreview().getTextProperties().getWidth().addListener((observable, oldValue, newValue) -> {
+			text_bar_width.textProperty().set(newValue);
+		});
+
+		getPreview().getTextProperties().getHeight().addListener((observable, oldValue, newValue) -> {
+			text_bar_height.textProperty().set(newValue);
+		});
+
+		getPreview().getImageProperties().getX().addListener((observable, oldValue, newValue) -> {
+			image_bar_x.textProperty().set(newValue);
+		});
+
+		getPreview().getImageProperties().getY().addListener((observable, oldValue, newValue) -> {
+			image_bar_y.textProperty().set(newValue);
+		});
+
+		getPreview().getImageProperties().getWidth().addListener((observable, oldValue, newValue) -> {
+			image_bar_width.textProperty().set(newValue);
+		});
+
+		getPreview().getImageProperties().getHeight().addListener((observable, oldValue, newValue) -> {
+			image_bar_height.textProperty().set(newValue);
+		});
 		
 		//Save default data so preview can be instantly used when project launched
 		setOwnerId(0);
@@ -116,7 +148,6 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	
 	@FXML
 	private void setImageDefaultSize(ActionEvent event) {
-		setDisabledValues();
 		setImageSizeOnSelection();
 	}
 	
@@ -126,11 +157,9 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	}
 	
 	private void setImageSizeOnSelection() {
-		if(image_box.isSelected()) {
-			setImageDefaultSize();
-			setImageWidth();
-			setImageHeight();
-		}
+		setImageDefaultSize();
+		setImageWidth();
+		setImageHeight();
 	}
 	
 	public void setPreviewImage() {
@@ -213,13 +242,7 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	
 	@Override
 	protected void setDisabledValues() {
-		if(image_box.isSelected()) {
-			image_bar_width.setDisable(true);
-			image_bar_height.setDisable(true);
-		} else {
-			image_bar_width.setDisable(false);
-			image_bar_height.setDisable(false);
-		}
+		// Not used
 	}
 	
 	@Override
@@ -231,22 +254,6 @@ public class ControllerSlideEdit extends TabControllerInterface {
 		}
 	}
 	
-	public void setNewPreviewValues() {
-		setImageX();
-		setImageY();
-		setImageWidth();
-		setImageHeight();
-		
-		setTextX();
-		setTextY();
-		setTextWidth();
-		setTextHeight();
-		
-		setPreviewImage();
-		
-		setText();
-	}
-	
 	private String getTextfieldValue(TextField tf) {
 		if(tf.getText().equals(""))
 			return "0";
@@ -255,35 +262,35 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	}
 
 	private void setImageX() {
-		getPreview().setImageX(ParseUtil.parseDouble(getTextfieldValue(image_bar_x)));
+		getPreview().setImageX(ParseUtil.parseInt(getTextfieldValue(image_bar_x)));
 	}
 	
 	private void setImageY() {
-		getPreview().setImageY(ParseUtil.parseDouble(getTextfieldValue(image_bar_y)));
+		getPreview().setImageY(ParseUtil.parseInt(getTextfieldValue(image_bar_y)));
 	}
 	
 	private void setImageWidth() {
-		getPreview().setImageWidth(ParseUtil.parseDouble(getTextfieldValue(image_bar_width)));
+		getPreview().setImageWidth(ParseUtil.parseInt(getTextfieldValue(image_bar_width)));
 	}
 	
 	private void setImageHeight() {
-		getPreview().setImageHeight(ParseUtil.parseDouble(getTextfieldValue(image_bar_height)));
+		getPreview().setImageHeight(ParseUtil.parseInt(getTextfieldValue(image_bar_height)));
 	}
 	
 	private void setTextX() {
-		getPreview().setTextX(ParseUtil.parseDouble(getTextfieldValue(text_bar_x)));
+		getPreview().setTextX(ParseUtil.parseInt(getTextfieldValue(text_bar_x)));
 	}
 	
 	private void setTextY() {
-		getPreview().setTextY(ParseUtil.parseDouble(getTextfieldValue(text_bar_y)));
+		getPreview().setTextY(ParseUtil.parseInt(getTextfieldValue(text_bar_y)));
 	}
 	
 	private void setTextWidth() {
-		getPreview().setTextWidth(ParseUtil.parseDouble(getTextfieldValue(text_bar_width)));
+		getPreview().setTextWidth(ParseUtil.parseInt(getTextfieldValue(text_bar_width)));
 	}
 	
 	private void setTextHeight() {
-		getPreview().setTextHeight(ParseUtil.parseDouble(getTextfieldValue(text_bar_height)));
+		getPreview().setTextHeight(ParseUtil.parseInt(getTextfieldValue(text_bar_height)));
 	}
 	
 	private void setText() {
@@ -331,6 +338,7 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	@Override
 	public void sceneIn() {
 		int i = DataManager.globalTabIndex;
+		getPreview().setSlideshowIndex(i);
 		
 		//Create as many tabs as num of slides
 		setTabSize(DataManager.getDataCampaign().getListSlideshow().get(i).getSlides());
@@ -346,6 +354,7 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	@Override
 	public void sceneOut() {
 		DataManager.globalTabIndex = getOwnerId();
+		getPreview().setSlideshowIndex(-1);
 
 		//Save current slide data before loading to first slide
 		saveCurrentData(getCurrentTabIndex());

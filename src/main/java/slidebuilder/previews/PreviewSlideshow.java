@@ -1,107 +1,87 @@
 package slidebuilder.previews;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.OverrunStyle;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import slidebuilder.data.DataManager;
-import slidebuilder.enums.CreatorEnum;
+import slidebuilder.components.PreviewElement;
+import slidebuilder.components.SlideImage;
+import slidebuilder.components.SlideText;
+import java.util.ArrayList;
 
 public class PreviewSlideshow extends PreviewInterface {
-
-	private Font font;
-	private ImageView picture = new ImageView();
-	private Label text = new Label("");
-	private final double MAX_FONT_SIZE = 12.3;
-	
-	private Image picture_image;
-	private String currentBg;
+	private final PreviewElement pictureWrapper = new PreviewElement();
+	private final SlideImage picture = new SlideImage(0);
+	private final PreviewElement labelWrapper = new PreviewElement();
+	private final SlideText label = new SlideText(0);
+	private final ArrayList<PreviewElement> elements = new ArrayList<>();
 	
 	public PreviewSlideshow() {
-		font = Font.loadFont(getClass().getResource("/fonts/backgroundFont.ttf").toExternalForm(), MAX_FONT_SIZE);
 		this.setIsSlidePreview(true);
+		labelWrapper.setChild(label);
+		pictureWrapper.setChild(picture);
+
+		elements.add(labelWrapper);
+		elements.add(pictureWrapper);
 	}
 	
 	public void setImage(String name) {
-		if(name == null || name.equalsIgnoreCase("None")) {
-			picture_image = null;
-			picture.setImage(null);
-			return;
-		}
-
-		picture_image = DataManager.getDataCampaign().getCustomImageData().getCustomImage(CreatorEnum.SLIDE_IMAGE, name).getImage();
-		picture.setImage(picture_image);
+		picture.setImage(name);
 	}
 	
 	public void setText(String string) {
-		text.setText(string);
+		label.setText(string);
 	}
 	
-	public void setTextX(double d) {
-		//Coordinates 25%
-		text.setTranslateX(d/4);
+	public void setTextX(int i) {
+		labelWrapper.setElementX(i);
 	}
 	
-	public void setTextY(double d) {
-		//Coordinates 25%
-		text.setTranslateY(d/4);
+	public void setTextY(int i) {
+		labelWrapper.setElementY(i);
 	}
 	
-	public void setTextWidth(double d) {
-		//25% + 12px
-		text.setMaxWidth(d/4+1);
-		System.out.println(""+text.getLineSpacing());
+	public void setTextWidth(int i) {
+		labelWrapper.setElementWidth(i);
 	}
 	
-	public void setTextHeight(double d) {
-		//25% + 20px
-		//+20 otherwise the text cuts sometimes because line spacing has been changed
-		text.setMaxHeight(d/4+20);
+	public void setTextHeight(int i) {
+		labelWrapper.setElementHeight(i);
 	}
 	
-	public void setImageX(double d) {
-		//Coordinates 25%
-		picture.setX(d/4);
+	public void setImageX(int i) {
+		pictureWrapper.setElementX(i);
 	}
 	
-	public void setImageY(double d) {
-		//Coordinates 25%
-		picture.setY(d/4);
+	public void setImageY(int i) {
+		pictureWrapper.setElementY(i);
 	}
 	
-	public void setImageWidth(double d) {
-		//Image must be scaled 25% smaller
-		picture.setFitWidth(d/4);
+	public void setImageWidth(int i) {
+		pictureWrapper.setElementWidth(i);
 	}
 	
-	public void setImageHeight(double d) {
-		//Image must be scaled 25% smaller
-		picture.setFitHeight(d/4);
+	public void setImageHeight(int i) {
+		pictureWrapper.setElementHeight(i);
 	}
 
 	@Override
 	public void addStuffToRoot() {
-		text.setFont(font);
-		text.setWrapText(true);
-		
-		text.setTextFill(Color.BLACK);
-		text.setTextOverrun(OverrunStyle.CLIP);
-		
-		text.setAlignment(Pos.TOP_LEFT);
-		
 		VBox.setVgrow(getRoot(), Priority.ALWAYS);
 		
 		setBackgroundDefaultSize();
 		setBackground();
 		
 		getRoot().getChildren().add(getBackground());
-		getRoot().getChildren().add(picture);
-		getRoot().getChildren().add(text);
 
+		getRoot().getChildren().add(pictureWrapper);
+		getRoot().getChildren().add(picture.getImage());
+
+		getRoot().getChildren().add(labelWrapper);
+		getRoot().getChildren().add(label.getText());
+
+	}
+
+	@Override
+	public ArrayList<PreviewElement> getElements() {
+		return elements;
 	}
 }

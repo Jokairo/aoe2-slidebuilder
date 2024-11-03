@@ -1,8 +1,6 @@
 package slidebuilder.data;
 
-import java.io.File;
-
-import slidebuilder.controllers.interfaces.Controller;
+import slidebuilder.enums.SceneEnum;
 import slidebuilder.previews.PreviewScenarios;
 import slidebuilder.previews.PreviewSlideshow;
 
@@ -19,7 +17,7 @@ public class DataManager {
 	private static DataFolderLocation dataFolderLocation = new DataFolderLocation();
 	
 	public static int globalTabIndex = 0;
-	public static Controller currentController = null;
+	public static SceneEnum currentScene = null;
 	
 	/*
 	 * Getters

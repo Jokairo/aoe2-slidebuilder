@@ -2,7 +2,6 @@ package slidebuilder.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -32,7 +31,6 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 	@FXML private TextField textfield_button_y;
 	@FXML private ComboBox<String> button_difficulty;
 	@FXML private ComboBox<String> button_image;
-	@FXML private Button button_create_image;
 	@FXML private TextField textfield_image_width;
 	@FXML private TextField textfield_image_height;
 	@FXML private CheckBox checkbox_image;
@@ -135,6 +133,30 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		button_difficulty.valueProperty().addListener((observable, oldValue, newValue) -> {
 			setDifficulty();
 		});
+
+		getPreview().getButtonProperties().getX().addListener((observable, oldValue, newValue) -> {
+			textfield_button_x.textProperty().set(newValue);
+		});
+
+		getPreview().getButtonProperties().getY().addListener((observable, oldValue, newValue) -> {
+			textfield_button_y.textProperty().set(newValue);
+		});
+
+		getPreview().getButtonProperties().getWidth().addListener((observable, oldValue, newValue) -> {
+			textfield_image_width.textProperty().set(newValue);
+		});
+
+		getPreview().getButtonProperties().getHeight().addListener((observable, oldValue, newValue) -> {
+			textfield_image_height.textProperty().set(newValue);
+		});
+
+		getPreview().getButtonLabelProperties().getX().addListener((observable, oldValue, newValue) -> {
+			textfield_text_x.textProperty().set(newValue);
+		});
+
+		getPreview().getButtonLabelProperties().getY().addListener((observable, oldValue, newValue) -> {
+			textfield_text_y.textProperty().set(newValue);
+		});
 		
 		//Color Button handlers
 		addHelpButtonEventHandler(button_color_white, "<default>");
@@ -153,17 +175,14 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 	}
 
 	@FXML
-	private void setDisabled(ActionEvent event) {
-		setDisabledValues();
+	private void setResize(ActionEvent event) {
 		setImageSizeOnSelection();
 	}
 	
 	private void setImageSizeOnSelection() {
-		if(checkbox_image.isSelected()) {
-			setImageDefaultSize();
-			setImageWidth();
-			setImageHeight();
-		}
+		setImageDefaultSize();
+		setImageWidth();
+		setImageHeight();
 	}
 
 	private void setDifficulty() {
@@ -243,8 +262,8 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 
 			//Update preview button
 			getPreview().getButton(i).getButtonLabel().setText(buttonText);
-			getPreview().getButton(i).setButtonX(bX);
-			getPreview().getButton(i).setButtonY(bY);
+			getPreview().getButtonWrapper(i).setElementX(bX);
+			getPreview().getButtonWrapper(i).setElementY(bY);
 			getPreview().getButton(i).setTextY(labelY);
 		}
 	}
@@ -305,13 +324,7 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 	
 	@Override
 	protected void setDisabledValues() {
-		if(checkbox_image.isSelected()) {
-			textfield_image_width.setDisable(true);
-			textfield_image_height.setDisable(true);
-		} else {
-			textfield_image_width.setDisable(false);
-			textfield_image_height.setDisable(false);
-		}
+		// Not used
 	}
 	
 	private String getTextfieldValue(TextField tf) {
@@ -330,19 +343,19 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 	}
 	
 	private void setButtonX() {
-		getPreview().getButton(getCurrentTabIndex()).setButtonX(ParseUtil.parseInt(getTextfieldValue(textfield_button_x)));
+		getPreview().getButtonWrapper(getCurrentTabIndex()).setElementX(ParseUtil.parseInt(getTextfieldValue(textfield_button_x)));
 	}
 	
 	private void setButtonY() {
-		getPreview().getButton(getCurrentTabIndex()).setButtonY(ParseUtil.parseInt(getTextfieldValue(textfield_button_y)));
+		getPreview().getButtonWrapper(getCurrentTabIndex()).setElementY(ParseUtil.parseInt(getTextfieldValue(textfield_button_y)));
 	}
 	
 	private void setImageWidth() {
-		getPreview().getButton(getCurrentTabIndex()).setImageWidth(ParseUtil.parseInt(getTextfieldValue(textfield_image_width)));
+		getPreview().getButtonWrapper(getCurrentTabIndex()).setElementWidth(ParseUtil.parseInt(getTextfieldValue(textfield_image_width)));
 	}
 	
 	private void setImageHeight() {
-		getPreview().getButton(getCurrentTabIndex()).setImageHeight(ParseUtil.parseInt(getTextfieldValue(textfield_image_height)));
+		getPreview().getButtonWrapper(getCurrentTabIndex()).setElementHeight(ParseUtil.parseInt(getTextfieldValue(textfield_image_height)));
 	}
 	
 	private void setHelpText() {
