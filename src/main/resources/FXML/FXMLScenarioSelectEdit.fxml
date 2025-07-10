@@ -328,7 +328,7 @@
                   <Region prefHeight="20.0" prefWidth="330.0" />
                   <HBox alignment="CENTER" prefHeight="59.0" prefWidth="490.0">
                      <children>
-                        <CheckBox fx:id="checkbox_image" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="200.0" text="Keep aspect ratio">
+                        <CheckBox fx:id="checkbox_keep_aspect" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="27.0" prefWidth="200.0" text="Keep aspect ratio" onAction="#setKeepAspect">
                            <font>
                               <Font name="Liberation Serif" size="18.0" />
                            </font>

@@ -27,8 +27,11 @@ public class ScenarioButton extends PreviewElementChild {
 	public void onInit() {
 		getWrapperClass().setElementX(0);
 		getWrapperClass().setElementY(0);
-		getWrapperClass().setElementWidth((int)button.getImage().getWidth());
-		getWrapperClass().setElementHeight((int)button.getImage().getHeight());
+		int width = (int)button.getImage().getWidth();
+		int height = (int)button.getImage().getHeight();
+		getWrapperClass().setElementWidth(width);
+		getWrapperClass().setElementHeight(height);
+		getWrapperClass().setAspectRatio(width, height);
 	}
 	
 	public void setHelpText(String text) {

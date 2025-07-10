@@ -92,84 +92,107 @@ public abstract class PreviewElementChild {
 
     private void calculateScale(int mouseX, int mouseY, PreviewEnums.DragDirection dragDirection) {
         int scaleFactor = 4;
-
         boolean isControlsVisible = isElementControlsVisible();
-        if (dragDirection == PreviewEnums.DragDirection.RIGHT) {
-            double wDiff = mouseX - getWrapperClass().getOriginalX();
-            double newWidth = Math.max(wDiff, 1) * scaleFactor;
-            int intWidth = (int)newWidth;
+        boolean keepAspect = wrapper.getKeepAspect();
 
-            if (isControlsVisible) {
-                getProperties().setWidth("" + intWidth);
-            }
-            else {
-                getWrapperClass().setElementWidth(intWidth);
-                saveData(PreviewEnums.DataType.WIDTH, intWidth);
-            }
+        double originalX = getWrapperClass().getOriginalX();
+        double originalY = getWrapperClass().getOriginalY();
+        double currW = getWrapperClass().getElementWidth();
+        double currH = getWrapperClass().getElementHeight();
+        double originalW = getWrapperClass().getOriginalWidth();
+        double originalH = getWrapperClass().getOriginalHeight();
+        double aspect = getWrapperClass().getAspectRatio();
+
+        if (dragDirection == PreviewEnums.DragDirection.RIGHT) {
+            double wDiff = mouseX - originalX;
+            int newWidth = (int) (Math.max(wDiff, 1) * scaleFactor);
+            int newHeight = keepAspect ? (int) (newWidth / aspect) : (int) (currH * scaleFactor);
+            applySizeChange(newWidth, newHeight, isControlsVisible);
         }
 
         else if (dragDirection == PreviewEnums.DragDirection.BOTTOM) {
-            double hDiff = mouseY - getWrapperClass().getOriginalY();
-            double newHeight = Math.max(hDiff, 1) * scaleFactor;
-            int intHeight = (int)newHeight;
+            double hDiff = mouseY - originalY;
+            int newHeight = (int) (Math.max(hDiff, 1) * scaleFactor);
+            int newWidth = keepAspect ? (int) (newHeight * aspect) : (int) (currW * scaleFactor);
 
-            if (isControlsVisible) {
-                getProperties().setHeight("" + intHeight);
+            if (keepAspect) {
+                double oX = originalX * scaleFactor;
+                double oW = originalW * scaleFactor;
+                int newX = (int) (oX + oW - newWidth);
+                applyPositionChange(newX, -1, isControlsVisible);
             }
-            else {
-                getWrapperClass().setElementHeight(intHeight);
-                saveData(PreviewEnums.DataType.HEIGHT, intHeight);
-            }
+
+            applySizeChange(newWidth, newHeight, isControlsVisible);
         }
-
         else if (dragDirection == PreviewEnums.DragDirection.LEFT) {
-            double elWidth = getWrapperClass().getOriginalX() + getWrapperClass().getOriginalWidth();
-            double wDiff = mouseX - elWidth;
-            double newWidth = Math.abs(Math.min(wDiff, -1)) * scaleFactor;
-            int intWidth = (int)newWidth;
+            double rightEdge = originalX + originalW;
+            double wDiff = mouseX - rightEdge;
+            int newWidth = (int) (Math.abs(Math.min(wDiff, -1)) * scaleFactor);
+            int newX = (int) ((rightEdge * scaleFactor) - newWidth);
 
-            // New position
-            double oX = getWrapperClass().getOriginalX() * scaleFactor;
-            double oW = getWrapperClass().getOriginalWidth() * scaleFactor;
-            double newX = oX + oW - newWidth;
-            int intX = (int)newX;
-
-            if (isControlsVisible) {
-                getProperties().setX("" + intX);
-                getProperties().setWidth("" + intWidth);
+            if (keepAspect) {
+                int newHeight = (int) (newWidth / aspect);
+                double oY = originalY * scaleFactor;
+                double oH = originalH * scaleFactor;
+                int newY = (int) (oY + oH - newHeight);
+                applyPositionChange(newX, newY, isControlsVisible);
+                applySizeChange(newWidth, newHeight, isControlsVisible);
             }
             else {
-                getWrapperClass().setElementX(intX);
-                getWrapperClass().setElementWidth(intWidth);
-                saveData(PreviewEnums.DataType.X, intX);
-                saveData(PreviewEnums.DataType.WIDTH, intWidth);
+                applyPositionChange(newX, -1, isControlsVisible);
+                applySizeChange(newWidth, (int) (currH * scaleFactor), isControlsVisible);
             }
         }
-
         else if (dragDirection == PreviewEnums.DragDirection.TOP) {
-            double elHeight = getWrapperClass().getOriginalY() + getWrapperClass().getOriginalHeight();
-            double hDiff = mouseY - elHeight;
-            double newHeight = Math.abs(Math.min(hDiff, -1)) * scaleFactor;
-            int intHeight = (int)newHeight;
+            double bottomEdge = originalY + originalH;
+            double hDiff = mouseY - bottomEdge;
+            int newHeight = (int) (Math.abs(Math.min(hDiff, -1)) * scaleFactor);
+            int newY = (int) ((bottomEdge * scaleFactor) - newHeight);
 
-            // New position
-            double oY = getWrapperClass().getOriginalY() * scaleFactor;
-            double oH = getWrapperClass().getOriginalHeight() * scaleFactor;
-            double newY = oY + oH - newHeight;
-            int intY = (int)newY;
-
-            if (isControlsVisible) {
-                getProperties().setY("" + intY);
-                getProperties().setHeight("" + intHeight);
+            if (keepAspect) {
+                int newWidth = (int) (newHeight * aspect);
+                applySizeChange(newWidth, newHeight, isControlsVisible);
             }
             else {
-                getWrapperClass().setElementY(intY);
-                getWrapperClass().setElementHeight(intHeight);
-                saveData(PreviewEnums.DataType.Y, intY);
-                saveData(PreviewEnums.DataType.HEIGHT, intHeight);
+                applySizeChange((int) (currW * scaleFactor), newHeight, isControlsVisible);
+            }
+
+            applyPositionChange(-1, newY, isControlsVisible);
+        }
+    }
+
+    private void applySizeChange(int width, int height, boolean isControlsVisible) {
+        if (isControlsVisible) {
+            getProperties().setWidth(String.valueOf(width));
+            getProperties().setHeight(String.valueOf(height));
+        } else {
+            getWrapperClass().setElementWidth(width);
+            getWrapperClass().setElementHeight(height);
+            saveData(PreviewEnums.DataType.WIDTH, width);
+            saveData(PreviewEnums.DataType.HEIGHT, height);
+        }
+    }
+
+    private void applyPositionChange(int x, int y, boolean isControlsVisible) {
+        if (x != -1) {
+            if (isControlsVisible) {
+                getProperties().setX(String.valueOf(x));
+            }
+            else {
+                getWrapperClass().setElementX(x);
+                saveData(PreviewEnums.DataType.X, x);
             }
         }
 
+        if (y != -1) {
+            if (isControlsVisible) {
+                getProperties().setY(String.valueOf(y));
+            }
+            else {
+                getWrapperClass().setElementY(y);
+                saveData(PreviewEnums.DataType.Y, y);
+            }
+        }
     }
 
     public void onScale(double mouse_x, double mouse_y) {
@@ -181,6 +204,7 @@ public abstract class PreviewElementChild {
 
         int mouseX = getWrapperClass().getMouseXRelatedToWindowSize(mouse_x, false, false);
         int mouseY = getWrapperClass().getMouseYRelatedToWindowSize(mouse_y, false, false);
+        boolean keepAspect = wrapper.getKeepAspect();
 
         PreviewEnums.DragDirection dragDirection = preview.getDragDirection();
 
@@ -198,18 +222,22 @@ public abstract class PreviewElementChild {
         }
         else if (dragDirection == PreviewEnums.DragDirection.TOP_RIGHT) {
             calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.TOP);
-            calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.RIGHT);
+            if (!keepAspect)
+                calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.RIGHT);
         }
         else if (dragDirection == PreviewEnums.DragDirection.TOP_LEFT) {
-            calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.TOP);
+            if (!keepAspect)
+                calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.TOP);
             calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.LEFT);
         }
         else if (dragDirection == PreviewEnums.DragDirection.BOTTOM_LEFT) {
             calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.BOTTOM);
-            calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.LEFT);
+            if (!keepAspect)
+                calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.LEFT);
         }
         else if (dragDirection == PreviewEnums.DragDirection.BOTTOM_RIGHT) {
-            calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.BOTTOM);
+            if (!keepAspect)
+                calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.BOTTOM);
             calculateScale(mouseX, mouseY, PreviewEnums.DragDirection.RIGHT);
         }
     }
@@ -218,5 +246,25 @@ public abstract class PreviewElementChild {
         children.forEach(c -> {
             c.setVisible(b);
         });
+    }
+
+    public void saveWidthAfterHeightChange(int newWidth) {
+        boolean isControlsVisible = isElementControlsVisible();
+        if (isControlsVisible) {
+            getProperties().setWidth("" + newWidth);
+        }
+        else {
+            saveData(PreviewEnums.DataType.WIDTH, newWidth);
+        }
+    }
+
+    public void saveHeightAfterWidthChange(int newHeight) {
+        boolean isControlsVisible = isElementControlsVisible();
+        if (isControlsVisible) {
+            getProperties().setHeight("" + newHeight);
+        }
+        else {
+            saveData(PreviewEnums.DataType.HEIGHT, newHeight);
+        }
     }
 }

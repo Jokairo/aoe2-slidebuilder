@@ -10,6 +10,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import slidebuilder.components.PreviewElement;
 import slidebuilder.components.ScenarioButton;
 import slidebuilder.controllers.interfaces.TabControllerInterface;
 import slidebuilder.data.CustomImageComboBox;
@@ -33,7 +34,7 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 	@FXML private ComboBox<String> button_image;
 	@FXML private TextField textfield_image_width;
 	@FXML private TextField textfield_image_height;
-	@FXML private CheckBox checkbox_image;
+	@FXML private CheckBox checkbox_keep_aspect;
 	@FXML private TextArea textfield_help;
 	@FXML private ComboBox<String> button_help;
 	@FXML private ImageView button_color_white;
@@ -45,6 +46,7 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 	@FXML private ImageView button_color_gray;
 	@FXML private ImageView button_color_orange;
 	@FXML private ImageView button_color_italic;
+	private boolean ignoreWidthHeightListener = false;
 	
 	//INIT
 	@FXML
@@ -68,6 +70,7 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 			}
 		});
 		button_image.getSelectionModel().select(defaultIcon);
+		setCurrentImageAspectRatio();
 		
 		//Difficulty combobox
 		int size = ResourceManager.instance.getDifficultyResourceList().size();
@@ -111,11 +114,15 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		});
 		
 		textfield_image_width.textProperty().addListener((observable, oldValue, newValue) -> {
-			setImageWidth();
+			boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected();
+			setImageWidth(useAspect);
+			ignoreWidthHeightListener = false;
 		});
 		
 		textfield_image_height.textProperty().addListener((observable, oldValue, newValue) -> {
-			setImageHeight();
+			boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected();
+			setImageHeight(useAspect);
+			ignoreWidthHeightListener = false;
 		});
 		
 		textfield_help.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -143,10 +150,12 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		});
 
 		getPreview().getButtonProperties().getWidth().addListener((observable, oldValue, newValue) -> {
+			ignoreWidthHeightListener = true; // Prevent aspect ratio being calculated multiple times
 			textfield_image_width.textProperty().set(newValue);
 		});
 
 		getPreview().getButtonProperties().getHeight().addListener((observable, oldValue, newValue) -> {
+			ignoreWidthHeightListener = true; // Prevent aspect ratio being calculated multiple times
 			textfield_image_height.textProperty().set(newValue);
 		});
 
@@ -178,11 +187,29 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 	private void setResize(ActionEvent event) {
 		setImageSizeOnSelection();
 	}
+
+	private void setCurrentImageAspectRatio() {
+		PreviewElement button = getPreview().getButtonWrapper(getCurrentTabIndex());
+		if (button == null) return;
+
+		int width = ParseUtil.parseInt(textfield_image_width.getText());
+		int height = ParseUtil.parseInt(textfield_image_height.getText());
+		button.setAspectRatio(width, height);
+	}
+
+	@FXML
+	private void setKeepAspect(ActionEvent event) {
+		boolean keepAspect = checkbox_keep_aspect.isSelected();
+		if (keepAspect) {
+			setCurrentImageAspectRatio();
+		}
+		getPreview().getButton(getCurrentTabIndex()).getWrapperClass().setKeepAspect(keepAspect);
+	}
 	
 	private void setImageSizeOnSelection() {
 		setImageDefaultSize();
-		setImageWidth();
-		setImageHeight();
+		setImageWidth(false);
+		setImageHeight(false);
 	}
 
 	private void setDifficulty() {
@@ -194,9 +221,10 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		if(sb == null) return;
 
 		sb.getButtonImage().setButtonImage((button_image.getValue()));
-		if(getKeepOriginalSize()) {
+		if(checkbox_keep_aspect.isSelected()) {
 			setImageDefaultSize();
 		}
+		setCurrentImageAspectRatio();
 	}
 	
 	private void setTextFormatters() {
@@ -209,6 +237,7 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 	}
 
 	private void setImageSize(int width, int height) {
+		ignoreWidthHeightListener = true;
 		textfield_image_width.setText(""+width);
 		textfield_image_height.setText(""+height);
 	}
@@ -218,14 +247,14 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		int index = getTabPane().getSelectionModel().getSelectedIndex();
 		ScenarioButton sb = getPreview().getButton(index);
 		if(sb == null || name == null) return;
+
+		PreviewElement wrapper = getPreview().getButtonWrapper(getCurrentTabIndex());
+		if (wrapper == null) return;
 		
 		int width = (int)sb.getImageOriginalWidth(name);
 		int height = (int)sb.getImageOriginalHeight(name);
+		wrapper.setAspectRatio(width, height);
 		setImageSize(width, height);
-	}
-	
-	private boolean getKeepOriginalSize() {
-		return checkbox_image.isSelected();
 	}
 	
 	@Override
@@ -286,7 +315,7 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 				textfield_help.getText(),
 				button_help.getValue(),
 				button_difficulty.getValue(),
-				checkbox_image.isSelected()
+				checkbox_keep_aspect.isSelected()
 		);
 	}
 	
@@ -316,10 +345,12 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		button_image.setValue(image);
 		textfield_image_width.setText(""+image_width);
 		textfield_image_height.setText(""+image_height);
-		checkbox_image.setSelected(is_def_size);
+		checkbox_keep_aspect.setSelected(is_def_size);
 		textfield_help.setText(""+help_text);
 		button_help.setValue(help_style);
 		button_difficulty.setValue(difficulty);
+
+		setCurrentImageAspectRatio();
 	}
 	
 	@Override
@@ -350,12 +381,18 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		getPreview().getButtonWrapper(getCurrentTabIndex()).setElementY(ParseUtil.parseInt(getTextfieldValue(textfield_button_y)));
 	}
 	
-	private void setImageWidth() {
-		getPreview().getButtonWrapper(getCurrentTabIndex()).setElementWidth(ParseUtil.parseInt(getTextfieldValue(textfield_image_width)));
+	private void setImageWidth(boolean useAspect) {
+		if (useAspect)
+			getPreview().getButtonWrapper(getCurrentTabIndex()).setElementWidthWithAspect(ParseUtil.parseInt(getTextfieldValue(textfield_image_width)));
+		else
+			getPreview().getButtonWrapper(getCurrentTabIndex()).setElementWidth(ParseUtil.parseInt(getTextfieldValue(textfield_image_width)));
 	}
 	
-	private void setImageHeight() {
-		getPreview().getButtonWrapper(getCurrentTabIndex()).setElementHeight(ParseUtil.parseInt(getTextfieldValue(textfield_image_height)));
+	private void setImageHeight(boolean useAspect) {
+		if (useAspect)
+			getPreview().getButtonWrapper(getCurrentTabIndex()).setElementHeightWithAspect(ParseUtil.parseInt(getTextfieldValue(textfield_image_height)));
+		else
+			getPreview().getButtonWrapper(getCurrentTabIndex()).setElementHeight(ParseUtil.parseInt(getTextfieldValue(textfield_image_height)));
 	}
 	
 	private void setHelpText() {

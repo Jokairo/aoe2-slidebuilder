@@ -18,6 +18,9 @@ public class PreviewElement extends Pane {
     private double originalWidth;
     private double originalHeight;
 
+    private double aspect = 1920.0/1080.0;
+    private boolean keepAspect = true;
+
     public PreviewElement() {
         // For testing
         //this.setStyle("-fx-background-color: #ffffff");
@@ -41,6 +44,38 @@ public class PreviewElement extends Pane {
     public void setElementHeight(int value) {
         setPrefHeight(value * size_percentage);
         child.setElementHeight(value * size_percentage);
+    }
+
+    public void setAspectRatio(int width, int height) {
+        aspect = width / (double)height;
+    }
+
+    public void setKeepAspect(boolean keepAspect) {
+        this.keepAspect = keepAspect;
+    }
+
+    public boolean getKeepAspect() {
+        return this.keepAspect;
+    }
+
+    public double getAspectRatio() {
+        return this.aspect;
+    }
+
+    public void setElementWidthWithAspect(int value) {
+        setElementWidth(value);
+
+        int newHeight = (int)(value / aspect);
+        setElementHeight(newHeight);
+        child.saveHeightAfterWidthChange(newHeight);
+    }
+
+    public void setElementHeightWithAspect(int value) {
+        setElementHeight(value);
+
+        int newWidth = (int)(value * aspect);
+        setElementWidth(newWidth);
+        child.saveWidthAfterHeightChange(newWidth);
     }
 
     public double getElementX() {

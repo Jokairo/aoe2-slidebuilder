@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import slidebuilder.components.PreviewElement;
 import slidebuilder.controllers.interfaces.TabControllerInterface;
 import slidebuilder.data.CustomImage;
 import slidebuilder.data.CustomImageComboBox;
@@ -35,8 +36,10 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	@FXML private TextField image_bar_width;
 	@FXML private TextField image_bar_height;
 	@FXML private Label slide_title;
-	@FXML private CheckBox image_box;
+	@FXML private CheckBox checkbox_keep_aspect;
 	@FXML private TextField slide_bar_duration;
+
+	private boolean ignoreWidthHeightListener = false;
 	
 	//INIT
 	@FXML
@@ -57,6 +60,7 @@ public class ControllerSlideEdit extends TabControllerInterface {
 			}
 		});
 		image_button.getSelectionModel().select(defaultImage);
+		setCurrentImageAspectRatio();
 		
 		setTextFormatters();
 
@@ -81,11 +85,17 @@ public class ControllerSlideEdit extends TabControllerInterface {
 		});
 		
 		image_bar_width.textProperty().addListener((observable, oldValue, newValue) -> {
-			setImageWidth();
+			// Calculate aspect only when user types in width textfield and keep aspect checked
+			boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected();
+			setImageWidth(useAspect);
+			ignoreWidthHeightListener = false;
 		});
 		
 		image_bar_height.textProperty().addListener((observable, oldValue, newValue) -> {
-			setImageHeight();
+			// Calculate aspect only when user types in height textfield and keep aspect checked
+			boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected();
+			setImageHeight(useAspect);
+			ignoreWidthHeightListener = false;
 		});
 		
 		text_bar_x.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -102,6 +112,7 @@ public class ControllerSlideEdit extends TabControllerInterface {
 		
 		text_bar_height.textProperty().addListener((observable, oldValue, newValue) -> {
 			setTextHeight();
+
 		});
 
 		getPreview().getTextProperties().getX().addListener((observable, oldValue, newValue) -> {
@@ -129,10 +140,13 @@ public class ControllerSlideEdit extends TabControllerInterface {
 		});
 
 		getPreview().getImageProperties().getWidth().addListener((observable, oldValue, newValue) -> {
+			ignoreWidthHeightListener = true; // Prevent aspect ratio being calculated multiple times
 			image_bar_width.textProperty().set(newValue);
+
 		});
 
 		getPreview().getImageProperties().getHeight().addListener((observable, oldValue, newValue) -> {
+			ignoreWidthHeightListener = true; // Prevent aspect ratio being calculated multiple times
 			image_bar_height.textProperty().set(newValue);
 		});
 		
@@ -150,6 +164,25 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	private void setImageDefaultSize(ActionEvent event) {
 		setImageSizeOnSelection();
 	}
+
+
+	private void setCurrentImageAspectRatio() {
+		PreviewElement image = getPreview().getImageWrapper();
+		if (image == null) return;
+
+		int width = ParseUtil.parseInt(image_bar_width.getText());
+		int height = ParseUtil.parseInt(image_bar_height.getText());
+		image.setAspectRatio(width, height);
+	}
+	@FXML
+	private void setKeepAspect(ActionEvent event) {
+		boolean keepAspect = checkbox_keep_aspect.isSelected();
+		if (keepAspect) {
+			setCurrentImageAspectRatio();
+		}
+		PreviewElement image = getPreview().getImageWrapper();
+		image.setKeepAspect(keepAspect);
+	}
 	
 	@FXML
 	private void openAudioEditor(ActionEvent event) throws IOException {
@@ -158,8 +191,8 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	
 	private void setImageSizeOnSelection() {
 		setImageDefaultSize();
-		setImageWidth();
-		setImageHeight();
+		setImageWidth(false);
+		setImageHeight(false);
 	}
 	
 	public void setPreviewImage() {
@@ -170,6 +203,10 @@ public class ControllerSlideEdit extends TabControllerInterface {
 		//Otherwise set the value that is in the combobox
 		else {
 			getPreview().setImage(image_button.getValue());
+			if(checkbox_keep_aspect.isSelected()) {
+				setImageDefaultSize();
+			}
+			setCurrentImageAspectRatio();
 		}
 	}
 	
@@ -204,7 +241,7 @@ public class ControllerSlideEdit extends TabControllerInterface {
 				ParseUtil.parseInt(image_bar_y.getText()),
 				ParseUtil.parseInt(image_bar_width.getText()),
 				ParseUtil.parseInt(image_bar_height.getText()),
-				image_box.isSelected(),
+				checkbox_keep_aspect.isSelected(),
 				ParseUtil.parseDouble(slide_bar_duration.getText())
 		);
 	}
@@ -236,8 +273,10 @@ public class ControllerSlideEdit extends TabControllerInterface {
 		image_bar_y.setText(""+image_y);
 		image_bar_width.setText(""+image_width);
 		image_bar_height.setText(""+image_height);
-		image_box.setSelected(enabled);
+		checkbox_keep_aspect.setSelected(enabled);
 		slide_bar_duration.setText(""+duration);
+
+		setCurrentImageAspectRatio();
 	}
 	
 	@Override
@@ -269,12 +308,14 @@ public class ControllerSlideEdit extends TabControllerInterface {
 		getPreview().setImageY(ParseUtil.parseInt(getTextfieldValue(image_bar_y)));
 	}
 	
-	private void setImageWidth() {
-		getPreview().setImageWidth(ParseUtil.parseInt(getTextfieldValue(image_bar_width)));
+	private void setImageWidth(boolean useAspect) {
+		boolean changeAspect = !checkbox_keep_aspect.isSelected();
+		getPreview().setImageWidth(ParseUtil.parseInt(getTextfieldValue(image_bar_width)), useAspect, changeAspect);
 	}
 	
-	private void setImageHeight() {
-		getPreview().setImageHeight(ParseUtil.parseInt(getTextfieldValue(image_bar_height)));
+	private void setImageHeight(boolean useAspect) {
+		boolean changeAspect = !checkbox_keep_aspect.isSelected();
+		getPreview().setImageHeight(ParseUtil.parseInt(getTextfieldValue(image_bar_height)), useAspect, changeAspect);
 	}
 	
 	private void setTextX() {
@@ -299,18 +340,23 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	
 	private void setImageDefaultSize() {
 		int index = image_button.getSelectionModel().getSelectedIndex();
+		int width, height;
 		if(index > 0) {
 			String name = image_button.getValue();
 			CustomImage ci = DataManager.getDataCampaign().getCustomImageData().getCustomImage(CreatorEnum.SLIDE_IMAGE, name);
-			int width = ci.getWidth();
-			int height = ci.getHeight();
+			width = ci.getWidth();
+			height = ci.getHeight();
 			image_bar_width.setText(""+width);
 			image_bar_height.setText(""+height);
 		}
 		else {
-			image_bar_width.setText(""+1920);
-			image_bar_height.setText(""+1080);
+			width = 1920;
+			height = 1080;
 		}
+
+		image_bar_width.setText(""+width);
+		image_bar_height.setText(""+height);
+		setCurrentImageAspectRatio();
 	}
 	
 	private ArrayList<DataSlideshowSlide> getListSlides() {
@@ -367,4 +413,5 @@ public class ControllerSlideEdit extends TabControllerInterface {
 	protected void setTabName(Tab tab, int index) {
 		tab.setText(""+(index+1));
 	}
+
 }

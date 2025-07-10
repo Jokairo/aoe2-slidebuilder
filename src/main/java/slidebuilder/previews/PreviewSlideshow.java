@@ -17,6 +17,7 @@ public class PreviewSlideshow extends PreviewInterface {
 	public PreviewSlideshow() {
 		this.setIsSlidePreview(true);
 		labelWrapper.setChild(label);
+		labelWrapper.setKeepAspect(false);
 		pictureWrapper.setChild(picture);
 
 		elements.add(labelWrapper);
@@ -55,12 +56,22 @@ public class PreviewSlideshow extends PreviewInterface {
 		pictureWrapper.setElementY(i);
 	}
 	
-	public void setImageWidth(int i) {
-		pictureWrapper.setElementWidth(i);
+	public void setImageWidth(int i, boolean aspect, boolean changeAspect) {
+		if (aspect)
+			pictureWrapper.setElementWidthWithAspect(i);
+		else
+			pictureWrapper.setElementWidth(i);
 	}
 	
-	public void setImageHeight(int i) {
-		pictureWrapper.setElementHeight(i);
+	public void setImageHeight(int i, boolean aspect, boolean changeAspect) {
+		if (aspect)
+			pictureWrapper.setElementHeightWithAspect(i);
+		else
+			pictureWrapper.setElementHeight(i);
+	}
+
+	public PreviewElement getImageWrapper() {
+		return pictureWrapper;
 	}
 
 	@Override
