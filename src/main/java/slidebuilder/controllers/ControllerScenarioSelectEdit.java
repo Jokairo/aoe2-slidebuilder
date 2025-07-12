@@ -56,6 +56,7 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface<DataSce
 		FieldBinder.bindTextArea(textfield_help, v -> getButton().setHelpText(v));
 		FieldBinder.bindCombo(button_help, v -> getButton().setHelpStyle(v));
 		FieldBinder.bindCombo(button_image, v -> {
+			if (getButton() == null) return;
 			getButton().getButtonImage().setButtonImage(v);
 			if (checkbox_keep_aspect.isSelected()) setImageDefaultSize();
 			setCurrentImageAspectRatio();

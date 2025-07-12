@@ -61,7 +61,7 @@ public class PreviewScenarios extends PreviewInterface {
 				if(DataManager.getDataCampaign().getListScenarios().size() > i) {
 					DataScenarios ds = DataManager.getDataCampaign().getListScenarios().get(i);
 					if (ds != null) {
-						el.setElementX(ds.getButtonY());
+						el.setElementX(ds.getButtonX());
 						el.setElementY(ds.getButtonY());
 
 						sb.setTextX(ds.getButtonTextX());
