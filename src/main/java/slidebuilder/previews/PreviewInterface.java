@@ -25,6 +25,7 @@ public abstract class PreviewInterface {
 	private Pane root;
 	private String backgroundName;
 	private boolean is_slide;
+	private boolean isEditable = true;
 
 	protected PreviewElement selectedElement = null;
 	protected PreviewEnums.Actions action = PreviewEnums.Actions.NONE;
@@ -92,6 +93,7 @@ public abstract class PreviewInterface {
 	
 	private String getTitle() {
 		if(is_slide) {
+			if (!isEditable) return "Slide Live Preview";
 			return "Slide Preview";
 		}
 		else {
@@ -107,12 +109,16 @@ public abstract class PreviewInterface {
 		return background;
 	}
 	
-	protected boolean isOpen() {
+	public boolean isOpen() {
 		return stage.isShowing();
 	}
 	
 	protected void setIsSlidePreview(boolean b) {
 		is_slide = b;
+	}
+
+	protected void setIsEditable(boolean b) {
+		isEditable = b;
 	}
 	
 	protected void setBackgroundDefaultSize() {
@@ -124,7 +130,7 @@ public abstract class PreviewInterface {
 	public void setBackground() {
 		//No need to update background if preview is not open
 		if(!isOpen()) return;
-		
+
 		//Custom background
 		if(isCustomBackground()) {
 			background.setImage(getCustomBackground());
@@ -194,7 +200,12 @@ public abstract class PreviewInterface {
 			onMouseDragged(e.getSceneX(), e.getSceneY());
 		});
 
-		stage.setOnHiding(event -> System.out.println("Preview closed."));
+		stage.setOnHiding(event -> onClose());
+	}
+
+	public void closeWindow() {
+		onClose();
+		stage.close();
 	}
 
 	public int getSceneWidth() {
@@ -248,6 +259,8 @@ public abstract class PreviewInterface {
 	}
 
 	public void onMouseMoved(double mouseX, double mouseY) {
+		if (!isEditable) return;
+
 		boolean elementHovered = false;
 
 		// Priority on selected element
@@ -304,6 +317,7 @@ public abstract class PreviewInterface {
 	}
 
 	public void onMouseClicked(double mouseX, double mouseY) {
+		if (!isEditable) return;
 		if (!isClick) return;
 		boolean elementSelected = false;
 
@@ -341,6 +355,7 @@ public abstract class PreviewInterface {
 	}
 
 	public void onMousePressed(double mouseX, double mouseY) {
+		if (!isEditable) return;
 		isClick = true;
 		if (selectedElement == null) return;
 
@@ -362,12 +377,14 @@ public abstract class PreviewInterface {
 	}
 
 	public void onMouseReleased() {
+		if (!isEditable) return;
 		for (PreviewElement b : getElements()) {
 			b.getChild().onPress(false);
 		}
 	}
 
 	public void onMouseDragged(double mouseX, double mouseY) {
+		if (!isEditable) return;
 		isClick = false;
 		if (selectedElement == null) return;
 
@@ -396,6 +413,7 @@ public abstract class PreviewInterface {
 	}
 
 	public void saveElementData(PreviewEnums.Elements elementType, PreviewEnums.DataType dataType, int elementIndex, int value) {
+		if (!isEditable) return;
 		int slide = getCurrentSlideshowIndex();
 		switch (elementType) {
 			case BUTTON:
@@ -438,5 +456,7 @@ public abstract class PreviewInterface {
 	}
 
 	public abstract ArrayList<PreviewElement> getElements();
+
+	protected void onClose() {}
 
 }

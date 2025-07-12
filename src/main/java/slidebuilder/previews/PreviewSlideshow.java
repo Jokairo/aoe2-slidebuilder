@@ -89,10 +89,14 @@ public class PreviewSlideshow extends PreviewInterface {
 		getRoot().getChildren().add(labelWrapper);
 		getRoot().getChildren().add(label.getText());
 
+		// Playback controls implemented in PreviewSlideshowLive
+		addLiveStuffToRoot();
 	}
 
 	@Override
 	public ArrayList<PreviewElement> getElements() {
 		return elements;
 	}
+
+	protected void addLiveStuffToRoot() {}
 }

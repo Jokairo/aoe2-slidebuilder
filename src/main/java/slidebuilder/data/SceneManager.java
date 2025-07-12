@@ -289,6 +289,8 @@ public class SceneManager {
 
 		//Delete all preview buttons
 		DataManager.getPreviewScenarios().deleteButtons();
+
+		DataManager.closePreviews();
 	}
 	
 	// Load project file from computer
@@ -313,6 +315,8 @@ public class SceneManager {
 			((TabControllerInterface<?>)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).initData();
 			((TabControllerInterface<?>)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).loadData(0);
 			getSceneController(SceneEnum.CAMPAIGN_SLIDE).sceneIn();
+
+			DataManager.closePreviews();
 		}
 	}
 	

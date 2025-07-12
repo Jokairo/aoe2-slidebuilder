@@ -24,10 +24,9 @@ public class ControllerSlideMenu extends TabControllerInterface<DataSlideshow> {
 
 	@FXML private Spinner<Integer> slide_slides;
 	@FXML private ComboBox<String> slide_background;
-	@FXML private Button slide_button_edit;
+	@FXML private Button slide_button_edit, slide_button_back, slide_button_preview, slide_button_sync;
 	@FXML private CheckBox slide_disable;
 	@FXML private Label slide_title;
-	@FXML private Button slide_button_sync;
 	@FXML private VBox vbox;
 	private TextFieldFile textFieldFile; 
 
@@ -69,6 +68,16 @@ public class ControllerSlideMenu extends TabControllerInterface<DataSlideshow> {
 		setDisabledValues();
 	}
 
+	@FXML
+	private void openLivePreview() {
+		saveCurrentData();
+		DataManager.openPreviewSlideshowLive();
+		setEverythingDisabled(true);
+		DataManager.getPreviewSlideshowLive().setOnCloseCallback(() -> {
+			setEverythingDisabled(false);
+		});
+	}
+
 	@Override
 	protected void setDisabledValues() {
 		boolean disable = slide_disable.isSelected();
@@ -76,6 +85,7 @@ public class ControllerSlideMenu extends TabControllerInterface<DataSlideshow> {
 		slide_slides.setDisable(disable);
 		slide_button_edit.setDisable(disable);
 		textFieldFile.setTextFieldDisabled(disable);
+		slide_button_preview.setDisable(disable);
 		setAudioEditorDisabled();
 	}
 
@@ -131,6 +141,23 @@ public class ControllerSlideMenu extends TabControllerInterface<DataSlideshow> {
 
 	private void changeBackground() {
 		DataManager.getPreviewSlideshow().setBackground(slide_background.getValue());
+		DataManager.getPreviewSlideshowLive().setBackground(slide_background.getValue());
+	}
+
+	private void setEverythingDisabled(boolean disable) {
+		slide_background.setDisable(disable);
+		slide_slides.setDisable(disable);
+		slide_button_edit.setDisable(disable);
+		textFieldFile.setTextFieldDisabled(disable);
+		setAudioEditorDisabled();
+		getTabPane().setDisable(disable);
+		slide_button_back.setDisable(disable);
+		slide_button_preview.setDisable(disable);
+		slide_disable.setDisable(disable);
+
+		// Apply slide_disable value
+		if (!disable)
+			setDisabledValues();
 	}
 
 	private void setAudioEditorDisabled() {

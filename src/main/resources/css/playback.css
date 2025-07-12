@@ -1,0 +1,50 @@
+.root {
+	-fx-background-color:"#D5A76D";
+}
+
+.button {
+    -fx-background-color: linear-gradient(#6A5648, #544438);
+    -fx-font-family: "Book Antiqua";
+    -fx-font-size: 14px;
+    -fx-background-radius: 15;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+    -fx-text-fill: #ffffff;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(#836a59, #6b5748);
+}
+
+.button:pressed {
+    -fx-background-color: linear-gradient(#514136, #45382e);
+}
+
+.slider .axis { 
+	-fx-tick-label-fill: black; 
+}
+
+.slider .axis .axis-tick-mark, .slider .axis .axis-minor-tick-mark {
+    -fx-fill: null;
+    -fx-stroke: black;
+}
+
+.slider .thumb {
+	-fx-pref-height: 20px;
+	-fx-pref-width: 20px;
+	-fx-background-color: linear-gradient(#6A5648, #544438);
+}
+
+.labeltext {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 16px;
+    -fx-text-fill: #000000;
+}
+
+.hbox {
+    -fx-background-color: #f0cbac;
+    -fx-border-color: #6A5648;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 8, 0.0, 0, 2);
+}

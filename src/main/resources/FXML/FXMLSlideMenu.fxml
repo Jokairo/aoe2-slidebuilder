@@ -95,6 +95,11 @@
                         <Font name="Liberation Sans" size="13.0" />
                      </font>
                   </Button>
+                  <Button fx:id="slide_button_preview" mnemonicParsing="false" onAction="#openLivePreview" prefHeight="29.0" prefWidth="184.0" text="Play Slideshow">
+                     <font>
+                        <Font name="Liberation Sans" size="13.0" />
+                     </font>
+                  </Button>
                </children>
             </VBox>
          </children>
