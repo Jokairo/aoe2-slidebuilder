@@ -1,5 +1,6 @@
 package slidebuilder.controllers;
 
+import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -13,158 +14,66 @@ import javafx.scene.input.MouseEvent;
 import slidebuilder.components.PreviewElement;
 import slidebuilder.components.ScenarioButton;
 import slidebuilder.controllers.interfaces.TabControllerInterface;
-import slidebuilder.data.CustomImageComboBox;
 import slidebuilder.data.DataManager;
 import slidebuilder.data.DataScenarios;
 import slidebuilder.enums.CreatorEnum;
+import slidebuilder.enums.ResourceEnum;
 import slidebuilder.enums.SceneEnum;
 import slidebuilder.previews.PreviewScenarios;
 import slidebuilder.resource.ResourceManager;
-import slidebuilder.util.ParseUtil;
-import slidebuilder.util.TextFieldFormatter;
+import slidebuilder.util.*;
 
-public class ControllerScenarioSelectEdit extends TabControllerInterface {
+public class ControllerScenarioSelectEdit extends TabControllerInterface<DataScenarios> {
 	@FXML private Label slide_title;
-	@FXML private TextField textfield_text;
-	@FXML private TextField textfield_text_x;
-	@FXML private TextField textfield_text_y;
-	@FXML private TextField textfield_button_x;
-	@FXML private TextField textfield_button_y;
-	@FXML private ComboBox<String> button_difficulty;
-	@FXML private ComboBox<String> button_image;
-	@FXML private TextField textfield_image_width;
-	@FXML private TextField textfield_image_height;
+	@FXML private TextField textfield_text, textfield_text_x, textfield_text_y, textfield_button_x, textfield_button_y, textfield_image_width, textfield_image_height;
+	@FXML private ComboBox<String> button_difficulty, button_image, button_help;
 	@FXML private CheckBox checkbox_keep_aspect;
 	@FXML private TextArea textfield_help;
-	@FXML private ComboBox<String> button_help;
-	@FXML private ImageView button_color_white;
-	@FXML private ImageView button_color_blue;
-	@FXML private ImageView button_color_red;
-	@FXML private ImageView button_color_yellow;
-	@FXML private ImageView button_color_cyan;
-	@FXML private ImageView button_color_purple;
-	@FXML private ImageView button_color_gray;
-	@FXML private ImageView button_color_orange;
-	@FXML private ImageView button_color_italic;
+	@FXML private ImageView button_color_white, button_color_blue, button_color_red, button_color_yellow, button_color_cyan, button_color_purple, button_color_gray, button_color_orange, button_color_italic;
 	private boolean ignoreWidthHeightListener = false;
-	
-	//INIT
+
 	@FXML
 	public void initialize() {
-		
 		setSceneBack(SceneEnum.CAMPAIGN_SCENARIOSELECT);
-		
-		setTextFormatters();
 
-		//Button combobox
-		//Automatically add user added images
-		button_image.setItems(CustomImageComboBox.getCustomImageNameList(CreatorEnum.ICON));
+		// Text formatters
+		FormatterHelper.applyIntFormat(true, textfield_text_x, textfield_text_y);
+		FormatterHelper.applyIntFormat(false, textfield_button_x, textfield_button_y, textfield_image_width, textfield_image_height);
 
-		//Change to list's default value if currently selected custom resource is deleted
-		String defaultIcon = ResourceManager.instance.getDefaultResource(CreatorEnum.ICON);
-		button_image.valueProperty().addListener((options, oldValue, newValue) -> {
-			boolean currentResourceExists = CustomImageComboBox.getCustomImageNameList(CreatorEnum.ICON).contains(oldValue);
-			//Change to default value
-			if(oldValue != null && !currentResourceExists) {
-				button_image.getSelectionModel().select(defaultIcon);
-			}
-		});
-		button_image.getSelectionModel().select(defaultIcon);
-		setCurrentImageAspectRatio();
-		
-		//Difficulty combobox
-		int size = ResourceManager.instance.getDifficultyResourceList().size();
-		for(int i=0; i < size; i++) {
-			button_difficulty.getItems().add(ResourceManager.instance.getDifficultyResourceList().get(i).getName());
-		}
-		button_difficulty.getSelectionModel().selectFirst();
-		
-		//Help combobox
-		//Add an option for empty value
-		button_help.getItems().add("None");
-		size = ResourceManager.instance.getExpansionResourceList().size();
-		for(int i=0; i < size; i++) {
-			button_help.getItems().add(ResourceManager.instance.getExpansionResourceList().get(i).getId());
-		}
-		button_help.getSelectionModel().selectFirst();
-		
-		//Automatically update preview
-		textfield_text.textProperty().addListener((observable, oldValue, newValue) -> {
-		    		getPreview().getButton(getCurrentTabIndex()).getButtonLabel().setText(textfield_text.getText());
-		});
+		// Init comboboxes
+		ComboBoxInitializer.init(button_image, CreatorEnum.ICON, ResourceManager.instance.getDefaultResource(CreatorEnum.ICON));
+		ComboBoxInitializer.initFromResourceList(button_difficulty, ResourceEnum.DIFFICULTY);
+		ComboBoxInitializer.initFromResourceList(button_help, ResourceEnum.EXPANSION, "None");
 
-		/*
-			Listeners
-		 */
-		
-		textfield_text_x.textProperty().addListener((observable, oldValue, newValue) -> {
-			setTextX();
+		// Listeners (auto update preview when textfield changes)
+		FieldBinder.bindText(textfield_text, v -> getButton().getButtonLabel().setText(v));
+		FieldBinder.bindText(textfield_text_x, v -> getButton().setTextX(parse(textfield_text_x)));
+		FieldBinder.bindText(textfield_text_y, v -> getButton().setTextY(parse(textfield_text_y)));
+		FieldBinder.bindText(textfield_button_x, v -> getWrapper().setElementX(parse(textfield_button_x)));
+		FieldBinder.bindText(textfield_button_y, v -> getWrapper().setElementY(parse(textfield_button_y)));
+		FieldBinder.bindText(textfield_image_width, v -> applyImageSize(true, true));
+		FieldBinder.bindText(textfield_image_height, v -> applyImageSize(false, true));
+		FieldBinder.bindTextArea(textfield_help, v -> getButton().setHelpText(v));
+		FieldBinder.bindCombo(button_help, v -> getButton().setHelpStyle(v));
+		FieldBinder.bindCombo(button_image, v -> {
+			getButton().getButtonImage().setButtonImage(v);
+			if (checkbox_keep_aspect.isSelected()) setImageDefaultSize();
+			setCurrentImageAspectRatio();
 		});
-		
-		textfield_text_y.textProperty().addListener((observable, oldValue, newValue) -> {
-			setTextY();
-		});
-		
-		textfield_button_x.textProperty().addListener((observable, oldValue, newValue) -> {
-			setButtonX();
-		});
-		
-		textfield_button_y.textProperty().addListener((observable, oldValue, newValue) -> {
-			setButtonY();
-		});
-		
-		textfield_image_width.textProperty().addListener((observable, oldValue, newValue) -> {
-			boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected();
-			setImageWidth(useAspect);
-			ignoreWidthHeightListener = false;
-		});
-		
-		textfield_image_height.textProperty().addListener((observable, oldValue, newValue) -> {
-			boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected();
-			setImageHeight(useAspect);
-			ignoreWidthHeightListener = false;
-		});
-		
-		textfield_help.textProperty().addListener((observable, oldValue, newValue) -> {
-			setHelpText();
-		});
-		
-		button_help.valueProperty().addListener((observable, oldValue, newValue) -> {
-			setHelpStyle();
-		});
+		FieldBinder.bindCombo(button_difficulty, v -> getButton().getButtonLabel().setDifficulty(v));
 
-		button_image.valueProperty().addListener((observable, oldValue, newValue) -> {
-			setIcon();
-		});
-
-		button_difficulty.valueProperty().addListener((observable, oldValue, newValue) -> {
-			setDifficulty();
-		});
-
-		getPreview().getButtonProperties().getX().addListener((observable, oldValue, newValue) -> {
-			textfield_button_x.textProperty().set(newValue);
-		});
-
-		getPreview().getButtonProperties().getY().addListener((observable, oldValue, newValue) -> {
-			textfield_button_y.textProperty().set(newValue);
-		});
-
+		// Listeners (auto update textfields when preview changes)
+		FieldBinder.bindPropertyToText(getPreview().getButtonProperties().getX(), textfield_button_x);
+		FieldBinder.bindPropertyToText(getPreview().getButtonProperties().getY(), textfield_button_y);
+		FieldBinder.bindPropertyToText(getPreview().getButtonLabelProperties().getX(), textfield_text_x);
+		FieldBinder.bindPropertyToText(getPreview().getButtonLabelProperties().getY(), textfield_text_y);
 		getPreview().getButtonProperties().getWidth().addListener((observable, oldValue, newValue) -> {
 			ignoreWidthHeightListener = true; // Prevent aspect ratio being calculated multiple times
 			textfield_image_width.textProperty().set(newValue);
 		});
-
 		getPreview().getButtonProperties().getHeight().addListener((observable, oldValue, newValue) -> {
 			ignoreWidthHeightListener = true; // Prevent aspect ratio being calculated multiple times
 			textfield_image_height.textProperty().set(newValue);
-		});
-
-		getPreview().getButtonLabelProperties().getX().addListener((observable, oldValue, newValue) -> {
-			textfield_text_x.textProperty().set(newValue);
-		});
-
-		getPreview().getButtonLabelProperties().getY().addListener((observable, oldValue, newValue) -> {
-			textfield_text_y.textProperty().set(newValue);
 		});
 		
 		//Color Button handlers
@@ -178,23 +87,12 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		addHelpButtonEventHandler(button_color_orange, "<orange>");
 		addHelpButtonEventHandler(button_color_italic, "<i>");
 	}
-	
-	private void addHelpButtonEventHandler(ImageView button, String text) {
-		button.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> textfield_help.insertText(textfield_help.getCaretPosition(), text));
-	}
 
 	@FXML
 	private void setResize(ActionEvent event) {
-		setImageSizeOnSelection();
-	}
-
-	private void setCurrentImageAspectRatio() {
-		PreviewElement button = getPreview().getButtonWrapper(getCurrentTabIndex());
-		if (button == null) return;
-
-		int width = ParseUtil.parseInt(textfield_image_width.getText());
-		int height = ParseUtil.parseInt(textfield_image_height.getText());
-		button.setAspectRatio(width, height);
+		setImageDefaultSize();
+		applyImageSize(true, false);
+		applyImageSize(false, false);
 	}
 
 	@FXML
@@ -203,231 +101,139 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface {
 		if (keepAspect) {
 			setCurrentImageAspectRatio();
 		}
-		getPreview().getButton(getCurrentTabIndex()).getWrapperClass().setKeepAspect(keepAspect);
-	}
-	
-	private void setImageSizeOnSelection() {
-		setImageDefaultSize();
-		setImageWidth(false);
-		setImageHeight(false);
+		getWrapper().setKeepAspect(keepAspect);
 	}
 
-	private void setDifficulty() {
-		getPreview().getButton(getCurrentTabIndex()).getButtonLabel().setDifficulty(button_difficulty.getValue());
-	}
-
-	private void setIcon() {
-		ScenarioButton sb = getPreview().getButton(getCurrentTabIndex());
-		if(sb == null) return;
-
-		sb.getButtonImage().setButtonImage((button_image.getValue()));
-		if(checkbox_keep_aspect.isSelected()) {
-			setImageDefaultSize();
-		}
-		setCurrentImageAspectRatio();
-	}
-	
-	private void setTextFormatters() {
-		textfield_text_x.setTextFormatter(new TextFieldFormatter(0, true));
-		textfield_text_y.setTextFormatter(new TextFieldFormatter(0, true));
-		textfield_button_x.setTextFormatter(new TextFieldFormatter(0, false));
-		textfield_button_y.setTextFormatter(new TextFieldFormatter(0, false));
-		textfield_image_width.setTextFormatter(new TextFieldFormatter(0, false));
-		textfield_image_height.setTextFormatter(new TextFieldFormatter(0, false));
-	}
-
-	private void setImageSize(int width, int height) {
-		ignoreWidthHeightListener = true;
-		textfield_image_width.setText(""+width);
-		textfield_image_height.setText(""+height);
-	}
-	
-	private void setImageDefaultSize() {
-		String name = button_image.getValue();
-		int index = getTabPane().getSelectionModel().getSelectedIndex();
-		ScenarioButton sb = getPreview().getButton(index);
-		if(sb == null || name == null) return;
-
-		PreviewElement wrapper = getPreview().getButtonWrapper(getCurrentTabIndex());
-		if (wrapper == null) return;
-		
-		int width = (int)sb.getImageOriginalWidth(name);
-		int height = (int)sb.getImageOriginalHeight(name);
-		wrapper.setAspectRatio(width, height);
-		setImageSize(width, height);
-	}
-	
 	@Override
-	protected void setTabDefaultValues(int i) {
-		//Init button data if it doesnt exist yet
-		if(DataManager.getDataCampaign().getListScenarios().size()-1 < i) {
-
-			//Button default properties
-			int bXdefault = 1300;
-			int bYdefault = 150;
-			int labelY = 250;
-			int row = i/3; //Buttons are created in rows of 3
-
-			if (i < 9) {
-				bXdefault -= row * 200;
-				bYdefault += row * 400;
-			}
-
-			int bX = 100;
-			int bY = 100;
-			int column = i%3;
-			int scenarioNum = i + 1;
-			String buttonText = scenarioNum+". Scenario";
-
-			if (i < 9) {
-				bX = bXdefault + column * 700;
-				bY = bYdefault + column * 250;
-			}
-
-			//Save the button
-			DataScenarios ds = new DataScenarios();
-			ds.save(buttonText, bX, bY, 0, labelY, button_image.getItems().get(0), 280, 280, "", button_help.getItems().get(0), button_difficulty.getItems().get(0), true);
-			DataManager.getDataCampaign().getListScenarios().add(ds);
-
-			//Update preview button
-			getPreview().getButton(i).getButtonLabel().setText(buttonText);
-			getPreview().getButtonWrapper(i).setElementX(bX);
-			getPreview().getButtonWrapper(i).setElementY(bY);
-			getPreview().getButton(i).setTextY(labelY);
-		}
+	protected List<DataScenarios> getList() {
+		return DataManager.getDataCampaign().getListScenarios();
 	}
-	
-	private PreviewScenarios getPreview() {
-		return DataManager.getPreviewScenarios();
+
+	@Override
+	protected DataScenarios createDefault(int index) {
+		int bXdefault = 1300, bYdefault = 150, labelY = 250;
+		int row = index / 3, column = index % 3, scenarioNum = index + 1;
+		String buttonText = scenarioNum + ". Scenario";
+
+		int bX = 100, bY = 100;
+		if (index < 9) {
+			bXdefault -= row * 200;
+			bYdefault += row * 400;
+
+			bX = bXdefault + column * 700;
+			bY = bYdefault + column * 250;
+		}
+
+		DataScenarios ds = new DataScenarios();
+		ds.save(
+			buttonText, bX, bY, 0, labelY,
+			button_image.getItems().get(0), 280, 280, "",
+			button_help.getItems().get(0), button_difficulty.getItems().get(0), true
+		);
+
+		//Update preview button
+		getPreview().getButton(index).getButtonLabel().setText(buttonText);
+		getPreview().getButtonWrapper(index).setElementX(bX);
+		getPreview().getButtonWrapper(index).setElementY(bY);
+		getPreview().getButton(index).setTextY(labelY);
+
+		return ds;
 	}
 	
 	@Override
 	public void saveCurrentData(int index) {
-		DataManager.getDataCampaign().getListScenarios().get(index).save(
-				textfield_text.getText(),
-				ParseUtil.parseInt(textfield_button_x.getText()),
-				ParseUtil.parseInt(textfield_button_y.getText()),
-				ParseUtil.parseInt(textfield_text_x.getText()),
-				ParseUtil.parseInt(textfield_text_y.getText()),
-				button_image.getValue(),
-				ParseUtil.parseInt(textfield_image_width.getText()),
-				ParseUtil.parseInt(textfield_image_height.getText()),
-				textfield_help.getText(),
-				button_help.getValue(),
-				button_difficulty.getValue(),
-				checkbox_keep_aspect.isSelected()
+		getList().get(index).save(
+			textfield_text.getText(),
+			parse(textfield_button_x),
+			parse(textfield_button_y),
+			parse(textfield_text_x),
+			parse(textfield_text_y),
+			button_image.getValue(),
+			parse(textfield_image_width),
+			parse(textfield_image_height),
+			textfield_help.getText(),
+			button_help.getValue(),
+			button_difficulty.getValue(),
+			checkbox_keep_aspect.isSelected()
 		);
 	}
-	
-	@Override
-	public void loadCurrentData(int index) {
-		
-		DataScenarios ds = DataManager.getDataCampaign().getListScenarios().get(index);
-		
-		String text = ds.getButtonText();
-		int text_x = ds.getButtonTextX();
-		int text_y = ds.getButtonTextY();
-		int button_x = ds.getButtonX();
-		int button_y = ds.getButtonY();
-		String image = ds.getImage();
-		int image_width = ds.getImageWidth();
-		int image_height = ds.getImageHeight();
-		boolean is_def_size = ds.getIsDefaultSize();
-		String help_text = ds.getHelpText();
-		String help_style = ds.getHelpStyle();
-		String difficulty = ds.getDifficulty();
-		
-		textfield_text.setText(text);
-		textfield_text_x.setText(""+text_x);
-		textfield_text_y.setText(""+text_y);
-		textfield_button_x.setText(""+button_x);
-		textfield_button_y.setText(""+button_y);
-		button_image.setValue(image);
-		textfield_image_width.setText(""+image_width);
-		textfield_image_height.setText(""+image_height);
-		checkbox_keep_aspect.setSelected(is_def_size);
-		textfield_help.setText(""+help_text);
-		button_help.setValue(help_style);
-		button_difficulty.setValue(difficulty);
 
+	@Override
+	protected void applyData(DataScenarios ds) {
+		textfield_text.setText(ds.getButtonText());
+		textfield_text_x.setText("" + ds.getButtonTextX());
+		textfield_text_y.setText("" + ds.getButtonTextY());
+		textfield_button_x.setText("" + ds.getButtonX());
+		textfield_button_y.setText("" + ds.getButtonY());
+		button_image.setValue(ds.getImage());
+		textfield_image_width.setText("" + ds.getImageWidth());
+		textfield_image_height.setText("" + ds.getImageHeight());
+		checkbox_keep_aspect.setSelected(ds.getIsDefaultSize());
+		textfield_help.setText(ds.getHelpText());
+		button_help.setValue(ds.getHelpStyle());
+		button_difficulty.setValue(ds.getDifficulty());
 		setCurrentImageAspectRatio();
 	}
-	
+
+	@Override
+	protected int getItemCount() {
+		return DataManager.getDataCampaign().getCampaignScenarios();
+	}
+
 	@Override
 	protected void setDisabledValues() {
 		// Not used
 	}
-	
-	private String getTextfieldValue(TextField tf) {
-		if(tf.getText().equals(""))
-			return "0";
-		else
-			return tf.getText();
-	}
-	
-	private void setTextX() {
-		getPreview().getButton(getCurrentTabIndex()).setTextX(ParseUtil.parseInt(getTextfieldValue(textfield_text_x)));
-	}
-	
-	private void setTextY() {
-		getPreview().getButton(getCurrentTabIndex()).setTextY(ParseUtil.parseInt(getTextfieldValue(textfield_text_y)));
-	}
-	
-	private void setButtonX() {
-		getPreview().getButtonWrapper(getCurrentTabIndex()).setElementX(ParseUtil.parseInt(getTextfieldValue(textfield_button_x)));
-	}
-	
-	private void setButtonY() {
-		getPreview().getButtonWrapper(getCurrentTabIndex()).setElementY(ParseUtil.parseInt(getTextfieldValue(textfield_button_y)));
-	}
-	
-	private void setImageWidth(boolean useAspect) {
-		if (useAspect)
-			getPreview().getButtonWrapper(getCurrentTabIndex()).setElementWidthWithAspect(ParseUtil.parseInt(getTextfieldValue(textfield_image_width)));
-		else
-			getPreview().getButtonWrapper(getCurrentTabIndex()).setElementWidth(ParseUtil.parseInt(getTextfieldValue(textfield_image_width)));
-	}
-	
-	private void setImageHeight(boolean useAspect) {
-		if (useAspect)
-			getPreview().getButtonWrapper(getCurrentTabIndex()).setElementHeightWithAspect(ParseUtil.parseInt(getTextfieldValue(textfield_image_height)));
-		else
-			getPreview().getButtonWrapper(getCurrentTabIndex()).setElementHeight(ParseUtil.parseInt(getTextfieldValue(textfield_image_height)));
-	}
-	
-	private void setHelpText() {
-		getPreview().getButton(getCurrentTabIndex()).setHelpText(textfield_help.getText());
-	}
-	
-	private void setHelpStyle() {
-		getPreview().getButton(getCurrentTabIndex()).setHelpStyle(button_help.getValue());
-	}
-	
+
 	@Override
 	protected void setTitle() {
-		//Set slide title
-		int tab_num = getCurrentTabIndex() + 1; //+1, dont want to start counting from 0
+		String tab_num = ControllerHelper.getNumericTabLabel(getCurrentTabIndex());
 		slide_title.setText("Scenario "+tab_num+" Button");
 	}
 
 	@Override
-	public void sceneIn() {
-		//Create as many tabs as num of scenarios
-		int scenarios = DataManager.getDataCampaign().getCampaignScenarios();
-		setTabSize(scenarios);
-		
-		//Load data for the new root
-		initData();
-		loadData(0);
-	}
-
-	@Override
-	public void sceneOut() {
-		saveCurrentData();
-	}
-
-	@Override
 	protected void setTabName(Tab tab, int index) {
-		tab.setText(""+(index+1));
+		String tab_num = ControllerHelper.getNumericTabLabel(index);
+		tab.setText(tab_num);
 	}
+
+	private void setCurrentImageAspectRatio() {
+		ControllerHelper.setCurrentImageAspectRatio(getWrapper(), textfield_image_width, textfield_image_height);
+	}
+
+	private void setImageDefaultSize() {
+		String name = button_image.getValue();
+		ScenarioButton sb = getButton();
+		if (sb == null || name == null) return;
+
+		int w = (int) sb.getImageOriginalWidth(name);
+		int h = (int) sb.getImageOriginalHeight(name);
+		getWrapper().setAspectRatio(w, h);
+		textfield_image_width.setText("" + w);
+		textfield_image_height.setText("" + h);
+		ignoreWidthHeightListener = true;
+	}
+
+	private void addHelpButtonEventHandler(ImageView button, String text) {
+		button.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> textfield_help.insertText(textfield_help.getCaretPosition(), text));
+	}
+
+	private void applyImageSize(boolean isWidth, boolean useAspectIfPossible) {
+		boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected();
+		int val = parse(isWidth ? textfield_image_width : textfield_image_height);
+		if (useAspect && useAspectIfPossible) {
+			if (isWidth) getWrapper().setElementWidthWithAspect(val);
+			else getWrapper().setElementHeightWithAspect(val);
+		}
+		else {
+			if (isWidth) getWrapper().setElementWidth(val);
+			else getWrapper().setElementHeight(val);
+		}
+		ignoreWidthHeightListener = false;
+	}
+
+	private ScenarioButton getButton() { return getPreview().getButton(getCurrentTabIndex()); }
+	private PreviewElement getWrapper() { return getPreview().getButtonWrapper(getCurrentTabIndex()); }
+	private PreviewScenarios getPreview() { return DataManager.getPreviewScenarios(); }
+	private int parse(TextField tf) { return ParseUtil.parseInt(tf.getText()); }
 }

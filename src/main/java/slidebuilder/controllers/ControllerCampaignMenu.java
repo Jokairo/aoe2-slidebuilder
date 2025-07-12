@@ -4,8 +4,6 @@ import java.io.File;
 import javafx.fxml.FXML;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.VBox;
 import slidebuilder.components.TextFieldFile;
 import slidebuilder.controllers.interfaces.ControllerDataInterface;
@@ -18,7 +16,6 @@ public class ControllerCampaignMenu extends ControllerDataInterface {
 	@FXML private VBox vbox;
 	private TextFieldFile textFieldFile;
 
-	//INIT
 	@FXML
 	public void initialize() {
 		textFieldFile = new TextFieldFile();
@@ -53,17 +50,6 @@ public class ControllerCampaignMenu extends ControllerDataInterface {
 		textFieldFile.filePathInvalid();
 	}
 
-	private String getCampaignNameFromPath() {
-		String s = "";
-		if(textFieldFile.getTextFieldString() != null)
-			s = textFieldFile.getTextFieldString();
-		File f = new File(s);
-
-		//File name without extensions
-		String fileName = f.getName();
-		return fileName.replace(".aoe2campaign", "");
-	}
-
 	@Override
 	protected void setDisabledValues() {
 		// Not used
@@ -77,5 +63,16 @@ public class ControllerCampaignMenu extends ControllerDataInterface {
 	@Override
 	public void sceneOut() {
 		// Not used
+	}
+
+	private String getCampaignNameFromPath() {
+		String s = "";
+		if(textFieldFile.getTextFieldString() != null)
+			s = textFieldFile.getTextFieldString();
+		File f = new File(s);
+
+		//File name without extensions
+		String fileName = f.getName();
+		return fileName.replace(".aoe2campaign", "");
 	}
 }

@@ -1,7 +1,6 @@
 package slidebuilder.controllers;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,16 +13,14 @@ import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
 import slidebuilder.components.TextFieldFile;
 import slidebuilder.controllers.interfaces.TabControllerInterface;
-import slidebuilder.data.CustomImageComboBox;
 import slidebuilder.data.DataManager;
 import slidebuilder.data.DataSlideshow;
 import slidebuilder.enums.CreatorEnum;
 import slidebuilder.enums.SceneEnum;
 import slidebuilder.resource.ResourceManager;
-import slidebuilder.util.FileFormats;
-import slidebuilder.util.Popup;
+import slidebuilder.util.*;
 
-public class ControllerSlideMenu extends TabControllerInterface {
+public class ControllerSlideMenu extends TabControllerInterface<DataSlideshow> {
 
 	@FXML private Spinner<Integer> slide_slides;
 	@FXML private ComboBox<String> slide_background;
@@ -33,11 +30,9 @@ public class ControllerSlideMenu extends TabControllerInterface {
 	@FXML private Button slide_button_sync;
 	@FXML private VBox vbox;
 	private TextFieldFile textFieldFile; 
-	
-	//INIT
+
 	@FXML
 	public void initialize() {
-		
 		setSceneBack(SceneEnum.CAMPAIGN_MENU);
 		setSceneNext(SceneEnum.CAMPAIGN_SLIDE_EDIT);
 		
@@ -45,44 +40,18 @@ public class ControllerSlideMenu extends TabControllerInterface {
 		textFieldFile.setTitle("Add Slideshow Audio (Optional)");
 		textFieldFile.setFileFormat(FileFormats.FILE_FORMAT_AUDIO);
 		textFieldFile.setFileExtensions(new String[]{FileFormats.FILE_EXTENSION_WAV});
-		
 		vbox.getChildren().addAll(textFieldFile.getContainer().getChildren());
-		
-		setAudioEditorListener();
-		
-		//Setting Min and Max slide amount
+
 		slide_slides.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20));
+		ComboBoxInitializer.init(slide_background, CreatorEnum.SLIDE_BG, ResourceManager.instance.getDefaultResource(CreatorEnum.SLIDE_BG));
 
-		//Automatically add user added images
-		slide_background.setItems(CustomImageComboBox.getCustomImageNameList(CreatorEnum.SLIDE_BG));
-
-		//Change to list's default value if currently selected custom resource is deleted
-		String defaultBg = ResourceManager.instance.getDefaultResource(CreatorEnum.SLIDE_BG);
-		slide_background.valueProperty().addListener((options, oldValue, newValue) -> {
-			boolean currentResourceExists = CustomImageComboBox.getCustomImageNameList(CreatorEnum.SLIDE_BG).contains(oldValue);
-			//Change to default value
-			if(oldValue != null && !currentResourceExists) {
-				slide_background.getSelectionModel().select(defaultBg);
-			}
-		});
-		slide_background.getSelectionModel().select(defaultBg);
-
-		/*
-			Listeners
-		 */
-
-		slide_background.valueProperty().addListener((observable, oldValue, newValue) -> {
-			changeBackground();
-		});
+		// Listeners (auto update preview when textfield changes)
+		FieldBinder.bindCombo(slide_background, v -> changeBackground());
+		FieldBinder.bindText(textFieldFile.getTextField(), v -> setAudioEditorDisabled());
 		
 		//Save default data so preview can be instantly used when project launched
 		initData();
 	}
-
-	private void changeBackground() {
-		DataManager.getPreviewSlideshow().setBackground(slide_background.getValue());
-	}
-
 	
 	@FXML
 	private void openAudioEditor(ActionEvent event) {
@@ -99,28 +68,7 @@ public class ControllerSlideMenu extends TabControllerInterface {
 	private void setDisabled(ActionEvent event) {
 		setDisabledValues();
 	}
-	
-	private void setAudioEditorListener() {
 
-		textFieldFile.getTextField().textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				setAudioEditorDisabled();
-			}
-		});
-	}
-	
-	private void setAudioEditorDisabled() {
-		//If slideshow is disabled, can't access audio editor
-		if (slide_disable.isSelected())
-			slide_button_sync.setDisable(true);
-		//If there is no path selected to audio file, audio editor is disabled
-		else if (textFieldFile.getTextFieldString() == null || textFieldFile.getTextFieldString().isEmpty())
-			slide_button_sync.setDisable(true);
-		else
-			slide_button_sync.setDisable(false);
-	}
-	
 	@Override
 	protected void setDisabledValues() {
 		boolean disable = slide_disable.isSelected();
@@ -130,88 +78,69 @@ public class ControllerSlideMenu extends TabControllerInterface {
 		textFieldFile.setTextFieldDisabled(disable);
 		setAudioEditorDisabled();
 	}
-	
+
 	@Override
-	protected void setTabDefaultValues(int i) {
-		if(DataManager.getDataCampaign().getListSlideshow().size()-1 < i) {
-			DataSlideshow ds = new DataSlideshow();
-			ds.save(1, slide_background.getItems().get(0), false, null);
-			DataManager.getDataCampaign().getListSlideshow().add(ds);
-		}
+	protected List<DataSlideshow> getList() {
+		return DataManager.getDataCampaign().getListSlideshow();
 	}
-	
+
 	@Override
-	protected void setTabName(Tab tab, int index) {
-		String prefix = "I";
-		if(index%2 != 0) prefix = "O";
-		
-		int num = (int) Math.floor(index/2) + 1;
-		
-		tab.setText(num+prefix);
+	protected DataSlideshow createDefault(int index) {
+		String defaultBg = slide_background.getItems().isEmpty()
+				? ResourceManager.instance.getDefaultResource(CreatorEnum.SLIDE_BG)
+				: slide_background.getItems().get(0);
+		DataSlideshow ds = new DataSlideshow();
+		ds.save(1, defaultBg, false, null);
+		return ds;
 	}
-	
+
+	@Override
+	protected void applyData(DataSlideshow ds) {
+		slide_slides.getValueFactory().setValue(ds.getSlides());
+		slide_background.getSelectionModel().select(ds.getBackground());
+		slide_disable.setSelected(ds.getDisable());
+		textFieldFile.setTextFieldString(ds.getAudioPath());
+		setAudioEditorDisabled();
+		textFieldFile.filePathInvalid(); // will show error if invalid
+	}
+
 	@Override
 	public void saveCurrentData(int index) {
-		DataManager.getDataCampaign().getListSlideshow().get(index).save(
-				slide_slides.getValue(),
-				slide_background.getValue(),
-				slide_disable.isSelected(),
-				textFieldFile.getTextFieldString()
+		getList().get(index).save(
+			slide_slides.getValue(),
+			slide_background.getValue(),
+			slide_disable.isSelected(),
+			textFieldFile.getTextFieldString()
 		);
 	}
-	
+
 	@Override
-	public void loadCurrentData(int index) {
-		DataSlideshow ds = DataManager.getDataCampaign().getListSlideshow().get(index);
-		
-		int slides = ds.getSlides();
-		slide_slides.getValueFactory().setValue(slides);
-
-		String bg = ds.getBackground();
-		slide_background.getSelectionModel().select(bg);
-
-		boolean b = ds.getDisable();
-		slide_disable.setSelected(b);
-		
-		String audio = ds.getAudioPath();
-		textFieldFile.setTextFieldString(audio);
-		
-		setAudioEditorDisabled();
-		//Check if the path to the file exists, if not it displays error
-		textFieldFile.filePathInvalid();
+	protected int getItemCount() {
+		return DataManager.getDataCampaign().getCampaignScenarios() * 2;
 	}
-	
+
+	@Override
+	protected void setTabName(Tab tab, int index) {
+		tab.setText(ControllerHelper.getTabLabelWithPrefix(index, "I", "O"));
+	}
+
 	@Override
 	protected void setTitle() {
-		
-		int tab = getCurrentTabIndex();
-		
-		int num = tab/2 + 1; //+1 because we dont want it to start from 0
-		
-		if(tab%2==0) {
-			//Is intro
-			slide_title.setText("Intro "+num);
-		}
-		else {
-			//Is outro
-			slide_title.setText("Outro "+num);
-		}
+		slide_title.setText(ControllerHelper.getIntroOutroTitle(getCurrentTabIndex()));
 	}
 
-	@Override
-	public void sceneIn() {
-		//Create twice as many tabs as num of scenarios, because every scenario has 1 intro and 1 outro slide
-		int slides = DataManager.getDataCampaign().getCampaignScenarios() * 2;
-		setTabSize(slides);
-		
-		//Load data for the new root
-		initData();
-		loadData(0);
+	private void changeBackground() {
+		DataManager.getPreviewSlideshow().setBackground(slide_background.getValue());
 	}
 
-	@Override
-	public void sceneOut() {
-		// Not used
+	private void setAudioEditorDisabled() {
+		//If slideshow is disabled, can't access audio editor
+		if (slide_disable.isSelected())
+			slide_button_sync.setDisable(true);
+			//If there is no path selected to audio file, audio editor is disabled
+		else if (textFieldFile.getTextFieldString() == null || textFieldFile.getTextFieldString().isEmpty())
+			slide_button_sync.setDisable(true);
+		else
+			slide_button_sync.setDisable(false);
 	}
-	
 }

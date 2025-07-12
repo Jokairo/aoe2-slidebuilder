@@ -8,12 +8,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import slidebuilder.controllers.interfaces.ControllerDataInterface;
-import slidebuilder.data.CustomImageComboBox;
 import slidebuilder.data.DataManager;
 import slidebuilder.enums.CreatorEnum;
 import slidebuilder.enums.SceneEnum;
 import slidebuilder.previews.PreviewScenarios;
 import slidebuilder.resource.ResourceManager;
+import slidebuilder.util.ComboBoxInitializer;
+import slidebuilder.util.FieldBinder;
 
 public class ControllerScenarioSelectMenu extends ControllerDataInterface {
 	
@@ -22,40 +23,18 @@ public class ControllerScenarioSelectMenu extends ControllerDataInterface {
 	@FXML private ComboBox<String> button_bg;
 	@FXML private Button button_edit;
 	@FXML private CheckBox checkbox_disable;
-	
-	//INIT
+
 	@FXML
 	public void initialize() {
-
 		setSceneBack(SceneEnum.CAMPAIGN_MENU);
 		setSceneNext(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT);
 		
-		//Campaign backgrounds combobox
-		//Automatically add user added images
-		button_bg.setItems(CustomImageComboBox.getCustomImageNameList(CreatorEnum.CAMPAIGN_BG));
+		// Init comboboxes
+		ComboBoxInitializer.init(button_bg, CreatorEnum.CAMPAIGN_BG, ResourceManager.instance.getDefaultResource(CreatorEnum.CAMPAIGN_BG));
 
-		//Change to list's default value if currently selected custom resource is deleted
-		String defaultBg = ResourceManager.instance.getDefaultResource(CreatorEnum.CAMPAIGN_BG);
-		button_bg.valueProperty().addListener((options, oldValue, newValue) -> {
-			boolean currentResourceExists = CustomImageComboBox.getCustomImageNameList(CreatorEnum.CAMPAIGN_BG).contains(oldValue);
-			//Change to default value
-			if(oldValue != null && !currentResourceExists) {
-				button_bg.getSelectionModel().select(defaultBg);
-			}
-		});
-		button_bg.getSelectionModel().select(defaultBg);
-		
-		/*
-			Listeners
-		 */
-
-		button_bg.valueProperty().addListener((observable, oldValue, newValue) -> {
-			changeBackground();
-		});
-
-		textfield_title.textProperty().addListener((observable, oldValue, newValue) -> {
-			getPreview().setHeaderText(textfield_title.getText());
-		});
+		// Listeners (auto update preview when textfield changes)
+		FieldBinder.bindCombo(button_bg, v -> changeBackground());
+		FieldBinder.bindText(textfield_title, getPreview()::setHeaderText);
 		
 		//Save default data so preview can be instantly used when project launched
 		saveCurrentData();
@@ -64,14 +43,6 @@ public class ControllerScenarioSelectMenu extends ControllerDataInterface {
 	@FXML
 	private void setDisabled(ActionEvent event) {
 		setDisabledValues();
-	}
-
-	private void changeBackground() {
-		getPreview().setBackground(button_bg.getValue());
-	}
-	
-	private PreviewScenarios getPreview() {
-		return DataManager.getPreviewScenarios();
 	}
 	
 	@Override
@@ -117,5 +88,13 @@ public class ControllerScenarioSelectMenu extends ControllerDataInterface {
 	@Override
 	public void sceneOut() {
 		// Not used
+	}
+
+	private void changeBackground() {
+		getPreview().setBackground(button_bg.getValue());
+	}
+
+	private PreviewScenarios getPreview() {
+		return DataManager.getPreviewScenarios();
 	}
 }

@@ -29,11 +29,9 @@ public class ControllerCreateCustomImage extends ControllerStageInterface {
 	@FXML private TableColumn<CustomImage, String> tableColumnPath;
 	
 	private CreatorEnum creatorEnum;
-	
-	//INIT
+
 	@FXML
 	public void initialize() {
-
 		//Auto resize table horizontally and vertically when you resize window
 		HBox.setHgrow(tableView, Priority.ALWAYS);
 		VBox.setVgrow(tableHbox, Priority.ALWAYS);
@@ -45,7 +43,28 @@ public class ControllerCreateCustomImage extends ControllerStageInterface {
 		
 		tableColumnName.impl_setReorderable(false);
 		tableColumnPath.impl_setReorderable(false);
+	}
 
+	@FXML
+	private void chooseFile(ActionEvent event) {
+		FileChooserUtil fc = new FileChooserUtil();
+		String fileFormat = FileFormats.FILE_FORMAT_PNG;
+		String[] fileExtensions = {FileFormats.FILE_EXTENSION_PNG};
+		List<File> f = fc.openFileMultiple(fileFormat, fileExtensions);
+
+		if (f == null) return;
+
+		saveFilesToTable(f);
+	}
+
+	@FXML
+	private void deleteSelected(ActionEvent event) {
+		if(tableView.getSelectionModel().getSelectedItem() != null) {
+			CustomImage ci = tableView.getSelectionModel().getSelectedItem();
+			tableView.getItems().remove(ci);
+
+			DataManager.getDataCampaign().getCustomImageData().removeCustomImage(creatorEnum, ci);
+		}
 	}
 	
 	public void initData(CreatorEnum ce) {
@@ -85,7 +104,6 @@ public class ControllerCreateCustomImage extends ControllerStageInterface {
 	}
 	
 	private void saveCustomImage(File f) {
-		
 		int width = 0;
 		int height = 0;
 		
@@ -135,29 +153,6 @@ public class ControllerCreateCustomImage extends ControllerStageInterface {
 			
 			//Create and add the image to the table
 			saveCustomImage(f);
-		}
-	}
-	
-	@FXML
-	private void chooseFile(ActionEvent event) {
-		FileChooserUtil fc = new FileChooserUtil();
-		String fileFormat = FileFormats.FILE_FORMAT_PNG;
-		String[] fileExtensions = {FileFormats.FILE_EXTENSION_PNG};
-		List<File> f = fc.openFileMultiple(fileFormat, fileExtensions);
-
-		if (f == null) return;
-		
-		saveFilesToTable(f);
-	}
-
-	
-	@FXML
-	private void deleteSelected(ActionEvent event) {
-		if(tableView.getSelectionModel().getSelectedItem() != null) {
-			CustomImage ci = tableView.getSelectionModel().getSelectedItem();
-			tableView.getItems().remove(ci);
-			
-			DataManager.getDataCampaign().getCustomImageData().removeCustomImage(creatorEnum, ci);
 		}
 	}
 }

@@ -20,10 +20,8 @@ public class ControllerExportProject extends ControllerStageInterface {
 	@FXML private Label progressBarText;
 	@FXML private Button image_button_cancel;
 
-	//INIT
 	@FXML
 	public void initialize() {
-		//Progressbar text
 		progressBarText.setId("progressbar-text");
 		progressBarText.setWrapText(true);
 		progressBarText.setAlignment(Pos.CENTER);
@@ -33,7 +31,6 @@ public class ControllerExportProject extends ControllerStageInterface {
 		image_button_cancel.setDisable(false);
 
 		task = Generator.getTask(path);
-
 		task.setOnSucceeded(e -> {
 			Popup.showSuccess("Project export succeed!");
 			closeWindow();
@@ -46,14 +43,14 @@ public class ControllerExportProject extends ControllerStageInterface {
 			Task<Void> cancelTask = new Task<Void>() {
 				@Override
 				protected Void call() throws Exception {
-					Generator.cancelExport(path);
+				Generator.cancelExport(path);
 
-					UpdateUIFromOtherThread.call(() -> {
-						Popup.showError("Project export cancelled. No folders or files were generated.");
-						closeWindow();
-					});
+				UpdateUIFromOtherThread.call(() -> {
+					Popup.showError("Project export cancelled. No folders or files were generated.");
+					closeWindow();
+				});
 
-					return null;
+				return null;
 				}
 			};
 			new Thread(cancelTask).start();

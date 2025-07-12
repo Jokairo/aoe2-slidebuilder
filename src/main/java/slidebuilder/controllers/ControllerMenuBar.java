@@ -25,8 +25,7 @@ public class ControllerMenuBar {
 	@FXML private MenuItem menu_button_save_as;
 	@FXML private MenuItem menu_button_export;
 	@FXML private MenuItem menu_button_about;
-	
-	//INIT
+
 	@FXML
 	public void initialize() {
 

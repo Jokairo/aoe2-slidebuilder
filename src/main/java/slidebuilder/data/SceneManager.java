@@ -86,10 +86,15 @@ public class SceneManager {
 				int size = fxmlFilePaths.size();
 				// Load FXML files
 				for(int i = 0; i<size; i++) {
-					loader = new FXMLLoader(getClass().getResource(fxmlFilePaths.get(i)));
-					parents.add(loader.load());
-					controllers.add(loader.getController());
-					updateMessage("Loading FXML files "+i+"/"+size);
+					try {
+						loader = new FXMLLoader(getClass().getResource(fxmlFilePaths.get(i)));
+						parents.add(loader.load());
+						controllers.add(loader.getController());
+						updateMessage("Loading FXML files " + i + "/" + size);
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 
 				// Load/init FXML controllers
@@ -278,8 +283,8 @@ public class SceneManager {
 		((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_MENU)).loadData();
 		((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT)).loadData();
 		((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT)).sceneIn();
-		((TabControllerInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).initData();
-		((TabControllerInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).loadData(0);
+		((TabControllerInterface<?>)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).initData();
+		((TabControllerInterface<?>)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).loadData(0);
 		getSceneController(SceneEnum.CAMPAIGN_SLIDE).sceneIn();
 
 		//Delete all preview buttons
@@ -305,8 +310,8 @@ public class SceneManager {
 			((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_MENU)).loadData();
 			((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT)).loadData();
 			((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT)).sceneIn();
-			((TabControllerInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).initData();
-			((TabControllerInterface)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).loadData(0);
+			((TabControllerInterface<?>)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).initData();
+			((TabControllerInterface<?>)getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT)).loadData(0);
 			getSceneController(SceneEnum.CAMPAIGN_SLIDE).sceneIn();
 		}
 	}
