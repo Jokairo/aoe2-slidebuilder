@@ -51,10 +51,12 @@ public class Popup {
 		alert.setHeaderText(null);
 
 		VBox pane = new VBox();
-		Label name = new Label("Slide Builder");
+		Label name = new Label(Main.APP_NAME);
 		Label version = new Label("Version "+ Main.APP_VERSION);
 		Label emptySpace = new Label("");
-		Label author = new Label("Made by Jokairo");
+		Label emptySpace2 = new Label("");
+		Label author = new Label("© "+ Main.APP_YEAR +" "+ Main.APP_AUTHOR);
+		Label disclaimer = new Label("Age of Empires II: Definitive Edition © Microsoft Corporation.\nThis software was created under Microsoft's \"Game Content\nUsage Rules\" using assets from Age of Empires II: Definitive Edition,\nand it is not endorsed by or affiliated with Microsoft.");
 
 		Hyperlink link = new Hyperlink();
 		String projectUrl = Main.APP_LINK;
@@ -67,10 +69,21 @@ public class Popup {
 			}
 		});
 
-		pane.getChildren().addAll(name, version, emptySpace, author, link);
+		Hyperlink link2 = new Hyperlink();
+		String msLink = "https://www.xbox.com/en-US/developers/rules";
+		link2.setText(msLink);
+		link2.setOnAction(e -> {
+			try {
+				Desktop.getDesktop().browse(new URI(msLink));
+			} catch (IOException | URISyntaxException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
+
+		pane.getChildren().addAll(name, version, emptySpace, author, link, emptySpace2, disclaimer, link2);
 
 		alert.getDialogPane().setContent(pane);
-		alert.getDialogPane().setPrefSize(400, 250);
+		alert.getDialogPane().setPrefSize(500, 350);
 		alert.showAndWait();
 	}
 

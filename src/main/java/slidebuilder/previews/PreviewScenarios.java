@@ -16,7 +16,7 @@ public class PreviewScenarios extends PreviewInterface {
 	private final ButtonPreviewHelpText helptext;
 	
 	public PreviewScenarios() {
-		
+		super();
 		setIsSlidePreview(false);
 		
 		header = new ScenarioHeader();

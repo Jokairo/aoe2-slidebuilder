@@ -16,6 +16,8 @@ import slidebuilder.enums.PreviewEnums;
 import slidebuilder.enums.SceneEnum;
 import slidebuilder.resource.ResourceManager;
 import slidebuilder.util.BackgroundUtil;
+
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public abstract class PreviewInterface {
@@ -39,6 +41,12 @@ public abstract class PreviewInterface {
 	PreviewElementProperties buttonLabelProperties = new PreviewElementProperties();
 	PreviewElementProperties imageProperties = new PreviewElementProperties();
 	PreviewElementProperties textProperties = new PreviewElementProperties();
+
+	public PreviewInterface() {
+		InputStream icon = getClass().getResourceAsStream("/icon/icon.png");
+		if (icon != null)
+			stage.getIcons().add(new Image(icon));
+	}
 	
 	protected abstract void addStuffToRoot();
 	

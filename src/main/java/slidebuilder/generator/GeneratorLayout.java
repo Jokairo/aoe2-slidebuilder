@@ -32,7 +32,7 @@ public class GeneratorLayout {
 		generator.writeStartArray();
 		String border = "---------------------------------------------------------------";
 		generator.writeString(border);
-		generator.writeString("Auto-generated using Slide Builder by Jokairo");
+		generator.writeString("Auto-generated using "+ Main.APP_NAME +" by "+ Main.APP_AUTHOR);
 		generator.writeString(Main.APP_LINK);
 		generator.writeString(border);
 		generator.writeEndArray();

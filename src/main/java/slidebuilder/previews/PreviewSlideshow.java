@@ -15,6 +15,7 @@ public class PreviewSlideshow extends PreviewInterface {
 	private final ArrayList<PreviewElement> elements = new ArrayList<>();
 	
 	public PreviewSlideshow() {
+		super();
 		this.setIsSlidePreview(true);
 		labelWrapper.setChild(label);
 		labelWrapper.setKeepAspect(false);
