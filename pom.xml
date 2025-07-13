@@ -4,14 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <name>Slide Builder</name>
+  <description>Visual slide editor for Age of Empires II: Definitive Edition</description>
+  <organization>
+    <name>Jokairo</name>
+    <url>https://github.com/Jokairo/aoe2-slidebuilder</url>
+  </organization>
+  <inceptionYear>2025</inceptionYear>
+  <version>0.9.0.0</version>
   <groupId>slidebuilder</groupId>
   <artifactId>aoe2-slidebuilder</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <name>aoe2-slidebuilder</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<junit.version>5.9.2</junit.version>  </properties>
+    <junit.version>5.9.2</junit.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
 
   <repositories>
     <repository>
@@ -21,32 +30,10 @@
   </repositories>
 
   <dependencies>
-    <!--
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-controls</artifactId>
-      <version>17.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-fxml</artifactId>
-      <version>17.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-media</artifactId>
-      <version>17.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-swing</artifactId>
-      <version>17.0.6</version>
-    </dependency>
--->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.14.2</version>
+      <version>2.15.0</version>
     </dependency>
 
     <dependency>
@@ -56,27 +43,22 @@
     </dependency>
 
     <dependency>
-      <groupId>gr.zdimensions.jsquish</groupId>
-      <artifactId>jsquish</artifactId>
-      <version>1.0</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
+    <finalName>slidebuilder</finalName>
     <defaultGoal>package</defaultGoal>
     <plugins>
       <plugin>
@@ -84,10 +66,24 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
-          <!--<source>17</source>
-          <target>17</target>-->
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>slidebuilder.Launcher</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>com.zenjava</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
@@ -96,26 +92,59 @@
           <mainClass>slidebuilder.Launcher</mainClass>
         </configuration>
       </plugin>
+
       <plugin>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-maven-plugin</artifactId>
-        <version>0.0.8</version>
+        <groupId>com.akathist.maven.plugins.launch4j</groupId>
+        <artifactId>launch4j-maven-plugin</artifactId>
+        <version>2.6.0</version>
         <executions>
           <execution>
-            <!-- Default configuration for running with: mvn clean javafx:run -->
-            <id>default-cli</id>
-            <configuration>
-              <mainClass>slidebuilder.Main</mainClass>
-              <launcher>slidebuilder</launcher>
-              <jlinkZipName>slidebuilder</jlinkZipName>
-              <jlinkImageName>slidebuilder</jlinkImageName>
-              <noManPages>true</noManPages>
-              <stripDebug>true</stripDebug>
-              <noHeaderFiles>true</noHeaderFiles>
-            </configuration>
+            <id>windows-exe</id>
+            <phase>package</phase>
+            <goals>
+              <goal>launch4j</goal>
+            </goals>
           </execution>
         </executions>
+        <configuration>
+          <outfile>${project.build.directory}/SlideBuilder.exe</outfile>
+          <jar>${project.build.directory}/${project.build.finalName}.jar</jar>
+          <mainClass>slidebuilder.Launcher</mainClass>
+          <dontWrapJar>false</dontWrapJar>
+          <headerType>gui</headerType>
+          <skipJreDetection>true</skipJreDetection>
+          <errTitle>Slide Builder</errTitle>
+          <jre>
+            <minVersion>1.8.0</minVersion>
+            <path>jre</path>
+            <requires64Bit>true</requires64Bit>
+          </jre>
+          <versionInfo>
+            <fileVersion>${project.version}</fileVersion>
+            <txtFileVersion>${project.version}</txtFileVersion>
+            <productVersion>${project.version}</productVersion>
+            <txtProductVersion>${project.version}</txtProductVersion>
+            <fileDescription>Slide Builder</fileDescription>
+            <productName>Slide Builder</productName>
+            <internalName>SlideBuilder</internalName>
+            <originalFilename>SlideBuilder.exe</originalFilename>
+            <copyright>© ${project.inceptionYear} ${project.organization.name}</copyright>
+          </versionInfo>
+          <icon>src/main/resources/icon/icon.ico</icon>
+        </configuration>
       </plugin>
     </plugins>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+
+      <resource>
+        <directory>src/main/version</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
   </build>
 </project>
