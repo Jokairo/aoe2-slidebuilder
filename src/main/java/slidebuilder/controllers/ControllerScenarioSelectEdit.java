@@ -220,7 +220,8 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface<DataSce
 	}
 
 	private void applyImageSize(boolean isWidth, boolean useAspectIfPossible) {
-		boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected();
+		boolean isFocused = isWidth ? textfield_image_width.isFocused() : textfield_image_height.isFocused();
+		boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected() && isFocused;
 		int val = parse(isWidth ? textfield_image_width : textfield_image_height);
 		if (useAspect && useAspectIfPossible) {
 			if (isWidth) getWrapper().setElementWidthWithAspect(val);

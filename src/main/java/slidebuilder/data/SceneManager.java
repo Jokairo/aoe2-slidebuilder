@@ -199,12 +199,12 @@ public class SceneManager {
 	
 	// Saving Campaign Menu scene (the first scene)
 	private void saveCampaignMenu() {
-		((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_MENU)).saveCurrentData();;
+		((ControllerDataInterface)getSceneController(SceneEnum.CAMPAIGN_MENU)).saveCurrentData();
 	}
 	
 	// Saving every controller data to DataManager
 	private void saveAll() {
-		//saveCampaignMenu();
+		saveCampaignMenu();
 		
 		//Save the data for the controller where user is currently
 		if(DataManager.currentScene != null) {
@@ -226,8 +226,9 @@ public class SceneManager {
 		getSceneController(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT).sceneIn();
 
 		getSceneController(SceneEnum.CAMPAIGN_SLIDE).sceneIn();
-		
-		for(int i=0; i < DataManager.getDataCampaign().getListSlideshow().size(); i++) {
+
+		int size = DataManager.getDataCampaign().getListSlideshow().size();
+		for(int i=size-1; i >= 0; i--) {
 			DataManager.globalTabIndex = i;
 			getSceneController(SceneEnum.CAMPAIGN_SLIDE_EDIT).sceneIn();
 		}

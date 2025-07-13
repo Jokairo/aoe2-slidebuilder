@@ -40,7 +40,7 @@ public class ControllerCampaignMenu extends ControllerDataInterface {
 	
 	@Override
 	public void saveCurrentData() {
-		DataManager.getDataCampaign().saveCampaignValues(getCampaignNameFromPath(), slide_scenarios.getValue(), textFieldFile.getTextFieldString());
+		DataManager.getDataCampaign().saveCampaignValues(getCampaignNameFromPath(), slide_scenarios.getValue(), getFileString());
 	}
 	
 	@Override
@@ -66,13 +66,19 @@ public class ControllerCampaignMenu extends ControllerDataInterface {
 	}
 
 	private String getCampaignNameFromPath() {
-		String s = "";
-		if(textFieldFile.getTextFieldString() != null)
-			s = textFieldFile.getTextFieldString();
+		if (textFieldFile.getTextFieldString() == null) return "";
+
+		String s = textFieldFile.getTextFieldString();
 		File f = new File(s);
 
 		//File name without extensions
 		String fileName = f.getName();
 		return fileName.replace(".aoe2campaign", "");
+	}
+
+	private String getFileString() {
+		String s = textFieldFile.getTextFieldString();
+		if (s == null) return "";
+		return s;
 	}
 }

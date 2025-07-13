@@ -49,14 +49,13 @@ public class ControllerSlideEdit extends TabControllerInterface<DataSlideshowSli
 		FieldBinder.bindTextArea(text_bar, v -> setText());
 		FieldBinder.bindText(image_bar_x, v -> setImageX());
 		FieldBinder.bindText(image_bar_y, v -> setImageY());
-		FieldBinder.bindText(image_bar_y, v -> setImageY());
 		FieldBinder.bindText(image_bar_width, newValue -> {
-			boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected();
+			boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected() && image_bar_width.isFocused();
 			setImageWidth(useAspect);
 			ignoreWidthHeightListener = false;
 		});
 		FieldBinder.bindText(image_bar_height, newValue -> {
-			boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected();
+			boolean useAspect = !ignoreWidthHeightListener && checkbox_keep_aspect.isSelected() && image_bar_height.isFocused();
 			setImageHeight(useAspect);
 			ignoreWidthHeightListener = false;
 		});
@@ -215,18 +214,18 @@ public class ControllerSlideEdit extends TabControllerInterface<DataSlideshowSli
 			height = ci.getHeight();
 			image_bar_width.setText(""+width);
 			image_bar_height.setText(""+height);
+
+			setCurrentImageAspectRatio();
 		}
 		else {
 			width = 1920;
 			height = 1080;
+			image_bar_width.setText(""+width);
+			image_bar_height.setText(""+height);
 		}
-
-		image_bar_width.setText(""+width);
-		image_bar_height.setText(""+height);
-		setCurrentImageAspectRatio();
 	}
 	
-	public void setPreviewImage() {
+	private void setPreviewImage() {
 		//Set null if the first value (which means no image)
 		if (image_button.getSelectionModel().getSelectedIndex() == 0) {
 			getPreview().setImage(null);
