@@ -36,24 +36,13 @@ public class ControllerExportProject extends ControllerStageInterface {
 			closeWindow();
 		});
 		task.setOnFailed(e -> {
-			Popup.showError("Project export failed.");
-			closeWindow();
+			Throwable error = task.getException();
+			String message = (error != null) ? error.getMessage() : "Unknown error";
+			image_button_cancel.setDisable(true);
+			handleExportCancellation(path, "Project export failed: " + message);
 		});
 		task.setOnCancelled(e -> {
-			Task<Void> cancelTask = new Task<Void>() {
-				@Override
-				protected Void call() throws Exception {
-				Generator.cancelExport(path);
-
-				UpdateUIFromOtherThread.call(() -> {
-					Popup.showError("Project export cancelled. No folders or files were generated.");
-					closeWindow();
-				});
-
-				return null;
-				}
-			};
-			new Thread(cancelTask).start();
+			handleExportCancellation(path, "Project export cancelled. No folders or files were generated.");
 		});
 
 		progressBar.progressProperty().bind(task.progressProperty());
@@ -68,5 +57,22 @@ public class ControllerExportProject extends ControllerStageInterface {
 
 		image_button_cancel.setDisable(true);
 		task.cancel();
+	}
+
+	private void handleExportCancellation(String path, String message) {
+		Task<Void> cancelTask = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				Generator.cancelExport(path);
+
+				UpdateUIFromOtherThread.call(() -> {
+					Popup.showError(message);
+					closeWindow();
+				});
+
+				return null;
+			}
+		};
+		new Thread(cancelTask).start();
 	}
 }

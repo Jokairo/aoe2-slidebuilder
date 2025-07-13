@@ -17,6 +17,7 @@ public class DataFileManager {
 			oos.writeObject(DataManager.getDataCampaign());
 			fos.close();
 			oos.close();
+			DataManager.getDataCampaign().setUnsavedChanges(false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -32,7 +33,6 @@ public class DataFileManager {
 			DataManager.setDataCampaign(dc);
 			fis.close();
 			ois.close();
-			System.out.println(DataManager.getDataCampaign().getCampaignName());
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}

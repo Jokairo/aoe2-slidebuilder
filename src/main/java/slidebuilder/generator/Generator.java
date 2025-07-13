@@ -137,8 +137,16 @@ public class Generator {
 
 		//Copy campaign file if user has selected it
 		if(DataManager.getDataCampaign().getCampaignFilePath() != null && !DataManager.getDataCampaign().getCampaignFilePath().isEmpty()) {
-			File campaignFile = new File(DataManager.getDataCampaign().getCampaignFilePath());
-			File outputFile = new File(directory.getAbsolutePath()+"/"+camName+".aoe2campaign");
+			String originalPath = DataManager.getDataCampaign().getCampaignFilePath();
+			File campaignFile = new File(originalPath);
+
+			String newPath = directory.getAbsolutePath()+"/"+camName+".aoe2campaign";
+			File outputFile = new File(newPath);
+
+			if (!campaignFile.isFile()) {
+				throw new IOException("The campaign file \"" + originalPath + "\" could not be found. Either remove the file or choose another file.");
+			}
+
 			FileUtil.copyFile(campaignFile, outputFile);
 		}
 
@@ -164,7 +172,7 @@ public class Generator {
 		writeCustomAudio(dest_path+"/"+AUDIO_PATH);
 	}
 	
-	private static void writeBackground(String bg_name, String dest_path, CreatorEnum ce) {
+	private static void writeBackground(String bg_name, String dest_path, CreatorEnum ce) throws IOException {
 		CustomImage ci = DataManager.getDataCampaign().getCustomImageData().getCustomImage(ce, bg_name);
 		
 		int new_width = BackgroundUtil.getBackgroundWidth((int)ci.getWidth(), (int)ci.getHeight());
@@ -178,8 +186,15 @@ public class Generator {
 			w = new_width * divider;
 		}
 		
-		String path = "file:///"+ci.getPath();
-		Image img = new Image(path, w, h, false, false);
+		String path = ci.getPath();
+		File file = new File(path);
+
+		if (!file.isFile()) {
+			String type = ce == CreatorEnum.CAMPAIGN_BG ? "campaign" : "slide";
+			throw new IOException("The " + type + " background file \"" + path + "\" could not be found. Either remove the file or choose another file.");
+		}
+
+		Image img = new Image("file:///"+path, w, h, false, false);
 		createDDSFile(img, w, h, dest_path);
 	}
 	
@@ -239,7 +254,7 @@ public class Generator {
 		return customSlideBgList;
 	}
 	
-	private static void writeCustomSlideBackgrounds(String dest_folder) {
+	private static void writeCustomSlideBackgrounds(String dest_folder) throws IOException {
 		ArrayList<String> customSlideBgList = getUsedCustomSlideBackgrounds();
 
 		String message = "Creating slide backgrounds ";
@@ -259,7 +274,7 @@ public class Generator {
 		}
 	}
 	
-	private static void writeCustomLayoutBackground(String dest_folder) {
+	private static void writeCustomLayoutBackground(String dest_folder) throws IOException {
 		String bg_name = DataManager.getDataCampaign().getCampaignMenuBackground();
 		
 		//Is custom background
@@ -277,7 +292,7 @@ public class Generator {
 	}
 	
 	
-	private static void writeCustomLayoutButtons(String dest_folder) {
+	private static void writeCustomLayoutButtons(String dest_folder) throws IOException {
 		ArrayList<String> customButtonList = getUsedCustomButtons();
 
 		String message = "Creating campaign map button images ";
@@ -291,8 +306,15 @@ public class Generator {
 			//Write new images to campaign folder
 			CustomImage customButton = DataManager.getDataCampaign().getCustomImageData().getCustomImage(CreatorEnum.ICON, button_name);
 
+			String path = customButton.getPath();
+			File file = new File(path);
+
+			if (!file.isFile()) {
+				throw new IOException("The campaign button image file \"" + path + "\" could not be found. Either remove the file or choose another file.");
+			}
+
 			//Get the original size image from path
-			Image image = new Image("file:///"+customButton.getPath());
+			Image image = new Image("file:///"+path);
 
 			/*
 				We are currently in another thread and need to switch back to GUI thread
@@ -349,6 +371,11 @@ public class Generator {
 				else {
 					String source_path = DataManager.getDataCampaign().getCustomImageData().getCustomImage(CreatorEnum.SLIDE_IMAGE, imageName).getPath();
 					File source = new File(source_path);
+
+					if (!source.isFile()) {
+						throw new IOException("The slide image file \"" + source_path + "\" could not be found. Either remove the file or choose another file.");
+					}
+
 					FileUtil.copyFile(source, target);
 				}
 				
@@ -370,7 +397,6 @@ public class Generator {
 			String slide_audio_path = ds.getAudioPath();
 			if (slide_audio_path != null && !slide_audio_path.isEmpty()) {
 				path_list.add(slide_audio_path);
-				System.out.println("Audio path: "+slide_audio_path);
 			}
 		}
 
@@ -383,9 +409,7 @@ public class Generator {
 
 		if (convert_path != null) {
 			File output = new File(convert_path + "/Windows");
-			System.out.println(output);//
 			File[] contents = output.listFiles();
-			System.out.println(contents);//
 
 			String message = "Converting audio files ";
 			int max = contents.length;
@@ -410,8 +434,9 @@ public class Generator {
 					File source = new File(wem_path);
 					File target = new File(dest_folder+"/"+wem_file);
 
-					System.out.println("Source path: "+source.getAbsolutePath());
-					System.out.println("Target path: "+target.getAbsolutePath());
+					if (!source.isFile()) {
+						throw new IOException("The audio file \"" + wem_path + "\" could not be found. Either remove the file or choose another file.");
+					}
 
 					FileUtil.copyFile(source, target);
 

@@ -120,8 +120,7 @@ public class GeneratorSlideshow {
 			//If not empty, check that the file exists, otherwise halt the process
 			if (sound != null && !sound.isEmpty()) {
 				if (!FileUtil.fileExists(sound)) {
-					Popup.showError("File path in "+s2+" "+i+" doesn't exist. Either remove the file or choose another file.");
-					return "";
+					throw new IOException("The audio file \"" + sound + "\" could not be found. Either remove the file or choose another file.");
 				}
 				Path temp_path = Paths.get(sound);
 				String file_name = temp_path.getFileName().toString();

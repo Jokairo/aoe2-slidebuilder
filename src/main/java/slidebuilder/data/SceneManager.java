@@ -232,8 +232,6 @@ public class SceneManager {
 			DataManager.globalTabIndex = i;
 			getSceneController(SceneEnum.CAMPAIGN_SLIDE_EDIT).sceneIn();
 		}
-
-		DataManager.getDataCampaign().setUnsavedChanges(false);
 	}
 	
 	// Save project file to computer
