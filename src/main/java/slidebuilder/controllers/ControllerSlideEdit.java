@@ -4,11 +4,12 @@ import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import slidebuilder.components.ComboBoxValidator;
 import slidebuilder.controllers.interfaces.TabControllerInterface;
 import slidebuilder.data.CustomImage;
 import slidebuilder.data.DataManager;
@@ -23,17 +24,22 @@ public class ControllerSlideEdit extends TabControllerInterface<DataSlideshowSli
 	
 	@FXML private TextArea text_bar;
 	@FXML private TextField text_bar_x, text_bar_y, text_bar_width, text_bar_height;
-	@FXML private ComboBox<String> image_button;
 	@FXML private TextField image_bar_x, image_bar_y, image_bar_width, image_bar_height;
 	@FXML private Label slide_title;
 	@FXML private CheckBox checkbox_keep_aspect;
 	@FXML private TextField slide_bar_duration;
+	@FXML private VBox comboboxContainer;
+	private ComboBoxValidator image_button;
 
 	private boolean ignoreWidthHeightListener = false;
 
 	@FXML
 	public void initialize() {
 		setSceneBack(SceneEnum.CAMPAIGN_SLIDE);
+
+		image_button = new ComboBoxValidator(CreatorEnum.SLIDE_IMAGE);
+		image_button.setTitle("Image");
+		comboboxContainer.getChildren().add(image_button.getContainer());
 
 		ComboBoxInitializer.init(image_button, CreatorEnum.SLIDE_IMAGE, ResourceManager.instance.getDefaultResource(CreatorEnum.SLIDE_IMAGE));
 		setCurrentImageAspectRatio();
@@ -205,7 +211,7 @@ public class ControllerSlideEdit extends TabControllerInterface<DataSlideshowSli
 	}
 
 	private void setImageDefaultSize() {
-		int index = image_button.getSelectionModel().getSelectedIndex();
+		int index = image_button.getComboBox().getSelectionModel().getSelectedIndex();
 		int width, height;
 		if(index > 0) {
 			String name = image_button.getValue();
@@ -227,7 +233,7 @@ public class ControllerSlideEdit extends TabControllerInterface<DataSlideshowSli
 	
 	private void setPreviewImage() {
 		//Set null if the first value (which means no image)
-		if (image_button.getSelectionModel().getSelectedIndex() == 0) {
+		if (image_button.getComboBox().getSelectionModel().getSelectedIndex() == 0) {
 			getPreview().setImage(null);
 		}
 		//Otherwise set the value that is in the combobox

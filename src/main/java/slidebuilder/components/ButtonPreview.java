@@ -65,7 +65,7 @@ public class ButtonPreview extends ImageView {
 		//Custom image
 		if(!ResourceManager.instance.isValidCampaignButtonName(name)) {
 			CustomImage ci = DataManager.getDataCampaign().getCustomImageData().getCustomImage(CreatorEnum.ICON, name);
-			if(ci != null && ci.getImage() != null) {
+			if(ci != null && ci.getImage() != null && ci.isFileExists()) {
 				image_normal = ci.getImage();
 			}
 		}
@@ -73,7 +73,7 @@ public class ButtonPreview extends ImageView {
 		else {
 			image_normal = ResourceManager.instance.getResourceCampaignFromName(name).getButtonImage();
 		}
-		
+
 		//Place new image as default
 		setImage(image_normal);
 		

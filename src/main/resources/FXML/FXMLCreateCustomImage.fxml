@@ -45,6 +45,9 @@
                         	</columnResizePolicy>
                         </TableView>
                      </children>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
                   </HBox>
                   <HBox HBox.hgrow="ALWAYS">
                      <children>
@@ -60,6 +63,16 @@
                            </font>
                         </Button>
                      </children>
+                  </HBox>
+                  <HBox HBox.hgrow="ALWAYS">
+                     <Label fx:id="recommended_size_label" alignment="CENTER_LEFT" prefHeight="23.0" prefWidth="500.0" text="">
+                        <font>
+                           <Font name="Liberation Serif" size="18.0" />
+                        </font>
+                     </Label>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
                   </HBox>
                </children>
                <VBox.margin>

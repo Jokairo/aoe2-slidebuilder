@@ -4,9 +4,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import slidebuilder.components.ComboBoxValidator;
 import slidebuilder.controllers.interfaces.ControllerDataInterface;
 import slidebuilder.data.DataManager;
 import slidebuilder.enums.CreatorEnum;
@@ -20,14 +21,19 @@ public class ControllerScenarioSelectMenu extends ControllerDataInterface {
 	
 	@FXML private Label slide_title;
 	@FXML private TextField textfield_title;
-	@FXML private ComboBox<String> button_bg;
 	@FXML private Button button_edit;
 	@FXML private CheckBox checkbox_disable;
+	@FXML private VBox comboboxContainer;
+	private ComboBoxValidator button_bg;
 
 	@FXML
 	public void initialize() {
 		setSceneBack(SceneEnum.CAMPAIGN_MENU);
 		setSceneNext(SceneEnum.CAMPAIGN_SCENARIOSELECT_EDIT);
+
+		button_bg = new ComboBoxValidator(CreatorEnum.CAMPAIGN_BG);
+		button_bg.setTitle("Background Image");
+		comboboxContainer.getChildren().add(button_bg.getContainer());
 		
 		// Init comboboxes
 		ComboBoxInitializer.init(button_bg, CreatorEnum.CAMPAIGN_BG, ResourceManager.instance.getDefaultResource(CreatorEnum.CAMPAIGN_BG));
@@ -69,10 +75,8 @@ public class ControllerScenarioSelectMenu extends ControllerDataInterface {
 	@Override
 	public void loadData() {
 		textfield_title.setText(DataManager.getDataCampaign().getCampaignMenuTitle());
-		System.out.println(DataManager.getPreviewScenarios().getBackgroundName());
 		String bg = DataManager.getDataCampaign().getCampaignMenuBackground();
-		button_bg.getSelectionModel().select(bg);
-		System.out.println(DataManager.getPreviewScenarios().getBackgroundName());
+		button_bg.setValue(bg);
 		checkbox_disable.setSelected(DataManager.getDataCampaign().getCampaignMenuDisabled());
 	}
 
@@ -83,6 +87,7 @@ public class ControllerScenarioSelectMenu extends ControllerDataInterface {
 
 		//Initialise the default button placements
 		getSubController().sceneIn();
+		button_bg.validateSelection();
 	}
 
 	@Override

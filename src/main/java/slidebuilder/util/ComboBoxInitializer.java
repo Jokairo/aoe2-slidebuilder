@@ -1,6 +1,7 @@
 package slidebuilder.util;
 
 import javafx.scene.control.ComboBox;
+import slidebuilder.components.ComboBoxValidator;
 import slidebuilder.data.CustomImageComboBox;
 import slidebuilder.enums.CreatorEnum;
 import slidebuilder.enums.ResourceEnum;
@@ -21,6 +22,19 @@ public class ComboBoxInitializer {
             boolean exists = CustomImageComboBox.getCustomImageNameList(type).contains(oldVal);
             if (oldVal != null && !exists) {
                 combo.getSelectionModel().select(defaultValue);
+            }
+        });
+    }
+
+    public static void init(ComboBoxValidator combo, CreatorEnum type, String defaultValue) {
+        combo.setItems(CustomImageComboBox.getCustomImageNameList(type));
+        combo.setValue(defaultValue);
+
+        // Reset to default if current selection is removed from the list
+        combo.getComboBox().valueProperty().addListener((obs, oldVal, newVal) -> {
+            boolean exists = CustomImageComboBox.getCustomImageNameList(type).contains(oldVal);
+            if (oldVal != null && !exists) {
+                combo.setValue(defaultValue);
             }
         });
     }

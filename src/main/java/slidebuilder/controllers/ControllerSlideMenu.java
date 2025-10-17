@@ -5,12 +5,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
+import slidebuilder.components.ComboBoxValidator;
 import slidebuilder.components.TextFieldFile;
 import slidebuilder.controllers.interfaces.TabControllerInterface;
 import slidebuilder.data.DataManager;
@@ -23,17 +23,22 @@ import slidebuilder.util.*;
 public class ControllerSlideMenu extends TabControllerInterface<DataSlideshow> {
 
 	@FXML private Spinner<Integer> slide_slides;
-	@FXML private ComboBox<String> slide_background;
 	@FXML private Button slide_button_edit, slide_button_back, slide_button_preview, slide_button_sync;
 	@FXML private CheckBox slide_disable;
 	@FXML private Label slide_title;
 	@FXML private VBox vbox;
+	@FXML private VBox comboboxContainer;
+	private ComboBoxValidator slide_background;
 	private TextFieldFile textFieldFile; 
 
 	@FXML
 	public void initialize() {
 		setSceneBack(SceneEnum.CAMPAIGN_MENU);
 		setSceneNext(SceneEnum.CAMPAIGN_SLIDE_EDIT);
+
+		slide_background = new ComboBoxValidator(CreatorEnum.SLIDE_BG);
+		slide_background.setTitle("Slide Background");
+		comboboxContainer.getChildren().add(slide_background.getContainer());
 		
 		textFieldFile = new TextFieldFile();
 		textFieldFile.setTitle("Add Slideshow Audio (Optional)");
@@ -107,7 +112,7 @@ public class ControllerSlideMenu extends TabControllerInterface<DataSlideshow> {
 	@Override
 	protected void applyData(DataSlideshow ds) {
 		slide_slides.getValueFactory().setValue(ds.getSlides());
-		slide_background.getSelectionModel().select(ds.getBackground());
+		slide_background.setValue(ds.getBackground());
 		slide_disable.setSelected(ds.getDisable());
 		textFieldFile.setTextFieldString(ds.getAudioPath());
 		setAudioEditorDisabled();

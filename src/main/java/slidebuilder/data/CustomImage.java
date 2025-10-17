@@ -1,5 +1,6 @@
 package slidebuilder.data;
 
+import java.io.File;
 import java.io.Serializable;
 
 import javafx.scene.image.Image;
@@ -61,5 +62,9 @@ public class CustomImage implements Serializable {
 		else {
 			image = new Image("file:///"+path, 480, 270, false, false);
 		}
+	}
+
+	public boolean isFileExists() {
+		return new File(getPath()).exists();
 	}
 }

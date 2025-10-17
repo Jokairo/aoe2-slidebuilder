@@ -4,6 +4,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import slidebuilder.components.ComboBoxValidator;
 
 import java.util.function.Consumer;
 
@@ -24,6 +25,10 @@ public class FieldBinder {
 
     public static void bindCombo(ComboBox<String> combo, Consumer<String> action) {
         combo.valueProperty().addListener((obs, oldVal, newVal) -> action.accept(newVal));
+    }
+
+    public static void bindCombo(ComboBoxValidator combo, Consumer<String> action) {
+        combo.getComboBox().valueProperty().addListener((obs, oldVal, newVal) -> action.accept(newVal));
     }
 
     public static void bindPropertyToText(ObservableValue<String> property, TextField targetField) {

@@ -11,6 +11,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import slidebuilder.components.ComboBoxValidator;
 import slidebuilder.components.PreviewElement;
 import slidebuilder.components.ScenarioButton;
 import slidebuilder.controllers.interfaces.TabControllerInterface;
@@ -26,15 +28,21 @@ import slidebuilder.util.*;
 public class ControllerScenarioSelectEdit extends TabControllerInterface<DataScenarios> {
 	@FXML private Label slide_title;
 	@FXML private TextField textfield_text, textfield_text_x, textfield_text_y, textfield_button_x, textfield_button_y, textfield_image_width, textfield_image_height;
-	@FXML private ComboBox<String> button_difficulty, button_image, button_help;
+	@FXML private ComboBox<String> button_difficulty, button_help;
 	@FXML private CheckBox checkbox_keep_aspect;
 	@FXML private TextArea textfield_help;
 	@FXML private ImageView button_color_white, button_color_blue, button_color_red, button_color_yellow, button_color_cyan, button_color_purple, button_color_gray, button_color_orange, button_color_italic;
+	@FXML private VBox comboboxContainer;
+	private ComboBoxValidator button_image;
 	private boolean ignoreWidthHeightListener = false;
 
 	@FXML
 	public void initialize() {
 		setSceneBack(SceneEnum.CAMPAIGN_SCENARIOSELECT);
+
+		button_image = new ComboBoxValidator(CreatorEnum.ICON);
+		button_image.setTitle("Button Image");
+		comboboxContainer.getChildren().add(button_image.getContainer());
 
 		// Text formatters
 		FormatterHelper.applyIntFormat(true, textfield_text_x, textfield_text_y);
@@ -128,7 +136,7 @@ public class ControllerScenarioSelectEdit extends TabControllerInterface<DataSce
 		DataScenarios ds = new DataScenarios();
 		ds.save(
 			buttonText, bX, bY, 0, labelY,
-			button_image.getItems().get(0), 280, 280, "",
+			button_image.getComboBox().getItems().get(0), 280, 280, "",
 			button_help.getItems().get(0), button_difficulty.getItems().get(0), true
 		);
 

@@ -270,14 +270,9 @@
          <children>
             <VBox alignment="CENTER" prefHeight="92.0" prefWidth="330.0">
                <children>
-                  <Label alignment="CENTER" prefHeight="27.0" prefWidth="247.0" text="Button Image">
-                     <font>
-                        <Font name="Liberation Serif" size="18.0" />
-                     </font>
-                  </Label>
                   <HBox fx:id="textfield_title1" alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
                      <children>
-                        <ComboBox fx:id="button_image" prefWidth="233.0" />
+                        <VBox fx:id="comboboxContainer" alignment="CENTER" prefHeight="26.0" prefWidth="233.0" />
                      </children>
                   </HBox>
                </children>

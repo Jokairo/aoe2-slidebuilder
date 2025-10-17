@@ -7,7 +7,9 @@ import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -27,6 +29,7 @@ public class ControllerCreateCustomImage extends ControllerStageInterface {
 	@FXML private TableView<CustomImage> tableView;
 	@FXML private TableColumn<CustomImage, String> tableColumnName;
 	@FXML private TableColumn<CustomImage, String> tableColumnPath;
+	@FXML private Label recommended_size_label;
 	
 	private CreatorEnum creatorEnum;
 
@@ -43,6 +46,25 @@ public class ControllerCreateCustomImage extends ControllerStageInterface {
 		
 		tableColumnName.impl_setReorderable(false);
 		tableColumnPath.impl_setReorderable(false);
+
+		tableView.setRowFactory(tv -> new TableRow<CustomImage>() {
+			@Override
+			protected void updateItem(CustomImage item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null || empty) {
+					setStyle("");
+				}
+				else {
+					File file = new File(item.getPath());
+					if (!file.exists()) {
+						setStyle("-fx-background-color: #ffcccc;"); // light red
+					}
+					else {
+						setStyle("");
+					}
+				}
+			}
+		});
 	}
 
 	@FXML
@@ -73,20 +95,28 @@ public class ControllerCreateCustomImage extends ControllerStageInterface {
 		
 		//Clear the table from possible previous values
 		tableView.getItems().clear();
-		
+
+		String recommendedSize = "Recommended size: ";
 		//Add all the current images that the user has added
-		if(ce == CreatorEnum.SLIDE_BG) {
+		if (ce == CreatorEnum.SLIDE_BG) {
 			tableView.getItems().addAll(DataManager.getDataCampaign().getCustomImageData().getListCustomSlideshowBackground());
 			slide_title_s.setText("Create Slideshow Background");
-		} else if(ce == CreatorEnum.CAMPAIGN_BG) {
+			recommended_size_label.setText(recommendedSize + "2560 x 1080");
+		}
+		else if(ce == CreatorEnum.CAMPAIGN_BG) {
 			tableView.getItems().addAll(DataManager.getDataCampaign().getCustomImageData().getListCustomCampaignBackground());
 			slide_title_s.setText("Create Campaign Menu Background");
-		} else if(ce == CreatorEnum.SLIDE_IMAGE) {
+			recommended_size_label.setText(recommendedSize + "2560 x 1080");
+		}
+		else if(ce == CreatorEnum.SLIDE_IMAGE) {
 			tableView.getItems().addAll(DataManager.getDataCampaign().getCustomImageData().getListCustomSlideshowImage());
 			slide_title_s.setText("Create Slideshow Image");
-		} else {
+			recommended_size_label.setText("");
+		}
+		else {
 			tableView.getItems().addAll(DataManager.getDataCampaign().getCustomImageData().getListCustomCampaignButton());
 			slide_title_s.setText("Create Campaign Menu Button Image");
+			recommended_size_label.setText(recommendedSize + "400 x 400");
 		}
 	}
 	
