@@ -32,7 +32,7 @@
       </HBox>
    </bottom>
    <top>
-      <Label fx:id="slide_title" alignment="CENTER" prefHeight="61.0" prefWidth="826.0" text="Audio Editor" textAlignment="CENTER" BorderPane.alignment="CENTER">
+      <Label fx:id="slide_title" alignment="CENTER" prefHeight="61.0" prefWidth="826.0" text="Slide Duration Editor" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <font>
             <Font name="Liberation Serif Bold" size="27.0" />
          </font>

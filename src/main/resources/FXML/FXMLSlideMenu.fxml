@@ -82,9 +82,9 @@
          <children>
             <VBox fx:id="vbox" alignment="CENTER">
             </VBox>
-            <VBox alignment="CENTER">
+            <VBox alignment="CENTER" spacing="10.0">
                <children>
-                  <Button fx:id="slide_button_sync" mnemonicParsing="false" onAction="#openAudioEditor" prefHeight="29.0" prefWidth="184.0" text="Sync Audio with Slides">
+                  <Button fx:id="slide_button_sync" mnemonicParsing="false" onAction="#openAudioEditor" prefHeight="29.0" prefWidth="184.0" text="Slide Duration Editor">
                      <font>
                         <Font name="Liberation Sans" size="13.0" />
                      </font>
