@@ -109,10 +109,8 @@
         <configuration>
           <outfile>${project.build.directory}/SlideBuilder.exe</outfile>
           <jar>${project.build.directory}/${project.build.finalName}.jar</jar>
-          <mainClass>slidebuilder.Launcher</mainClass>
           <dontWrapJar>false</dontWrapJar>
           <headerType>gui</headerType>
-          <skipJreDetection>true</skipJreDetection>
           <errTitle>Slide Builder</errTitle>
           <jre>
             <minVersion>1.8.0</minVersion>
