@@ -256,7 +256,7 @@ public class PreviewSlideshowLive extends PreviewSlideshow {
         setImageX(slide.getImageX());
         setImageY(slide.getImageY());
         setImageWidth(slide.getImageWidth(), false, false);
-        setImageHeight(slide.getTextHeight(), false, false);
+        setImageHeight(slide.getImageHeight(), false, false);
 
         setText(slide.getText());
         setTextX(slide.getTextX());
