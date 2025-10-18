@@ -99,11 +99,8 @@ public class WWiseConverter {
 				while (p1.isAlive()) {
 					String line;
 					while ((line = reader.readLine()) != null) {
-						System.out.println(line);
-
 						//Find specific WWise error, if the error happens then stop the process, otherwise the process will run forever
 						if(line.contains("The provided project is not located in a folder of the same name")) {
-							System.out.println("Process1 terminated");
 							p1.destroy();
 							isError = true;
 							break;
@@ -119,11 +116,8 @@ public class WWiseConverter {
 
 						String line;
 						while ((line = reader.readLine()) != null) {
-							System.out.println(line);
-
 							//Find specific WWise error, if the error happens then stop the process, otherwise the process will run forever
 							if(line.contains("The provided project is not located in a folder of the same name")) {
-								System.out.println("Process2 terminated");
 								p2.destroy();
 								isError = true;
 								break;
@@ -131,9 +125,7 @@ public class WWiseConverter {
 						}
 					}
 				}
-				
-				System.out.println("conversion finished");
-				
+
 				//Delete the copied audio files as they are not needed anymore
 				File[] contents = temp_file.listFiles();
 			    if (contents != null) {

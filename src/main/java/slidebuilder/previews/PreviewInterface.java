@@ -83,7 +83,6 @@ public abstract class PreviewInterface {
 			return ResourceManager.instance.getResourceCampaignFromName(backgroundName).getSlideBgImage();
 		}
 		else {
-			System.out.println("BG: "+backgroundName);
 			return ResourceManager.instance.getResourceCampaignFromName(backgroundName).getLayoutBgImage();
 		}
 	}

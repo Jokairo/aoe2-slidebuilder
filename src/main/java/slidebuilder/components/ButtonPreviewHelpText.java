@@ -118,7 +118,6 @@ public class ButtonPreviewHelpText {
 				//Find first > character if there is, dont include text before >
 				s = splits[i];
 				int index = s.indexOf(">");
-				System.out.println("index "+index);
 				if(index != -1) {
 					s = s.substring(index+1);
 				}

@@ -52,7 +52,6 @@ public class GeneratorSlideshow {
 		//Check if there are any custom slide backgrounds
 		ArrayList<String> customSlideBgList = Generator.getUsedCustomSlideBackgrounds();
 		
-		System.out.println("Current slideshows: "+DataManager.getDataCampaign().getListSlideshow().size());
 		for(int i=0; i < scenarios; i++) {
 			
 			//Skip if not initialised
@@ -149,8 +148,6 @@ public class GeneratorSlideshow {
 			generator.writeStartArray();
 			
 			int slides = dataSlideshow.getSlides();
-			System.out.println("Current slides: "+slides);
-			System.out.println("Current List slides: "+dataSlideshow.getListSlides().size());
 			//Go through all the individual slides on attached to this scenario intro/outro
 			for(int j=0; j < slides; j++) {
 

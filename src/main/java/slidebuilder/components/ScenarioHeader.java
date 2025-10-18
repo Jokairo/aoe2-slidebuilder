@@ -72,13 +72,6 @@ public class ScenarioHeader {
 			//header.setTranslateX(400 - (header_middle.getFitWidth()/4));
 
 			//header.setPrefWidth(label_width);
-			
-			System.out.println("----------------------");
-			System.out.println("label width: "+label_width);
-			System.out.println("header middle width: "+header_middle.getFitWidth());
-			System.out.println("header_left x: "+header_left.getTranslateX());
-			System.out.println("header right x: "+header_right.getTranslateX());
-			System.out.println("header width: "+header.getPrefWidth());
 		}
 		else {
 			header_middle.setFitWidth(header_middle.getImage().getWidth());

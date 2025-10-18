@@ -56,10 +56,7 @@ public class FileSaverUtil {
 		fc.setInitialFileName(fileName);
 		fc.getExtensionFilters().add(new ExtensionFilter(FileFormats.FILE_FORMAT_PROJECT, FileFormats.FILE_EXTENSION_PROJECT));
 		fc.setInitialDirectory(DataManager.getDataFolderLocation().getLastOutput());
-		
-		System.out.println("FILENAME: "+fileName);
-		System.out.println("Output: "+DataManager.getDataFolderLocation().getLastOutput());
-		
+
 		File file = fc.showSaveDialog(Main.primaryStage);
 		
 		if (file == null) 
