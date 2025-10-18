@@ -43,12 +43,15 @@ public class Main extends Application {
 		stage.setOnCloseRequest(event -> {
 			if(DataManager.getDataCampaign().getUnsavedChanges()) {
 				boolean pressedOk = Popup.showConfirm("Are you sure you want to close the program? Any unsaved changes will be lost.");
-				if (!pressedOk) event.consume();
+				if (!pressedOk) {
+					event.consume();
+					return;
+				}
 			}
-		});
 
-		//Stop app when main stage is closed
-		stage.setOnHiding(event -> Platform.exit());
+			Platform.exit();
+			System.exit(0);
+		});
 
 		// Loading screen until FXML files loaded
 		BorderPane pane = new BorderPane();
